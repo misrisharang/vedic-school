@@ -1,0 +1,235 @@
+# THE VEDIC SCHOOL — COMPLETE WEBSITE BUILD PROMPT
+(For Replit Agent — extending the existing vedic-school-master build)
+
+# ROLE
+You are building a warm, premium-feeling but personal website for a solo, founder-led
+maths tutoring practice. This is not a multi-teacher academy or an EdTech startup — it
+is one named teacher, Meenakshi Koul, speaking directly to parents. Every section
+should sound like her, not an institution.
+
+# WHAT THIS PROJECT IS NOT
+- Not a multi-teacher "academy" or "faculty"
+- Not a franchise, not scaling to multiple locations
+- Not claiming stats, review counts, or history that hasn't been verified
+- Not using "trial," "enroll now," or advisor/staff language anywhere
+- Not inventing content (bios, checklists, numbers) beyond what's provided below
+
+# BRAND SYSTEM (do not substitute or "improve" these)
+Colors:
+- Terracotta #C85A32 — primary accent, CTA buttons, headline color
+- Sage green #78A875 — secondary accent, eyebrow labels
+- Warm cream #F3ECE3 — dominant background
+- Charcoal #3B424C — body text, dark sections
+
+Typography: warm serif (Lora/Georgia-style) for headlines and the logo wordmark, clean
+humanist sans-serif for body copy and UI. Keep the current build's serif direction, do
+not switch to a geometric sans like Sora or Plus Jakarta Sans.
+
+Logo: "The Vedic School" wordmark in serif, terracotta, with the interlocking twin-ring
+icon mark, tagline "CALM · CAPABLE · CONFIDENT" in sage green small caps underneath.
+
+CTA: the only call to action anywhere on the site is "Book a free demo class." Never
+"Book a Free Trial," never "Enroll Now," never "Talk to an Advisor." The current hero
+button says "Book a free trial" — fix this everywhere it appears.
+
+Voice: first person throughout, as Meenakshi. "I teach," never "we," "our team," or
+"faculty," except on legal/privacy pages. No batch-size numbers anywhere. No invented
+stats, founding dates, or review counts — only real, verified numbers (e.g. "15+ years
+teaching") appear anywhere on the site.
+
+# DESIGN QUALITY BAR
+Rounded cards, soft shadows only (no heavy borders), generous whitespace, subtle
+micro-interactions (buttons lift slightly, cards float on hover, smooth scroll-reveal
+fade-ins, 60fps, performance-first, not excessive). Subtle floating mathematical
+motifs (numbers, simple geometric shapes) in hero backgrounds are welcome as quiet
+texture. Playful without becoming childish.
+
+# TECH STACK
+React + Tailwind, component-based (reusable Button, Card, TestimonialCard, ProgramCard,
+Section components), responsive at desktop/tablet/mobile with no horizontal scroll,
+WCAG AA accessible (keyboard nav, alt text, contrast, reduced-motion support),
+fast-loading, semantic HTML, basic SEO (meta descriptions, structured headings, Open
+Graph tags).
+
+# SITE SCOPE — build exactly these pages, nothing more yet
+1. Home
+2. Vedic Maths Classes
+3. About
+4. Curriculum-Aligned Classes (placeholder structure only — content not finalized,
+   use "Curriculum content coming soon" placeholder text, do not invent copy)
+
+Do not generate Olympiad, Abacus, Mental Maths, or individual board-specific pages.
+Do not build a Blog CMS, author system, or newsletter — a single static "Blog" nav
+link pointing to a placeholder page is enough for now.
+
+# ASSETS
+- meenakshi-photo.png — real photo of Meenakshi Koul, transparent background, provided
+  as an attached asset. Use only this image for her portrait, do not generate or
+  substitute a stock/AI photo.
+
+===================
+PAGE 1: HOME
+===================
+
+Header/nav: logo left, links (Vedic Maths, Curriculum-Aligned Classes, About,
+Testimonials, Blog, Contact), "Book a free demo class" button on the right, sticky,
+transparent over the hero and solid on scroll.
+
+HERO
+- Eyebrow: "CALM · CAPABLE · CONFIDENT"
+- Headline: "Where calculation stops feeling like guesswork"
+- Subhead: "I teach Vedic Maths to build real calculation confidence, and
+  curriculum-aligned classes, across CBSE, ICSE, IB and beyond, to turn that confidence
+  into a capable student, at homework and in exams."
+- CTA button: "Book a free demo class"
+- Microcopy: "One hour, in person in Gurugram or online. You'll meet me directly, not
+  a salesperson."
+- Image: warm photo placeholder of Meenakshi mid-lesson with a student (separate from
+  the portrait asset above). Small floating badge cards near the image, short and
+  honest, e.g. "Progress, not pressure" / "A teacher in their corner" — no fabricated
+  stats.
+
+WHAT I HEAR MOST (quiet bullet section)
+- Intro: "Before I teach a single technique, I listen. Here's what almost every child
+  tells me, one way or another:"
+- Bullets: "I always get the answer wrong, even when I know how to do it" / "I freeze
+  the moment a word problem looks unfamiliar" / "I double-check things I already got
+  right, because I don't trust myself" / "I think I'm just bad at maths"
+- Closing line: "That hesitation, not the marks, is what I actually teach against."
+
+THE SHIFT (before/after list, rounded pill rows, strikethrough-to-bold arrow pattern)
+- Eyebrow: "THE SHIFT"
+- Headline: "What actually changes"
+- Subhead: "Parents notice the shift in confidence before they notice it in the marks."
+- Rows:
+  "Freezes on a word problem" → "Works through it calmly"
+  "Counts on fingers" → "Calculates mentally, in seconds"
+  "Double-checks answers already right" → "Trusts their own working"
+  "'I'm just bad at maths'" → "'Give me a harder one.'"
+
+HOW I HELP (two-card section)
+- Card 1 "Vedic Maths": "Fast, logical ways to work through calculations, so a number
+  stops feeling like a guess. This is where the fear leaves the room first." Link:
+  "Explore Vedic Maths classes →"
+- Card 2 "Curriculum-Aligned Classes": "Classes built around your child's own school
+  syllabus, CBSE, ICSE, IB or otherwise, so that confidence turns into marks a teacher
+  can see." Link: "Explore curriculum-aligned classes →"
+- CTA repeated: "Book a free demo class"
+
+WHY PARENTS CHOOSE TO STAY (six-card grid)
+- Eyebrow: "WHY PARENTS CHOOSE US"
+- Headline: "One mentor, six things I don't compromise on"
+- Cards:
+  1. "Confidence before speed" — the mindset shift comes first, the technique is how
+     we get there
+  2. "Concentrated batches, by design" — small enough that every child's thinking gets
+     tracked, not just their attendance
+  3. "Founder-led, not a franchise" — one mentor, one standard, taught and tracked by
+     me directly
+  4. "Outcome honesty" — every result I share is real and specific, never inflated
+  5. "Every student matters equally" — online or in person, same standard of attention
+  6. "You'll always know how it's going" — transparency on your child's learning and
+     progress, not just a report card at the end of term
+
+ABOUT MEENAKSHI (teaser, links to full About page)
+- Photo: meenakshi-photo.png, cutout placed against a soft terracotta or sage accent
+  shape
+- "I'm Meenakshi Koul. I've been teaching for 15+ years, in Gurugram and, more
+  recently, online with families across India and abroad. Every student is taught and
+  tracked by me directly, not handed off."
+- Link: "Read my full story →"
+
+TESTIMONIALS (card-based, 2 cards)
+- "I've watched a child go from freezing up at multiplication to solving it calmly in
+  seconds. That's what I teach, and I'd like to show you how it works for your child."
+  — Meenakshi Koul
+- "Their foundational understanding of mathematical concepts has become much stronger,
+  and they are more confident in their approach to problem-solving." — Priyanka
+  Bankeraika, parent
+- Link: "Read more stories →"
+
+FROM THE BLOG (single line, 3 titles, not full teaser cards)
+- "What is Vedic Maths? · Three multiplication tricks any child can learn this week ·
+  What good curriculum tuition should actually look like"
+- Link: "Visit the blog →"
+
+CLOSING CTA (full-width band)
+- "The next hour could be the one that changes how your child feels about maths"
+- "No pressure, no scripts, just a real class with me."
+- Button: "Book a free demo class"
+
+Footer: logo, address (106 – The Cedar Estate, Golf Course Road, Sector 54, Gurugram,
+Haryana), contact links, nav repeated, social icons.
+
+===================
+PAGE 2: VEDIC MATHS CLASSES
+===================
+
+HERO
+- Eyebrow: "VEDIC MATHS CLASSES"
+- Headline: "Vedic Maths, taught the way it should be"
+- Subhead: "A set of calculation methods, drawn from ancient Indian mathematics, for
+  working through maths faster and more logically than the way most of us were taught.
+  I teach it because of what it does to a child's confidence, not just their speed."
+- CTA: "Book a free demo class"
+
+WHAT CHANGES FOR A CHILD (bullets)
+- "Multiplication, division and fractions stop being memorised steps and start being
+  something they understand"
+- "They catch their own mistakes instead of needing someone else to catch them"
+- "Timed tests and exams feel less like a race against the clock"
+
+WHO THIS IS FOR (3-card row)
+- "Starting Out" — building the basic toolkit and number confidence
+- "Building Speed" — faster calculation across multiplication, division, fractions
+- "Exam-Ready" — applying the method under exam conditions, including CBSE, ICSE and
+  IB assessments
+- Below: "I also teach adults who want to learn the method for themselves."
+
+WHAT A CLASS ACTUALLY LOOKS LIKE (single card, scannable list, no batch-size number)
+- Format: In person in Gurugram, or online, same standard of attention either way
+- Class length: One hour per session, in concentrated batches
+- Boards supported: CBSE, ICSE, IB, and more as I build out each board's classes
+- Next step: A free demo class, no obligation
+
+A REAL EXAMPLE
+- "I've watched a child go from freezing up at multiplication to solving it calmly in
+  seconds. That's what I teach, and I'd like to show you how it works for your child."
+  — Meenakshi Koul
+
+CLOSING CTA
+- "See it for yourself before you decide anything."
+- Button: "Book a free demo class"
+
+===================
+PAGE 3: ABOUT
+===================
+
+HERO / MEET MEENAKSHI
+- Layout: photo on the left (meenakshi-photo.png, transparent cutout), placed against
+  a soft accent shape in terracotta or sage, photo bleeding slightly past the shape's
+  edge for depth. Small floating badge near the top of the photo: "15+ Years Teaching."
+  Content on the right:
+- Heading: "Meet Meenakshi"
+- Bio: "I'm Meenakshi Koul. I've been teaching for 15+ years, in Gurugram and, more
+  recently, online with families across India and abroad. What I've learned isn't just
+  method, it's pattern: I can usually tell within minutes whether a child is stuck on
+  the maths or stuck on believing they can't do it, and I teach accordingly. Every
+  student is taught and tracked by me directly, not handed off."
+- CTA link: "Book a free demo class →"
+
+Do not add a "what your child will learn" checklist, extended origin story, or any
+additional biographical claims beyond this bio — this is the full extent of approved
+content for this page right now.
+
+CLOSING CTA
+- "The next hour could be the one that changes how your child feels about maths"
+- Button: "Book a free demo class"
+
+===================
+PAGE 4: CURRICULUM-ALIGNED CLASSES
+===================
+Build the page shell, nav, header/footer, and section structure only (hero, a couple
+of content blocks, closing CTA), using placeholder heading labels like "Curriculum
+content coming soon." Do not write final copy for this page, it's still in progress
+and will be provided separately.
