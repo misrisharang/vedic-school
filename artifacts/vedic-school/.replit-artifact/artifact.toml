@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "The Vedic School"
+description = "A warm, personal maths tutoring website for Meenakshi Koul, a solo educator. Features Home, Vedic Maths Classes, About, and Curriculum-Aligned Classes pages. Brand: terracotta #C85A32, sage green #78A875, cream #F3ECE3. Founder-led, personal voice throughout."
+version = "1.0.0"
+id = "artifacts/vedic-school"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23548
+
+[services.development]
+run = "pnpm --filter @workspace/vedic-school run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/vedic-school", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/vedic-school/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23548"
+BASE_PATH = "/"
