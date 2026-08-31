@@ -1,0 +1,23 @@
+Make the following changes to the live site. Do not touch anything else — colors, layout structure, and all other page content and sections stay exactly as they are unless specified below.
+
+1. Hero section — remove the floating text pills
+The hero section currently has floating pill/badge elements layered near the illustration graphic on the right (one reading something like "A teacher..." on the left edge of the illustration, another reading "...not pressure" on the right edge). They're rendering clipped and half-hidden behind the illustration image instead of displaying cleanly. Remove these floating pill elements entirely, along with whatever animation drives their movement. The hero should keep only: the eyebrow text, headline, subhead, CTA button, its microcopy, and the illustration graphic — no floating badges layered on or behind the illustration.
+
+2. Replace the logo with the attached logo file
+Swap the current logo (the interlocking-circles mark next to "The Vedic School" in the nav and footer) with the attached logo file, in both the header/nav and the footer. Keep the sizing and spacing consistent with how the current logo sits in those two places.
+
+3. "Why parents choose us" — six-value-card section
+Enforce a strict content limit on all six cards so they read as a consistent grid:
+- Headline: one line only, no wrapping to a second line.
+- Body text: maximum two lines, must never overflow to a third line.
+If any current card's copy runs long, shorten it to fit — don't shrink the font size to force-fit, rewrite the line instead. All six cards should end up visually the same height.
+
+4. About the Mentor section — replace the existing bio paragraph with this exact text:
+"Hello, I'm Meenakshi Koul. I've been teaching maths for 15+ years, in Mumbai & Gurugram and, more recently, online with families across India and abroad. What I've learned isn't just method, it's pattern: I can usually tell within minutes whether a child is stuck on the maths or stuck on believing they can't do it. Once a child's fear of maths is revealed, it becomes easier to deal with it. Every student is taught and tracked by me directly, not handed off to someone else."
+Keep the existing photo, layout, and background exactly as is — only replace the paragraph text. (Any changes to the circular background behind the photo will be a separate, later request — do not touch it here.)
+
+5. Blog section ("From the blog")
+Fix the spacing between the blog topic entries — they're currently cramped. Show 2-3 blog topics, each in its own small card/box (not a plain inline list), with consistent padding inside each box and consistent gaps between boxes, matching the visual style of the value cards elsewhere on the page.
+
+6. Navigation bar
+Remove "Testimonials" from the nav menu. The Testimonials section itself stays on the homepage — only remove the nav link/anchor pointing to it.
