@@ -8,7 +8,10 @@ import logoImg from '@assets/ChatGPT_Image_Jul_22,_2026,_06_12_07_PM_(1)_1786009
 export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-3 group">
-      <img src={logoImg} alt="The Vedic School" className="h-10 w-auto" />
+      <img src={logoImg} alt="" className="h-10 w-auto" />
+      <span className="font-serif text-base sm:text-lg md:text-xl text-foreground leading-none whitespace-nowrap">
+        The Vedic School
+      </span>
     </Link>
   );
 }

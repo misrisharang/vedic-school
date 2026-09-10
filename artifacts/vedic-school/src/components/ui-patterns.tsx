@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/Button';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 interface FadeInProps {
   children: React.ReactNode;
@@ -75,7 +76,311 @@ export function FadeInStaggerItem({ children, className = "" }: { children: Reac
   );
 }
 
-export function ClosingCTABand({ title, subtitle }: { title: string, subtitle?: string }) {
+export function SectionHeader({
+  eyebrow,
+  title,
+  subtitle,
+  className = "",
+}: {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  className?: string;
+}) {
+  return (
+    <FadeIn className={`text-center mb-16 ${className}`}>
+      {eyebrow ? (
+        <>
+          <h2 className="sage-eyebrow">{eyebrow}</h2>
+          <p className="text-3xl md:text-5xl font-serif text-foreground mb-6 leading-tight max-w-4xl mx-auto">{title}</p>
+        </>
+      ) : (
+        <h2 className="text-3xl md:text-5xl font-serif text-foreground mb-6 leading-tight max-w-4xl mx-auto">{title}</h2>
+      )}
+      {subtitle && <p className="text-lg text-foreground/70 max-w-2xl mx-auto">{subtitle}</p>}
+    </FadeIn>
+  );
+}
+
+export interface ShiftItem {
+  from: string;
+  to: string;
+  description: string;
+}
+
+export function ShiftList({ items, variant = 'stacked' }: { items: ShiftItem[]; variant?: 'stacked' | 'cards' }) {
+  if (variant === 'cards') {
+    return (
+      <FadeInStagger className="grid gap-4 max-w-3xl mx-auto">
+        {items.map((item, i) => (
+          <FadeInStaggerItem key={i}>
+            <div className="text-center bg-white p-6 md:p-8 rounded-2xl shadow-xs border border-border/40 hover:shadow-md transition-shadow">
+              <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 mb-3">
+                <span className="text-foreground/40 line-through font-serif text-lg md:text-xl">{item.from}</span>
+                <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center shrink-0 text-primary">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M5 12h14m-7-7 7 7-7 7" />
+                  </svg>
+                </div>
+                <span className="text-foreground font-serif text-2xl md:text-3xl font-medium">{item.to}</span>
+              </div>
+              <p className="text-foreground/70 leading-relaxed max-w-md mx-auto">{item.description}</p>
+            </div>
+          </FadeInStaggerItem>
+        ))}
+      </FadeInStagger>
+    );
+  }
+
+  return (
+    <FadeInStagger className="max-w-2xl mx-auto divide-y divide-border/40">
+      {items.map((item, i) => (
+        <FadeInStaggerItem key={i}>
+          <div className="text-center py-8 first:pt-0 last:pb-0">
+            <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 mb-3">
+              <span className="text-foreground/40 line-through font-serif text-lg md:text-xl">{item.from}</span>
+              <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center shrink-0 text-primary">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14m-7-7 7 7-7 7" />
+                </svg>
+              </div>
+              <span className="text-foreground font-serif text-2xl md:text-3xl font-medium">{item.to}</span>
+            </div>
+            <p className="text-foreground/70 leading-relaxed max-w-md mx-auto">{item.description}</p>
+          </div>
+        </FadeInStaggerItem>
+      ))}
+    </FadeInStagger>
+  );
+}
+
+export interface MethodStep {
+  number: string;
+  title: string;
+  description: React.ReactNode;
+}
+
+export function MethodSteps({ steps, variant = 'timeline' }: { steps: MethodStep[]; variant?: 'timeline' | 'cards' }) {
+  if (variant === 'cards') {
+    return (
+      <FadeInStagger className="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto">
+        {steps.map((step) => (
+          <FadeInStaggerItem key={step.number}>
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-border/40 h-full flex flex-col card-lift">
+              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-6 font-serif text-xl font-medium shrink-0">
+                {step.number}
+              </div>
+              <h3 className="font-serif text-2xl text-foreground mb-3">{step.title}</h3>
+              <div className="text-foreground/70 leading-relaxed text-base flex-1">{step.description}</div>
+            </div>
+          </FadeInStaggerItem>
+        ))}
+      </FadeInStagger>
+    );
+  }
+
+  return (
+    <FadeInStagger className="max-w-2xl mx-auto">
+      {steps.map((step, i) => (
+        <FadeInStaggerItem key={step.number}>
+          <div className="flex gap-6">
+            <div className="flex flex-col items-center">
+              <div className="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-serif text-xl font-medium shrink-0">
+                {step.number}
+              </div>
+              {i < steps.length - 1 && <div className="w-px flex-1 bg-border/60 my-2" />}
+            </div>
+            <div className={`flex-1 bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-border/40 card-lift ${i < steps.length - 1 ? 'mb-6' : ''}`}>
+              <h3 className="font-serif text-2xl text-foreground mb-3">{step.title}</h3>
+              <div className="text-foreground/70 leading-relaxed text-base">{step.description}</div>
+            </div>
+          </div>
+        </FadeInStaggerItem>
+      ))}
+    </FadeInStagger>
+  );
+}
+
+export interface FeatureItem {
+  title: string;
+  body: string;
+}
+
+export function FeatureGrid({ items, columns = 3 }: { items: FeatureItem[]; columns?: 2 | 3 }) {
+  const colClass = columns === 2 ? 'sm:grid-cols-2 max-w-3xl' : 'sm:grid-cols-2 lg:grid-cols-3 max-w-6xl';
+  return (
+    <FadeInStagger className={`grid ${colClass} gap-6 mx-auto`}>
+      {items.map((item, i) => (
+        <FadeInStaggerItem key={i}>
+          <div className="bg-white p-8 rounded-2xl shadow-sm border border-border/40 flex flex-col card-lift h-full">
+            <h4 className="font-serif text-xl text-foreground mb-3">{item.title}</h4>
+            <p className="text-foreground/70 text-sm leading-relaxed">{item.body}</p>
+          </div>
+        </FadeInStaggerItem>
+      ))}
+    </FadeInStagger>
+  );
+}
+
+export interface DefinitionRow {
+  label: string;
+  value: React.ReactNode;
+  highlight?: boolean;
+}
+
+export function DefinitionCard({ title, rows }: { title?: string; rows: DefinitionRow[] }) {
+  return (
+    <FadeIn>
+      <div className="bg-white rounded-[2.5rem] shadow-sm border border-border/50 p-8 md:p-16">
+        {title && <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-12 text-center">{title}</h2>}
+        <div className="space-y-6">
+          {rows.map((row, i) => (
+            <div
+              key={i}
+              className={`flex flex-col md:flex-row md:items-start gap-2 md:gap-8 ${i < rows.length - 1 ? 'pb-6 border-b border-border/40' : 'pt-0'}`}
+            >
+              <div className={`w-48 font-sans font-semibold text-xs tracking-wider uppercase shrink-0 ${row.highlight ? 'text-primary' : 'text-secondary'}`}>
+                {row.label}
+              </div>
+              <div className={`flex-1 font-serif text-xl ${row.highlight ? 'text-primary italic' : 'text-foreground/90'}`}>
+                {row.value}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </FadeIn>
+  );
+}
+
+export function Checklist({ items }: { items: string[] }) {
+  return (
+    <FadeInStagger className="space-y-4 max-w-2xl mx-auto">
+      {items.map((item, i) => (
+        <FadeInStaggerItem key={i}>
+          <div className="flex items-start gap-4 bg-white/70 p-5 rounded-2xl border border-border/30">
+            <div className="w-6 h-6 rounded-full bg-secondary/15 text-secondary flex items-center justify-center shrink-0 mt-0.5">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            </div>
+            <p className="text-foreground/85 font-serif text-lg leading-snug pt-0.5">{item}</p>
+          </div>
+        </FadeInStaggerItem>
+      ))}
+    </FadeInStagger>
+  );
+}
+
+export function TestimonialCard({ quote, author, delay = 0 }: { quote: string; author: string; delay?: number }) {
+  return (
+    <FadeIn delay={delay} className="h-full">
+      <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-border/50 relative h-full flex flex-col">
+        <div className="absolute top-8 left-8 text-secondary/20 text-6xl font-serif leading-none select-none">"</div>
+        <p className="font-serif text-lg md:text-xl text-foreground/90 leading-relaxed relative z-10 mb-8 pt-4 flex-1">
+          {quote}
+        </p>
+        <div className="border-t border-border/50 pt-4">
+          <span className="font-sans font-medium text-foreground block">— {author}</span>
+        </div>
+      </div>
+    </FadeIn>
+  );
+}
+
+export function TestimonialPlaceholder({ delay = 0 }: { delay?: number }) {
+  return (
+    <FadeIn delay={delay} className="h-full">
+      <div className="p-10 rounded-[2rem] border-2 border-dashed border-border/60 h-full min-h-[220px] flex items-center justify-center text-center">
+        <span className="text-foreground/40 font-serif text-lg italic">More parent stories coming soon</span>
+      </div>
+    </FadeIn>
+  );
+}
+
+export interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+export function FAQAccordion({ items }: { items: FAQItem[] }) {
+  return (
+    <FadeIn>
+      <Accordion type="single" collapsible className="max-w-3xl mx-auto">
+        {items.map((item, i) => (
+          <AccordionItem key={i} value={`item-${i}`} className="border-border/40">
+            <AccordionTrigger className="font-serif text-lg md:text-xl text-foreground py-6 hover:no-underline">
+              {item.question}
+            </AccordionTrigger>
+            <AccordionContent className="text-foreground/70 leading-relaxed text-base pb-6">
+              {item.answer}
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </FadeIn>
+  );
+}
+
+export interface TwoPathItem {
+  label: string;
+  description?: string;
+  cta: string;
+}
+
+export function TwoPathCTA({
+  eyebrow,
+  paths,
+  onDark = false,
+}: {
+  eyebrow?: string;
+  paths: [TwoPathItem, TwoPathItem];
+  onDark?: boolean;
+}) {
+  return (
+    <div>
+      {eyebrow && (
+        <p className={`text-xs font-sans font-bold tracking-[0.15em] uppercase mb-4 ${onDark ? 'text-white/70' : 'text-secondary'}`}>
+          {eyebrow}
+        </p>
+      )}
+      <div className="grid sm:grid-cols-2 gap-4">
+        {paths.map((path, i) => (
+          <div
+            key={i}
+            className={`rounded-2xl p-6 flex flex-col gap-3 text-left ${onDark ? 'bg-white/10 border border-white/20 backdrop-blur-sm' : 'bg-white border border-border/40 shadow-sm'}`}
+          >
+            <span className={`font-serif text-lg font-medium ${onDark ? 'text-white' : 'text-foreground'}`}>{path.label}</span>
+            {path.description && (
+              <span className={`text-sm leading-snug ${onDark ? 'text-white/80' : 'text-foreground/70'}`}>{path.description}</span>
+            )}
+            <Button
+              variant={onDark ? 'white' : 'default'}
+              size="sm"
+              className={onDark ? 'text-primary font-semibold hover:bg-white/90 mt-1 w-full' : 'mt-1 w-full'}
+            >
+              {path.cta}
+            </Button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function ClosingCTABand({
+  title,
+  subtitle,
+  cta = "Book a free demo class",
+  ctaSupport,
+  children,
+}: {
+  title: string;
+  subtitle?: string;
+  cta?: string;
+  ctaSupport?: string;
+  children?: React.ReactNode;
+}) {
   return (
     <section className="py-24 bg-primary text-primary-foreground relative overflow-hidden">
       {/* Decorative subtle background rings */}
@@ -96,9 +401,16 @@ export function ClosingCTABand({ title, subtitle }: { title: string, subtitle?: 
               {subtitle}
             </p>
           )}
-          <Button variant="white" size="lg" className="text-primary font-semibold hover:bg-white/90">
-            Book a free demo class
-          </Button>
+          {children ? (
+            children
+          ) : (
+            <>
+              <Button variant="white" size="lg" className="text-primary font-semibold hover:bg-white/90">
+                {cta}
+              </Button>
+              {ctaSupport && <p className="text-white/70 text-sm mt-4">{ctaSupport}</p>}
+            </>
+          )}
         </FadeIn>
       </div>
     </section>
