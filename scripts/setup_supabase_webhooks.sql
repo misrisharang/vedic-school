@@ -1,0 +1,38 @@
+-- ==============================================================================
+-- THE VEDIC SCHOOL — SUPABASE DATABASE WEBHOOK CONFIGURATION
+-- ==============================================================================
+--
+-- Recommended setup via Supabase Dashboard (takes 60 seconds):
+--
+-- 1. In your Supabase project dashboard, navigate to:
+--    Database > Webhooks (or Integrations > Database Webhooks)
+-- 2. Click "Create a new webhook"
+--
+-- ------------------------------------------------------------------------------
+-- WEBHOOK 1: Sync Inquiries to Google Sheets
+-- ------------------------------------------------------------------------------
+-- Name:           sync_inquiries_to_google_sheets
+-- Table:          public.inquiries
+-- Events:         [X] Insert, [X] Update
+-- Type:           HTTP Request
+-- Method:         POST
+-- URL:            <YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_WEB_APP_URL>
+-- HTTP Headers:   Content-Type: application/json
+--
+-- ------------------------------------------------------------------------------
+-- WEBHOOK 2: Sync Registrations to Google Sheets
+-- ------------------------------------------------------------------------------
+-- Name:           sync_registrations_to_google_sheets
+-- Table:          public.registrations
+-- Events:         [X] Insert, [X] Update
+-- Type:           HTTP Request
+-- Method:         POST
+-- URL:            <YOUR_DEPLOYED_GOOGLE_APPS_SCRIPT_WEB_APP_URL>
+-- HTTP Headers:   Content-Type: application/json
+--
+-- ==============================================================================
+-- NOTE ON SECURITY:
+-- - No credentials are stored on the client/frontend.
+-- - Supabase's server-side webhook engine communicates directly with Google Apps Script.
+-- - The Google Apps Script runs under your Google account and accesses only this specific sheet.
+-- ==============================================================================

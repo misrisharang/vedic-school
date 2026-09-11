@@ -10,6 +10,13 @@ import Home from '@/pages/Home';
 import VedicMaths from '@/pages/VedicMaths';
 import About from '@/pages/About';
 import CurriculumAligned from '@/pages/CurriculumAligned';
+import Contact from '@/pages/Contact';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import TermsOfService from '@/pages/TermsOfService';
+import CookiePolicy from '@/pages/CookiePolicy';
+import Admin from '@/pages/Admin';
+import Blog from '@/pages/Blog';
+import BlogPostPage from '@/pages/BlogPostPage';
 
 const queryClient = new QueryClient();
 
@@ -25,27 +32,47 @@ function ScrollToTop() {
 
 function Router() {
   return (
-    <Layout>
-      <ScrollToTop />
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/vedic-maths" component={VedicMaths} />
-        <Route path="/about" component={About} />
-        <Route path="/curriculum-aligned" component={CurriculumAligned} />
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      <Route path="/admin" component={Admin} />
+      <Route path="/admin/:rest*" component={Admin} />
+      <Route>
+        <Layout>
+          <ScrollToTop />
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/vedic-maths" component={VedicMaths} />
+            <Route path="/about" component={About} />
+            <Route path="/curriculum-aligned" component={CurriculumAligned} />
+            <Route path="/contact" component={Contact} />
+            <Route path="/blog" component={Blog} />
+            <Route path="/blog/:slug" component={BlogPostPage} />
+            <Route path="/privacy-policy" component={PrivacyPolicy} />
+            <Route path="/terms-of-service" component={TermsOfService} />
+            <Route path="/cookie-policy" component={CookiePolicy} />
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
+
+import { DemoModalProvider } from '@/context/DemoModalContext';
+import { SundayDemoModal } from '@/components/SundayDemoModal';
+import { PersonalAssessmentModal } from '@/components/PersonalAssessmentModal';
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
+        <DemoModalProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+            <Router />
+          </WouterRouter>
+          <SundayDemoModal />
+          <PersonalAssessmentModal />
+          <Toaster />
+        </DemoModalProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );

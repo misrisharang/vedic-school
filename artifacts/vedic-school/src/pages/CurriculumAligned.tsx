@@ -12,7 +12,9 @@ import {
   FAQAccordion,
   ClosingCTABand,
 } from '@/components/ui-patterns';
+import { testimonials } from '@/data/testimonials';
 import { Button } from '@/components/Button';
+import { useAssessmentModal } from '@/context/DemoModalContext';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
 
@@ -130,7 +132,39 @@ const faqs = [
   },
 ];
 
+const gradeThemes = [
+  {
+    // 01: Light Sage
+    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
+    border: 'border-[hsl(var(--block-sage-light-border))]',
+    pill: 'bg-[#446342]/15 text-[#3D5E3B]',
+    aimLabel: 'text-[#3D5E3B]/70',
+  },
+  {
+    // 02: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    pill: 'bg-primary/15 text-primary',
+    aimLabel: 'text-primary/70',
+  },
+  {
+    // 03: Light Sage
+    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
+    border: 'border-[hsl(var(--block-sage-light-border))]',
+    pill: 'bg-[#446342]/15 text-[#3D5E3B]',
+    aimLabel: 'text-[#3D5E3B]/70',
+  },
+  {
+    // 04: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    pill: 'bg-primary/15 text-primary',
+    aimLabel: 'text-primary/70',
+  },
+];
+
 export default function CurriculumAligned() {
+  const { openAssessmentModal } = useAssessmentModal();
   return (
     <div className="flex flex-col min-h-screen bg-background">
 
@@ -150,7 +184,7 @@ export default function CurriculumAligned() {
               <p className="text-lg md:text-xl text-foreground/80 leading-relaxed mb-8 max-w-xl">
                 I teach your child through their school curriculum, while addressing the gaps that may be getting in the way.
               </p>
-              <Button size="lg">Book your child's personal assessment</Button>
+              <Button size="lg" onClick={openAssessmentModal}>Book your child's personal assessment</Button>
               <p className="text-xs text-foreground/60 mt-4">Find out where they are and what they need.</p>
             </FadeIn>
 
@@ -171,7 +205,7 @@ export default function CurriculumAligned() {
       </section>
 
       {/* THE SHIFT */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
             eyebrow="THE SHIFT"
@@ -196,27 +230,30 @@ export default function CurriculumAligned() {
           </FadeIn>
 
           <FadeInStagger className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            {grades.map((grade, i) => (
-              <FadeInStaggerItem key={i}>
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-border/40 h-full flex flex-col card-lift">
-                  <h3 className="font-serif text-2xl text-foreground mb-3">{grade.range}</h3>
-                  <span className="self-start text-xs font-sans font-semibold tracking-wider uppercase text-secondary bg-secondary/10 rounded-full px-3 py-1 mb-4">
-                    {grade.focus}
-                  </span>
-                  <p className="text-foreground/70 leading-relaxed text-sm mb-6 flex-1">{grade.areas}</p>
-                  <div className="border-t border-border/40 pt-4">
-                    <span className="text-xs font-sans font-semibold tracking-wider uppercase text-primary block mb-1">Primary Aim</span>
-                    <span className="font-serif text-foreground/90">{grade.aim}</span>
+            {grades.map((grade, i) => {
+              const theme = gradeThemes[i % gradeThemes.length];
+              return (
+                <FadeInStaggerItem key={i}>
+                  <div className={`${theme.bg} ${theme.border} border p-8 rounded-2xl shadow-sm h-full flex flex-col card-lift transition-all duration-300`}>
+                    <h3 className="font-serif text-2xl text-foreground mb-3 font-medium">{grade.range}</h3>
+                    <span className={`self-start text-xs font-sans font-semibold tracking-wider uppercase rounded-full px-3 py-1 mb-4 ${theme.pill}`}>
+                      {grade.focus}
+                    </span>
+                    <p className="text-foreground/80 leading-relaxed text-sm mb-6 flex-1">{grade.areas}</p>
+                    <div className="border-t border-border/60 pt-4">
+                      <span className={`text-xs font-sans font-semibold tracking-wider uppercase block mb-1 ${theme.aimLabel}`}>Primary Aim</span>
+                      <span className="font-serif text-foreground font-medium">{grade.aim}</span>
+                    </div>
                   </div>
-                </div>
-              </FadeInStaggerItem>
-            ))}
+                </FadeInStaggerItem>
+              );
+            })}
           </FadeInStagger>
         </div>
       </section>
 
       {/* MY TEACHING METHOD */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
             eyebrow="MY TEACHING METHOD"
@@ -245,7 +282,7 @@ export default function CurriculumAligned() {
                 const Icon = step.icon;
                 const isLast = i === journey.length - 1;
                 return (
-                  <FadeInStaggerItem key={step.label} className="flex flex-col items-center text-center">
+                  <FadeInStaggerItem key={step.label} className={`flex flex-col items-center text-center ${i === 4 ? 'col-span-2 md:col-span-1' : ''}`}>
                     <div
                       className={`w-16 h-16 rounded-full flex items-center justify-center shadow-md mb-4 relative z-10 ${
                         isLast ? 'bg-secondary text-white' : 'bg-primary text-white'
@@ -273,11 +310,11 @@ export default function CurriculumAligned() {
       </section>
 
       {/* ASSESSMENT CTA */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-[#FAF6F0] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6 max-w-2xl text-center">
           <FadeIn>
             <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-4">Ready to understand where your child is?</h2>
-            <Button size="lg">Book your child's personal assessment session</Button>
+            <Button size="lg" onClick={openAssessmentModal}>Book your child's personal assessment session</Button>
             <p className="text-xs text-foreground/60 mt-4">Tell me your child's grade, board and the Maths topic or difficulty you're concerned about.</p>
           </FadeIn>
         </div>
@@ -288,18 +325,22 @@ export default function CurriculumAligned() {
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader eyebrow="WHAT PARENTS SAY" title="The change has to show up where it matters." />
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <TestimonialCard
-              quote="Their foundational understanding of mathematical concepts has become much stronger, and they are more confident in their approach to problem-solving."
-              author="Priyanka Bankeraika, Parent"
-            />
-            <TestimonialPlaceholder delay={0.1} />
-            <TestimonialPlaceholder delay={0.2} />
+            {testimonials.map((item, index) => (
+              <TestimonialCard
+                key={item.name}
+                delay={0.1 * (index + 1)}
+                quote={item.quote}
+                author={item.name}
+                relation={item.relation}
+                location={item.location}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       {/* FAQ */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-[#F0EBE1] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader eyebrow="FREQUENTLY ASKED QUESTIONS" title="A few things parents want to know." />
           <FAQAccordion items={faqs} />
@@ -312,6 +353,7 @@ export default function CurriculumAligned() {
         subtitle="When the foundation is stronger, schoolwork becomes easier to approach — and your child becomes more confident working through it."
         cta="Book your child's personal assessment session"
         ctaSupport="A private session to understand where your child is and what they need."
+        onCtaClick={openAssessmentModal}
       />
 
     </div>

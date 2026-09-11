@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookOpen, PenLine, Target, Sparkles, Sigma } from 'lucide-react';
 import { Button } from '@/components/Button';
+import { useDemoModal } from '@/context/DemoModalContext';
 import {
   FadeIn,
   FadeInStagger,
@@ -9,10 +10,12 @@ import {
   ShiftList,
   MethodSteps,
   FeatureGrid,
+  TestimonialCard,
   TestimonialPlaceholder,
   FAQAccordion,
   ClosingCTABand,
 } from '@/components/ui-patterns';
+import { testimonials } from '@/data/testimonials';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
 
@@ -117,6 +120,8 @@ const faqs = [
 ];
 
 export default function VedicMaths() {
+  const { openDemoModal } = useDemoModal();
+
   return (
     <div className="flex flex-col min-h-screen">
 
@@ -136,7 +141,7 @@ export default function VedicMaths() {
               <p className="text-lg md:text-xl text-foreground/80 leading-relaxed mb-8 max-w-xl">
                 Vedic Maths is a collection of techniques from ancient Indian mathematics that gives children more flexible ways to work with numbers — making calculation faster, clearer and more confident.
               </p>
-              <Button size="lg">Join Sunday's free demo class</Button>
+              <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
               <p className="text-xs text-foreground/60 mt-4">See the method in a real class. No pressure, no commitment.</p>
             </FadeIn>
 
@@ -157,7 +162,7 @@ export default function VedicMaths() {
       </section>
 
       {/* WHAT CHANGES FOR A CHILD */}
-      <section className="py-16 md:py-20 bg-white">
+      <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
             eyebrow="THE SHIFT"
@@ -193,7 +198,7 @@ export default function VedicMaths() {
       </section>
 
       {/* THE VEDIC SCHOOL METHOD */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
             eyebrow="THE VEDIC SCHOOL METHOD"
@@ -202,7 +207,7 @@ export default function VedicMaths() {
           />
           <MethodSteps steps={methodSteps} variant="cards" />
           <FadeIn delay={0.3} className="text-center mt-16">
-            <Button size="lg">Join Sunday's free demo class</Button>
+            <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
             <p className="text-xs text-foreground/60 mt-4">Come experience the method in a real class.</p>
           </FadeIn>
         </div>
@@ -221,7 +226,7 @@ export default function VedicMaths() {
       </section>
 
       {/* HOW CLASSES WORK — THE JOURNEY */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <FadeIn className="text-center mb-16">
             <h2 className="sage-eyebrow">HOW CLASSES WORK</h2>
@@ -260,20 +265,28 @@ export default function VedicMaths() {
             <p className="text-foreground/70 max-w-xl mx-auto mb-8 leading-relaxed">
               Every Sunday, I run a free Vedic Maths group demo where your child can experience the way I teach before you decide what comes next.
             </p>
-            <Button size="lg">Join Sunday's free demo class</Button>
+            <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
             <p className="text-xs text-foreground/60 mt-4">No pressure. No commitment. Just a real class.</p>
           </FadeIn>
         </div>
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="py-16 md:py-20 bg-secondary/5 border-t border-border/30">
+      <section className="py-16 md:py-20 bg-[#FAF6F0] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader eyebrow="WHAT PARENTS SAY" title="Don't take my word for it." subtitle="What parents have noticed" />
 
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <TestimonialPlaceholder />
-            <TestimonialPlaceholder delay={0.1} />
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {testimonials.map((item, index) => (
+              <TestimonialCard
+                key={item.name}
+                delay={0.1 * (index + 1)}
+                quote={item.quote}
+                author={item.name}
+                relation={item.relation}
+                location={item.location}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -292,6 +305,7 @@ export default function VedicMaths() {
         subtitle="Let them experience a different way of working with numbers."
         cta="Join Sunday's free Vedic Maths demo class"
         ctaSupport="See how your child responds to the method before you decide what comes next."
+        onCtaClick={openDemoModal}
       />
 
     </div>

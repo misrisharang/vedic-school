@@ -40,6 +40,14 @@
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-destructive-border: var(--destructive-border);
 
+  --color-block-terracotta-light: hsl(var(--block-terracotta-light));
+  --color-block-terracotta-light-border: hsl(var(--block-terracotta-light-border));
+  --color-block-terracotta-light-hover: hsl(var(--block-terracotta-light-hover));
+
+  --color-block-sage-light: hsl(var(--block-sage-light));
+  --color-block-sage-light-border: hsl(var(--block-sage-light-border));
+  --color-block-sage-light-hover: hsl(var(--block-sage-light-hover));
+
   --font-sans: var(--app-font-sans);
   --font-serif: var(--app-font-serif);
   --font-mono: var(--app-font-mono);
@@ -94,6 +102,15 @@
 
   --input: 34 20% 85%;
   --ring: 16 60% 49%;
+
+  /* Information block tokens - strict 2-colour system */
+  --block-terracotta-light: 16 60% 89%;
+  --block-terracotta-light-border: 16 45% 82%;
+  --block-terracotta-light-hover: 16 60% 86%;
+
+  --block-sage-light: 116 28% 88%;
+  --block-sage-light-border: 116 24% 80%;
+  --block-sage-light-hover: 116 28% 85%;
   
   --app-font-sans: 'Inter', sans-serif;
   --app-font-serif: 'Lora', serif;
@@ -146,11 +163,24 @@
   --destructive-foreground: 0 0% 100%;
   --input: 34 20% 85%;
   --ring: 16 60% 49%;
+
+  --block-terracotta-light: 16 60% 89%;
+  --block-terracotta-light-border: 16 45% 82%;
+  --block-terracotta-light-hover: 16 60% 86%;
+
+  --block-sage-light: 116 28% 88%;
+  --block-sage-light-border: 116 24% 80%;
+  --block-sage-light-hover: 116 28% 85%;
 }
 
 @layer base {
   * {
     @apply border-border;
+  }
+
+  html, body {
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   body {
@@ -172,6 +202,22 @@
   }
   .sage-eyebrow {
     @apply text-secondary font-sans font-bold tracking-[0.2em] text-xs uppercase mb-4 block;
+  }
+  .block-terracotta {
+    background-color: hsl(var(--block-terracotta-light));
+    border-color: hsl(var(--block-terracotta-light-border));
+    color: hsl(var(--foreground));
+  }
+  .block-terracotta:hover {
+    background-color: hsl(var(--block-terracotta-light-hover));
+  }
+  .block-sage {
+    background-color: hsl(var(--block-sage-light));
+    border-color: hsl(var(--block-sage-light-border));
+    color: hsl(var(--foreground));
+  }
+  .block-sage:hover {
+    background-color: hsl(var(--block-sage-light-hover));
   }
 }
 

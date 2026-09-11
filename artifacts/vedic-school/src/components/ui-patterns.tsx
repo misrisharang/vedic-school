@@ -88,16 +88,16 @@ export function SectionHeader({
   className?: string;
 }) {
   return (
-    <FadeIn className={`text-center mb-16 ${className}`}>
+    <FadeIn className={`text-center mb-10 sm:mb-16 ${className}`}>
       {eyebrow ? (
         <>
           <h2 className="sage-eyebrow">{eyebrow}</h2>
-          <p className="text-3xl md:text-5xl font-serif text-foreground mb-6 leading-tight max-w-4xl mx-auto">{title}</p>
+          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto">{title}</p>
         </>
       ) : (
-        <h2 className="text-3xl md:text-5xl font-serif text-foreground mb-6 leading-tight max-w-4xl mx-auto">{title}</h2>
+        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto">{title}</h2>
       )}
-      {subtitle && <p className="text-lg text-foreground/70 max-w-2xl mx-auto">{subtitle}</p>}
+      {subtitle && <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed">{subtitle}</p>}
     </FadeIn>
   );
 }
@@ -108,26 +108,115 @@ export interface ShiftItem {
   description: string;
 }
 
-export function ShiftList({ items, variant = 'stacked' }: { items: ShiftItem[]; variant?: 'stacked' | 'cards' }) {
+export interface ShiftCardTheme {
+  bg: string;
+  border?: string;
+  fromText: string;
+  arrowBg: string;
+  toText: string;
+  descText: string;
+}
+
+const defaultShiftThemes: ShiftCardTheme[] = [
+  {
+    // 01: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    fromText: 'text-foreground/50',
+    arrowBg: 'bg-primary/15 text-primary',
+    toText: 'text-foreground',
+    descText: 'text-foreground/80',
+  },
+  {
+    // 02: Light Sage
+    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
+    border: 'border-[hsl(var(--block-sage-light-border))]',
+    fromText: 'text-foreground/50',
+    arrowBg: 'bg-[#446342]/15 text-[#3D5E3B]',
+    toText: 'text-foreground',
+    descText: 'text-foreground/80',
+  },
+  {
+    // 03: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    fromText: 'text-foreground/50',
+    arrowBg: 'bg-primary/15 text-primary',
+    toText: 'text-foreground',
+    descText: 'text-foreground/80',
+  },
+  {
+    // 04: Light Sage
+    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
+    border: 'border-[hsl(var(--block-sage-light-border))]',
+    fromText: 'text-foreground/50',
+    arrowBg: 'bg-[#446342]/15 text-[#3D5E3B]',
+    toText: 'text-foreground',
+    descText: 'text-foreground/80',
+  },
+  {
+    // 05: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    fromText: 'text-foreground/50',
+    arrowBg: 'bg-primary/15 text-primary',
+    toText: 'text-foreground',
+    descText: 'text-foreground/80',
+  },
+];
+
+export function ShiftList({
+  items,
+  variant = 'stacked',
+  cardThemes,
+}: {
+  items: ShiftItem[];
+  variant?: 'stacked' | 'cards';
+  cardThemes?: ShiftCardTheme[];
+}) {
+  const themes = cardThemes || defaultShiftThemes;
+
   if (variant === 'cards') {
     return (
       <FadeInStagger className="grid gap-4 max-w-3xl mx-auto">
-        {items.map((item, i) => (
-          <FadeInStaggerItem key={i}>
-            <div className="text-center bg-white p-6 md:p-8 rounded-2xl shadow-xs border border-border/40 hover:shadow-md transition-shadow">
-              <div className="flex flex-wrap items-center justify-center gap-3 md:gap-5 mb-3">
-                <span className="text-foreground/40 line-through font-serif text-lg md:text-xl">{item.from}</span>
-                <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center shrink-0 text-primary">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 12h14m-7-7 7 7-7 7" />
-                  </svg>
+        {items.map((item, i) => {
+          const theme = themes[i % themes.length];
+          return (
+            <FadeInStaggerItem key={i}>
+              <div
+                className={`text-center ${theme.bg} p-5 sm:p-6 md:p-8 rounded-2xl shadow-sm border ${
+                  theme.border || 'border-transparent'
+                } hover:shadow-md transition-all duration-300`}
+              >
+                <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 md:gap-5 mb-3">
+                  <span className={`${theme.fromText} line-through font-serif text-base sm:text-lg md:text-xl`}>
+                    {item.from}
+                  </span>
+                  <div className={`w-7 h-7 rounded-full ${theme.arrowBg} flex items-center justify-center shrink-0`}>
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M5 12h14m-7-7 7 7-7 7" />
+                    </svg>
+                  </div>
+                  <span className={`${theme.toText} font-serif text-xl sm:text-2xl md:text-3xl font-medium`}>
+                    {item.to}
+                  </span>
                 </div>
-                <span className="text-foreground font-serif text-2xl md:text-3xl font-medium">{item.to}</span>
+                <p className={`${theme.descText} leading-relaxed text-sm sm:text-base max-w-md mx-auto`}>
+                  {item.description}
+                </p>
               </div>
-              <p className="text-foreground/70 leading-relaxed max-w-md mx-auto">{item.description}</p>
-            </div>
-          </FadeInStaggerItem>
-        ))}
+            </FadeInStaggerItem>
+          );
+        })}
       </FadeInStagger>
     );
   }
@@ -206,18 +295,117 @@ export interface FeatureItem {
   body: string;
 }
 
-export function FeatureGrid({ items, columns = 3 }: { items: FeatureItem[]; columns?: 2 | 3 }) {
+export interface FeatureCardTheme {
+  bg: string;
+  border?: string;
+  title: string;
+  body: string;
+  badge: string;
+}
+
+const defaultFeatureThemes: FeatureCardTheme[] = [
+  {
+    // 01: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    title: 'text-foreground',
+    body: 'text-foreground/80',
+    badge: 'text-primary/70',
+  },
+  {
+    // 02: Light Sage
+    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
+    border: 'border-[hsl(var(--block-sage-light-border))]',
+    title: 'text-foreground',
+    body: 'text-foreground/80',
+    badge: 'text-[#3D5E3B]/70',
+  },
+  {
+    // 03: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    title: 'text-foreground',
+    body: 'text-foreground/80',
+    badge: 'text-primary/70',
+  },
+  {
+    // 04: Light Sage
+    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
+    border: 'border-[hsl(var(--block-sage-light-border))]',
+    title: 'text-foreground',
+    body: 'text-foreground/80',
+    badge: 'text-[#3D5E3B]/70',
+  },
+  {
+    // 05: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    title: 'text-foreground',
+    body: 'text-foreground/80',
+    badge: 'text-primary/70',
+  },
+  {
+    // 06: Light Sage
+    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
+    border: 'border-[hsl(var(--block-sage-light-border))]',
+    title: 'text-foreground',
+    body: 'text-foreground/80',
+    badge: 'text-[#3D5E3B]/70',
+  },
+];
+
+export function FeatureGrid({
+  items,
+  columns = 3,
+  variant = 'brand',
+  cardThemes,
+}: {
+  items: FeatureItem[];
+  columns?: 2 | 3;
+  variant?: 'brand' | 'neutral';
+  cardThemes?: FeatureCardTheme[];
+}) {
   const colClass = columns === 2 ? 'sm:grid-cols-2 max-w-3xl' : 'sm:grid-cols-2 lg:grid-cols-3 max-w-6xl';
+  const themes = cardThemes || defaultFeatureThemes;
+
   return (
     <FadeInStagger className={`grid ${colClass} gap-6 mx-auto`}>
-      {items.map((item, i) => (
-        <FadeInStaggerItem key={i}>
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-border/40 flex flex-col card-lift h-full">
-            <h4 className="font-serif text-xl text-foreground mb-3">{item.title}</h4>
-            <p className="text-foreground/70 text-sm leading-relaxed">{item.body}</p>
-          </div>
-        </FadeInStaggerItem>
-      ))}
+      {items.map((item, i) => {
+        if (variant === 'neutral') {
+          return (
+            <FadeInStaggerItem key={i}>
+              <div className="bg-white p-8 rounded-2xl shadow-sm border border-border/40 flex flex-col card-lift h-full">
+                <h4 className="font-serif text-xl text-foreground mb-3">{item.title}</h4>
+                <p className="text-foreground/70 text-sm leading-relaxed">{item.body}</p>
+              </div>
+            </FadeInStaggerItem>
+          );
+        }
+
+        const theme = themes[i % themes.length];
+        const num = String(i + 1).padStart(2, '0');
+        return (
+          <FadeInStaggerItem key={i}>
+            <div
+              className={`${theme.bg} ${
+                theme.border || 'border-transparent'
+              } border p-8 rounded-2xl shadow-sm flex flex-col card-lift h-full transition-all duration-300`}
+            >
+              <div className="flex items-center justify-between mb-4">
+                <span className={`font-serif text-sm font-medium ${theme.badge} tracking-wider`}>
+                  {num}
+                </span>
+              </div>
+              <h4 className={`font-serif text-xl sm:text-2xl ${theme.title} mb-3 font-medium`}>
+                {item.title}
+              </h4>
+              <p className={`${theme.body} text-sm sm:text-[15px] leading-relaxed flex-1`}>
+                {item.body}
+              </p>
+            </div>
+          </FadeInStaggerItem>
+        );
+      })}
     </FadeInStagger>
   );
 }
@@ -231,8 +419,8 @@ export interface DefinitionRow {
 export function DefinitionCard({ title, rows }: { title?: string; rows: DefinitionRow[] }) {
   return (
     <FadeIn>
-      <div className="bg-white rounded-[2.5rem] shadow-sm border border-border/50 p-8 md:p-16">
-        {title && <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-12 text-center">{title}</h2>}
+      <div className="bg-white rounded-2xl sm:rounded-3xl md:rounded-[2.5rem] shadow-sm border border-border/50 p-6 sm:p-8 md:p-16">
+        {title && <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-foreground mb-8 md:mb-12 text-center">{title}</h2>}
         <div className="space-y-6">
           {rows.map((row, i) => (
             <div
@@ -242,7 +430,7 @@ export function DefinitionCard({ title, rows }: { title?: string; rows: Definiti
               <div className={`w-48 font-sans font-semibold text-xs tracking-wider uppercase shrink-0 ${row.highlight ? 'text-primary' : 'text-secondary'}`}>
                 {row.label}
               </div>
-              <div className={`flex-1 font-serif text-xl ${row.highlight ? 'text-primary italic' : 'text-foreground/90'}`}>
+              <div className={`flex-1 font-serif text-lg sm:text-xl ${row.highlight ? 'text-primary italic' : 'text-foreground/90'}`}>
                 {row.value}
               </div>
             </div>
@@ -258,13 +446,13 @@ export function Checklist({ items }: { items: string[] }) {
     <FadeInStagger className="space-y-4 max-w-2xl mx-auto">
       {items.map((item, i) => (
         <FadeInStaggerItem key={i}>
-          <div className="flex items-start gap-4 bg-white/70 p-5 rounded-2xl border border-border/30">
+          <div className="flex items-start gap-4 bg-white/70 p-4 sm:p-5 rounded-2xl border border-border/30">
             <div className="w-6 h-6 rounded-full bg-secondary/15 text-secondary flex items-center justify-center shrink-0 mt-0.5">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 6 9 17l-5-5" />
               </svg>
             </div>
-            <p className="text-foreground/85 font-serif text-lg leading-snug pt-0.5">{item}</p>
+            <p className="text-foreground/85 font-serif text-base sm:text-lg leading-snug pt-0.5">{item}</p>
           </div>
         </FadeInStaggerItem>
       ))}
@@ -272,16 +460,33 @@ export function Checklist({ items }: { items: string[] }) {
   );
 }
 
-export function TestimonialCard({ quote, author, delay = 0 }: { quote: string; author: string; delay?: number }) {
+export function TestimonialCard({
+  quote,
+  author,
+  relation,
+  location,
+  delay = 0,
+}: {
+  quote: string;
+  author: string;
+  relation?: string;
+  location?: string;
+  delay?: number;
+}) {
   return (
     <FadeIn delay={delay} className="h-full">
-      <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-border/50 relative h-full flex flex-col">
-        <div className="absolute top-8 left-8 text-secondary/20 text-6xl font-serif leading-none select-none">"</div>
-        <p className="font-serif text-lg md:text-xl text-foreground/90 leading-relaxed relative z-10 mb-8 pt-4 flex-1">
+      <div className="bg-white p-6 sm:p-8 md:p-10 rounded-2xl md:rounded-[2rem] shadow-sm border border-border/50 relative h-full flex flex-col justify-between">
+        <div className="absolute top-6 left-6 sm:top-8 sm:left-8 text-secondary/20 text-5xl sm:text-6xl font-serif leading-none select-none">"</div>
+        <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/90 leading-relaxed relative z-10 mb-6 sm:mb-8 pt-3 sm:pt-4 flex-1">
           {quote}
         </p>
-        <div className="border-t border-border/50 pt-4">
-          <span className="font-sans font-medium text-foreground block">— {author}</span>
+        <div className="border-t border-border/50 pt-4 mt-auto min-h-[4.25rem] sm:min-h-[4.5rem] flex flex-col justify-start">
+          <span className="font-sans font-medium text-sm sm:text-base text-foreground block leading-snug">— {author}</span>
+          {(relation || location) && (
+            <span className="font-sans text-xs sm:text-sm text-foreground/60 block mt-0.5 leading-snug">
+              {[relation, location].filter(Boolean).join(" · ")}
+            </span>
+          )}
         </div>
       </div>
     </FadeIn>
@@ -326,6 +531,7 @@ export interface TwoPathItem {
   label: string;
   description?: string;
   cta: string;
+  onClick?: () => void;
 }
 
 export function TwoPathCTA({
@@ -357,6 +563,7 @@ export function TwoPathCTA({
             <Button
               variant={onDark ? 'white' : 'default'}
               size="sm"
+              onClick={path.onClick}
               className={onDark ? 'text-primary font-semibold hover:bg-white/90 mt-1 w-full' : 'mt-1 w-full'}
             >
               {path.cta}
@@ -373,12 +580,14 @@ export function ClosingCTABand({
   subtitle,
   cta = "Book a free demo class",
   ctaSupport,
+  onCtaClick,
   children,
 }: {
   title: string;
   subtitle?: string;
   cta?: string;
   ctaSupport?: string;
+  onCtaClick?: () => void;
   children?: React.ReactNode;
 }) {
   return (
@@ -405,7 +614,7 @@ export function ClosingCTABand({
             children
           ) : (
             <>
-              <Button variant="white" size="lg" className="text-primary font-semibold hover:bg-white/90">
+              <Button variant="white" size="lg" onClick={onCtaClick} className="text-primary font-semibold hover:bg-white/90">
                 {cta}
               </Button>
               {ctaSupport && <p className="text-white/70 text-sm mt-4">{ctaSupport}</p>}

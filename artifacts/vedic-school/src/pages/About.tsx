@@ -2,10 +2,12 @@ import React from 'react';
 import { Link } from 'wouter';
 import { FadeIn, SectionHeader, ClosingCTABand } from '@/components/ui-patterns';
 import { Button, buttonVariants } from '@/components/Button';
+import { useDemoModal } from '@/context/DemoModalContext';
 import meenakshiPhoto from '@assets/WhatsApp_Image_2026-08-06_at_12.17.56-removebg-preview_1786000177260.png';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 
 export default function About() {
+  const { openDemoModal, openAssessmentModal } = useDemoModal();
   return (
     <div className="flex flex-col min-h-screen bg-background">
 
@@ -24,7 +26,7 @@ export default function About() {
             <p className="text-lg md:text-xl text-foreground/80 leading-relaxed mb-10 max-w-2xl mx-auto">
               The Vedic School exists to help children become calmer, more confident and more capable with Maths — through a method that starts with understanding where they are and builds from there.
             </p>
-            <Button size="lg">Book a free demo class</Button>
+            <Button size="lg" onClick={openDemoModal}>Book a free demo class</Button>
           </FadeIn>
         </div>
       </section>
@@ -71,20 +73,20 @@ export default function About() {
 
               <img
                 src={meenakshiPhoto}
-                alt="Meenakshi"
+                alt="Meenakshi Koul"
                 className="relative z-10 w-full max-w-md h-auto drop-shadow-[0_20px_40px_rgba(59,66,76,0.15)] scale-110 object-contain origin-bottom"
               />
 
-              <div className="absolute top-10 -right-4 lg:-right-12 z-20 bg-white shadow-xl rounded-full px-5 py-3 flex items-center gap-3 border border-border/50 animate-[bounce_5s_ease-in-out_infinite]">
+              <div className="absolute top-10 right-0 sm:-right-4 lg:-right-12 z-20 bg-white shadow-xl rounded-full px-4 sm:px-5 py-2.5 sm:py-3 flex items-center gap-2.5 sm:gap-3 border border-border/50 animate-[bounce_5s_ease-in-out_infinite]">
                 <div className="w-2 h-2 rounded-full bg-primary" />
-                <span className="font-sans font-medium text-sm text-foreground">15+ Years Teaching</span>
+                <span className="font-sans font-medium text-xs sm:text-sm text-foreground">15+ Years Teaching</span>
               </div>
             </FadeIn>
 
             {/* Right: Bio */}
             <FadeIn delay={0.2} className="order-1 lg:order-2">
-              <h2 className="sage-eyebrow mb-6">MEET MEENAKSHI</h2>
-              <p className="text-3xl md:text-4xl font-serif text-foreground mb-6">Hello, I'm Meenakshi.</p>
+              <h2 className="sage-eyebrow mb-6">MEET MEENAKSHI KOUL</h2>
+              <p className="text-3xl md:text-4xl font-serif text-foreground mb-6">Hello, I'm Meenakshi Koul.</p>
               <div className="space-y-5 text-lg text-foreground/80 leading-relaxed">
                 <p>
                   I've been teaching Maths for 15+ years first in India, and more recently, to students across different time zones.
@@ -119,26 +121,26 @@ export default function About() {
 
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             <FadeIn delay={0.1}>
-              <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-border/50 h-full flex flex-col">
-                <h3 className="font-serif text-2xl text-foreground mb-2">Vedic Maths</h3>
-                <p className="text-foreground/70 leading-relaxed mb-8 flex-1">
+              <div className="bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))] p-8 sm:p-10 rounded-[2rem] shadow-sm border border-[hsl(var(--block-sage-light-border))] h-full flex flex-col transition-all duration-300">
+                <h3 className="font-serif text-2xl text-foreground mb-2 font-medium">Vedic Maths</h3>
+                <p className="text-foreground/80 leading-relaxed mb-8 flex-1">
                   Build fluency. Build confidence. Join a free Sunday group demo class and experience the method in a real class.
                 </p>
-                <Link href="/vedic-maths" className={buttonVariants({ className: 'w-full' })}>
+                <Button className="w-full" onClick={openDemoModal}>
                   Join Sunday's free demo
-                </Link>
+                </Button>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.2}>
-              <div className="bg-white p-10 rounded-[2rem] shadow-sm border border-border/50 h-full flex flex-col">
-                <h3 className="font-serif text-2xl text-foreground mb-2">Curriculum-Aligned Classes</h3>
-                <p className="text-foreground/70 leading-relaxed mb-8 flex-1">
+              <div className="bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))] p-8 sm:p-10 rounded-[2rem] shadow-sm border border-[hsl(var(--block-terracotta-light-border))] h-full flex flex-col transition-all duration-300">
+                <h3 className="font-serif text-2xl text-foreground mb-2 font-medium">Curriculum-Aligned Classes</h3>
+                <p className="text-foreground/80 leading-relaxed mb-8 flex-1">
                   Bring that confidence into school Maths. Book a Personal Assessment Session to understand where your child is and what they need.
                 </p>
-                <Link href="/curriculum-aligned" className={buttonVariants({ className: 'w-full' })}>
+                <Button className="w-full" onClick={openAssessmentModal}>
                   Book a personal assessment
-                </Link>
+                </Button>
               </div>
             </FadeIn>
           </div>
@@ -148,6 +150,7 @@ export default function About() {
       {/* CLOSING CTA BAND */}
       <ClosingCTABand
         title="The next hour could be the one that changes how your child feels about maths"
+        onCtaClick={openDemoModal}
       />
 
     </div>
