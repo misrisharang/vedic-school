@@ -4,6 +4,19 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DHQSJ2N5WB"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      if (window.location.pathname.startsWith('/admin')) {
+        window['ga-disable-G-DHQSJ2N5WB'] = true;
+      } else {
+        gtag('config', 'G-DHQSJ2N5WB');
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
