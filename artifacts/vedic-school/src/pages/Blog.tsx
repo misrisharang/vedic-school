@@ -27,7 +27,6 @@ const POSTS_PER_PAGE = 6;
 
 export default function Blog() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [featuredPost, setFeaturedPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -49,9 +48,6 @@ export default function Blog() {
           setError(fetchErr);
         } else {
           setPosts(published);
-          const featured =
-            published.find((p) => p.is_featured) || (published.length > 0 ? published[0] : null);
-          setFeaturedPost(featured);
         }
       } catch (err: any) {
         console.error('[Blog Load Error]', err);
@@ -64,14 +60,9 @@ export default function Blog() {
     loadBlogData();
   }, []);
 
-  // Filter posts (excluding featured from main grid when viewing All without search)
+  // Filter posts across all published posts
   const filteredPosts = useMemo(() => {
     return posts.filter((p) => {
-      // If a featured post is highlighted at top, exclude it from grid in "All" view without search
-      if (!searchQuery.trim() && selectedCategory === 'all' && featuredPost && p.id === featuredPost.id) {
-        return false;
-      }
-
       const matchesCategory = selectedCategory === 'all' || p.category === selectedCategory;
 
       const q = searchQuery.trim().toLowerCase();
@@ -83,7 +74,7 @@ export default function Blog() {
 
       return matchesCategory && matchesSearch;
     });
-  }, [posts, selectedCategory, searchQuery, featuredPost]);
+  }, [posts, selectedCategory, searchQuery]);
 
   // Sort posts by published_at (or created_at)
   const sortedAndFilteredPosts = useMemo(() => {
@@ -95,7 +86,7 @@ export default function Blog() {
   }, [filteredPosts, sortOrder]);
 
   // Pagination calculation
-  const totalPages = Math.ceil(sortedAndFilteredPosts.length / POSTS_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(sortedAndFilteredPosts.length / POSTS_PER_PAGE));
   const paginatedPosts = useMemo(() => {
     const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
     return sortedAndFilteredPosts.slice(startIndex, startIndex + POSTS_PER_PAGE);
@@ -271,92 +262,9 @@ export default function Blog() {
             </div>
           )}
 
-          {/* Featured Article Card (Shown when on "All" tab and no active search query) */}
-          {!loading && !searchQuery.trim() && selectedCategory === 'all' && featuredPost && (
-            <div className="relative rounded-3xl overflow-hidden bg-[hsl(var(--block-terracotta-light))] border border-[#E6C5B9] shadow-sm hover:shadow-md transition-shadow">
-              <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch">
-                {/* Featured Cover Image (Left half) */}
-                <div className="lg:col-span-6 relative aspect-16/10 lg:aspect-auto min-h-[260px] lg:min-h-[340px] bg-[#EED1C7]">
-                  {featuredPost.featured_image ? (
-                    <img
-                      src={getBlogImageUrl(featuredPost.featured_image) || featuredPost.featured_image}
-                      alt={featuredPost.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-8 text-center text-[hsl(var(--primary))]/70">
-                      <BookOpen className="w-12 h-12 mb-2 stroke-1" />
-                      <span className="font-serif italic text-sm">The Vedic School Insights</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Featured Content (Right half) */}
-                <div className="lg:col-span-6 p-6 sm:p-10 flex flex-col justify-between space-y-6">
-                  <div className="space-y-3">
-                    <div className="inline-flex items-center gap-2">
-                      <span className="text-[11px] font-bold tracking-wider uppercase text-[hsl(var(--primary))]">
-                        FEATURED
-                      </span>
-                      <span>•</span>
-                      <span className="text-[11px] font-semibold text-stone-700">
-                        {BLOG_CATEGORY_META[featuredPost.category]?.label || 'Vedic Maths'}
-                      </span>
-                    </div>
-
-                    <Link href={`/blog/${featuredPost.slug}`}>
-                      <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 hover:text-[hsl(var(--primary))] transition-colors tracking-tight leading-tight">
-                        {featuredPost.title}
-                      </h2>
-                    </Link>
-
-                    {featuredPost.excerpt && (
-                      <p className="text-sm sm:text-base text-stone-700 font-sans leading-relaxed line-clamp-3">
-                        {featuredPost.excerpt}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Byline & Circular Arrow Action */}
-                  <div className="pt-4 border-t border-[#E6C5B9] flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3 text-xs">
-                      <div className="w-9 h-9 rounded-full bg-white/80 border border-[#E6C5B9] flex items-center justify-center text-[hsl(var(--primary))] font-semibold">
-                        <User className="w-4 h-4" />
-                      </div>
-                      <div>
-                        <div className="font-semibold text-stone-900">{featuredPost.author || 'Meenakshi Koul'}</div>
-                        <div className="text-[11px] text-stone-600">
-                          Founder • The Vedic School
-                          {featuredPost.published_at && (
-                            <>
-                              <span className="mx-1.5">•</span>
-                              {new Date(featuredPost.published_at).toLocaleDateString('en-GB', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric',
-                              })}
-                            </>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-
-                    <Link
-                      href={`/blog/${featuredPost.slug}`}
-                      className="w-10 h-10 rounded-full bg-[hsl(var(--primary))] text-white flex items-center justify-center hover:bg-[hsl(var(--primary))]/90 hover:scale-105 transition-all shadow-xs shrink-0"
-                      aria-label={`Read article: ${featuredPost.title}`}
-                    >
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Section Header with Sort by Control matching Reference */}
-          {!loading && (
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-3">
+          {/* Section Header with Post Count and Sort by Control */}
+          {!loading && posts.length > 0 && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-200 pb-4">
               <div className="flex items-baseline gap-2.5">
                 <h2 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 tracking-tight">
                   {selectedCategory === 'all'
@@ -364,7 +272,7 @@ export default function Blog() {
                     : `${BLOG_CATEGORY_META[selectedCategory]?.label} articles`}
                 </h2>
 
-                <span className="text-xs text-stone-500 font-medium">
+                <span className="text-xs sm:text-sm text-stone-500 font-medium">
                   ({sortedAndFilteredPosts.length})
                 </span>
               </div>
@@ -442,7 +350,7 @@ export default function Blog() {
             </div>
           )}
 
-          {/* Articles Grid */}
+          {/* Articles Grid (3-column on desktop, 2-column on tablet, 1-column on mobile) */}
           {!loading && paginatedPosts.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
               {paginatedPosts.map((post) => {
@@ -460,7 +368,7 @@ export default function Blog() {
                 return (
                   <article
                     key={post.id}
-                    className="group bg-white rounded-2xl border border-stone-200 overflow-hidden shadow-xs hover:shadow-md hover:border-stone-300 transition-all flex flex-col justify-between h-full"
+                    className="group bg-white rounded-2xl border border-stone-200/90 overflow-hidden shadow-xs hover:shadow-md hover:border-stone-300 transition-all flex flex-col justify-between h-full"
                   >
                     <div>
                       {/* Cover Photo */}
@@ -469,7 +377,7 @@ export default function Blog() {
                           <img
                             src={imageUrl}
                             alt={post.title}
-                            className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-300"
+                            className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-300"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-[hsl(var(--block-sage-light))]/50 text-[#2E4A2C]/60">
@@ -508,18 +416,19 @@ export default function Blog() {
                     {/* Card Footer: Author & Read More */}
                     <div className="px-5 sm:px-6 pb-5 pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-500">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 text-[10px] font-semibold">
+                        <div className="w-6 h-6 rounded-full bg-[hsl(var(--block-terracotta-light))] border border-[#E6C5B9]/60 flex items-center justify-center text-[hsl(var(--primary))] text-[10px] font-semibold shrink-0">
                           <User className="w-3 h-3" />
                         </div>
-                        <div className="text-[11px]">
+                        <div className="text-[11px] leading-tight">
                           <span className="font-semibold text-stone-800 block">{post.author || 'Meenakshi Koul'}</span>
-                          <span>{displayDate}</span>
+                          <span className="text-stone-500">{displayDate}</span>
                         </div>
                       </div>
 
                       <Link
                         href={`/blog/${post.slug}`}
                         className="inline-flex items-center text-xs font-semibold text-[hsl(var(--primary))] group-hover:translate-x-0.5 transition-transform"
+                        aria-label={`Read article: ${post.title}`}
                       >
                         <span>Read</span>
                         <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -531,11 +440,11 @@ export default function Blog() {
             </div>
           )}
 
-          {/* Pagination Controls matching Reference [ ← ] 1 2 3 4 5 [ → ] */}
-          {!loading && totalPages > 1 && (
+          {/* Pagination Controls */}
+          {!loading && sortedAndFilteredPosts.length > 0 && (
             <nav
               aria-label="Blog pagination"
-              className="pt-10 flex items-center justify-center gap-1.5 sm:gap-2 select-none"
+              className="pt-6 sm:pt-8 flex items-center justify-center gap-1.5 sm:gap-2 select-none"
             >
               {/* Previous Arrow */}
               <button
