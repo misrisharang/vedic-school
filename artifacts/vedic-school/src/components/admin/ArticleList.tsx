@@ -98,6 +98,14 @@ export function ArticleList({ onNewArticle, onEditArticle }: ArticleListProps) {
   const handleToggleFeatured = async (post: BlogPost) => {
     const newFeatured = !post.is_featured;
     setActionInProgress(post.id);
+    // Optimistic UI update: if setting to true, demote any other featured posts immediately
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id === post.id) return { ...p, is_featured: newFeatured };
+        if (newFeatured && p.is_featured) return { ...p, is_featured: false };
+        return p;
+      })
+    );
     try {
       const { error: updateError } = await supabase
         .from('blog_posts')
@@ -110,6 +118,7 @@ export function ArticleList({ onNewArticle, onEditArticle }: ArticleListProps) {
       await loadPosts();
     } catch (err: any) {
       alert(`Could not update featured status: ${err?.message}`);
+      await loadPosts();
     } finally {
       setActionInProgress(null);
     }

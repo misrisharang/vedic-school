@@ -108,7 +108,7 @@ export default function VedicMaths() {
     <div className="flex flex-col min-h-screen">
       <Seo
         title="Vedic Maths Classes | The Vedic School"
-        description="Vedic Maths classes that give children flexible ways to work with numbers — making calculation faster, clearer and more confident."
+        description="Vedic Maths classes that give children flexible ways to work with numbers, making calculation faster, clearer and more confident."
         path="/vedic-maths"
         schema={getVedicMathsSchema()}
       />

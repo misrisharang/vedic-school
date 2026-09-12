@@ -2,9 +2,9 @@
 // THE VEDIC SCHOOL — ARTICLE EDITOR VIEW (CREATE & EDIT)
 // ==============================================================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
-import type { BlogPost, BlogCategory, BlogStatus } from '@/types/blog';
+import type { BlogPost, BlogCategory, BlogStatus, BlogFAQItem } from '@/types/blog';
 import { BLOG_CATEGORIES, BLOG_CATEGORY_META } from '@/types/blog';
 import { slugify, validateSlug } from '@/lib/blog-slug';
 import { calculateReadingTime } from '@/lib/blog';
@@ -28,6 +28,10 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle2,
+  ChevronUp,
+  ChevronDown,
+  Plus,
+  HelpCircle,
 } from 'lucide-react';
 
 interface ArticleEditorProps {
@@ -36,15 +40,42 @@ interface ArticleEditorProps {
   onCancel: () => void;
 }
 
+function extractFaqsFromContent(content: string): { cleanContent: string; faqs: BlogFAQItem[] } {
+  if (!content) return { cleanContent: '', faqs: [] };
+  const faqSectionRegex = /(?:^|\n)(##\s*(?:\*\*)?[^\n]*FAQs?(?:\*\*)?[\s\S]*?)(?=(?:^|\n)(?:##\s*(?:\*\*)?About the author|\*\*About the author|---\s*\n\s*\*\*About the author|$))/i;
+  const match = content.match(faqSectionRegex);
+  if (!match) return { cleanContent: content, faqs: [] };
+
+  const faqBlock = match[1];
+  const cleanContent = content.replace(faqBlock, '\n\n').replace(/\n{3,}/g, '\n\n');
+  const items: BlogFAQItem[] = [];
+  const qRegex = /###\s*(?:\*\*)?([^\n*]+?)(?:\*\*)?\s*\n+([\s\S]*?)(?=(?:###|$))/g;
+  let qMatch: RegExpExecArray | null;
+  while ((qMatch = qRegex.exec(faqBlock)) !== null) {
+    const question = qMatch[1].trim();
+    const answer = qMatch[2].trim();
+    if (question && answer) items.push({ question, answer });
+  }
+  return { cleanContent, faqs: items };
+}
+
 export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorProps) {
   const isEditing = Boolean(post?.id);
+
+  const parsed = useMemo(() => {
+    if (post?.faqs && post.faqs.length > 0) {
+      const { cleanContent } = extractFaqsFromContent(post?.content || '');
+      return { cleanContent, faqs: post.faqs };
+    }
+    return extractFaqsFromContent(post?.content || '');
+  }, [post]);
 
   // Form state
   const [title, setTitle] = useState(post?.title || '');
   const [slug, setSlug] = useState(post?.slug || '');
   const [isSlugLocked, setIsSlugLocked] = useState(isEditing); // Auto-generate slug while unlocked
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
-  const [content, setContent] = useState(post?.content || '');
+  const [content, setContent] = useState(parsed.cleanContent || post?.content || '');
   const [featuredImage, setFeaturedImage] = useState<string | null>(post?.featured_image || null);
   const [imageAlt, setImageAlt] = useState('');
   const [category, setCategory] = useState<BlogCategory>(post?.category || 'vedic-maths');
@@ -56,6 +87,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
   const [isFeatured, setIsFeatured] = useState<boolean>(post?.is_featured || false);
   const [seoTitle, setSeoTitle] = useState(post?.seo_title || '');
   const [seoDescription, setSeoDescription] = useState(post?.seo_description || '');
+  const [faqs, setFaqs] = useState<BlogFAQItem[]>(parsed.faqs);
 
   // UI state
   const [saving, setSaving] = useState(false);
@@ -64,6 +96,33 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
+
+  // FAQ management helpers
+  const handleAddFaq = () => {
+    setFaqs((prev) => [...prev, { question: '', answer: '' }]);
+  };
+
+  const handleUpdateFaq = (index: number, field: 'question' | 'answer', val: string) => {
+    setFaqs((prev) =>
+      prev.map((faq, i) => (i === index ? { ...faq, [field]: val } : faq))
+    );
+  };
+
+  const handleMoveFaq = (index: number, direction: 'up' | 'down') => {
+    setFaqs((prev) => {
+      const newFaqs = [...prev];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= newFaqs.length) return prev;
+      const temp = newFaqs[index];
+      newFaqs[index] = newFaqs[targetIndex];
+      newFaqs[targetIndex] = temp;
+      return newFaqs;
+    });
+  };
+
+  const handleDeleteFaq = (index: number) => {
+    setFaqs((prev) => prev.filter((_, i) => i !== index));
+  };
 
   // Auto-generate slug when title changes (unless admin manually unlocked and typed a custom slug)
   useEffect(() => {
@@ -104,6 +163,14 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
     setError(null);
     setSuccessBanner(null);
 
+    // Sanitize FAQs: trim whitespace and omit rows with empty question or answer
+    const sanitizedFaqs: BlogFAQItem[] = (faqs || [])
+      .map((item) => ({
+        question: (item.question || '').trim(),
+        answer: (item.answer || '').trim(),
+      }))
+      .filter((item) => item.question.length > 0 && item.answer.length > 0);
+
     const payload = {
       title: title.trim(),
       slug: slug.trim().toLowerCase(),
@@ -117,6 +184,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
       is_featured: isFeatured,
       seo_title: seoTitle.trim() || null,
       seo_description: seoDescription.trim() || null,
+      faqs: sanitizedFaqs,
       published_at:
         finalStatus === 'published'
           ? post?.published_at || new Date().toISOString()
@@ -401,6 +469,121 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
               minHeight="480px"
             />
           </div>
+
+          {/* Article FAQs Section */}
+          <div className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
+              <div>
+                <h3 className="text-sm font-bold text-stone-900 flex items-center gap-1.5">
+                  <HelpCircle className="w-4 h-4 text-[hsl(var(--primary))]" />
+                  Article FAQs
+                </h3>
+                <p className="text-xs text-stone-500 mt-0.5">
+                  Frequently Asked Questions rendered as an interactive accordion on the article page and included in search engine FAQPage schema.
+                </p>
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleAddFaq}
+                className="text-xs border-stone-300 hover:bg-stone-50 text-stone-700 shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5 mr-1 text-[hsl(var(--primary))]" />
+                Add FAQ
+              </Button>
+            </div>
+
+            {faqs.length === 0 ? (
+              <div className="text-center py-8 px-4 rounded-xl border border-dashed border-stone-200 bg-stone-50/50">
+                <HelpCircle className="w-8 h-8 text-stone-300 mx-auto mb-2" />
+                <p className="text-xs font-medium text-stone-600">No FAQs added to this article yet</p>
+                <p className="text-[11px] text-stone-400 mt-0.5 mb-3">
+                  Add common reader questions and answers to enrich your article and improve SEO rich results.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAddFaq}
+                  className="text-xs bg-white border-stone-300 hover:bg-stone-50"
+                >
+                  <Plus className="w-3.5 h-3.5 mr-1" />
+                  Add First FAQ
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <div
+                    key={index}
+                    className="p-4 rounded-xl border border-stone-200 bg-stone-50/40 space-y-3 relative group hover:border-stone-300 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-stone-500 uppercase tracking-wider">
+                        FAQ #{index + 1}
+                      </span>
+
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleMoveFaq(index, 'up')}
+                          disabled={index === 0}
+                          className="p-1 rounded text-stone-400 hover:text-stone-700 hover:bg-stone-200/60 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer disabled:cursor-not-allowed"
+                          title="Move up"
+                          aria-label={`Move FAQ #${index + 1} up`}
+                        >
+                          <ChevronUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveFaq(index, 'down')}
+                          disabled={index === faqs.length - 1}
+                          className="p-1 rounded text-stone-400 hover:text-stone-700 hover:bg-stone-200/60 disabled:opacity-30 disabled:hover:bg-transparent cursor-pointer disabled:cursor-not-allowed"
+                          title="Move down"
+                          aria-label={`Move FAQ #${index + 1} down`}
+                        >
+                          <ChevronDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteFaq(index)}
+                          className="p-1 rounded text-rose-500 hover:text-rose-700 hover:bg-rose-50 ml-1 cursor-pointer"
+                          title="Delete FAQ"
+                          aria-label={`Delete FAQ #${index + 1}`}
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <Label className="text-xs font-semibold text-stone-700">Question</Label>
+                      <Input
+                        type="text"
+                        value={faq.question}
+                        onChange={(e) => handleUpdateFaq(index, 'question', e.target.value)}
+                        placeholder="e.g. What is the right age to start Vedic Maths?"
+                        className="text-xs bg-white border-stone-200 h-9"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <Label className="text-xs font-semibold text-stone-700">Answer</Label>
+                      <Textarea
+                        rows={3}
+                        value={faq.answer}
+                        onChange={(e) => handleUpdateFaq(index, 'answer', e.target.value)}
+                        placeholder="Provide a clear, practical answer..."
+                        className="text-xs bg-white border-stone-200 resize-y"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Sidebar: Publishing Settings & Metadata */}
@@ -457,8 +640,8 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
                     <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
                     Featured Hero Article
                   </span>
-                  <p className="text-stone-500 text-[11px] mt-0.5">
-                    Highlights this article at the top of the blog. Only 1 published article can be featured at a time.
+                  <p className="text-stone-500 text-[11px] mt-0.5 leading-relaxed">
+                    Setting this article as Featured will make it the hero article at the top of the blog and demote the current featured article.
                   </p>
                 </div>
               </label>

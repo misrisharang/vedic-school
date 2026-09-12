@@ -40,12 +40,12 @@ export const VEDIC_MATHS_FAQS: FAQItem[] = [
   {
     question: 'Will Vedic Maths replace school Maths?',
     answer:
-      'No. Vedic Maths builds calculation fluency and confidence. It complements, rather than replaces, the Maths children learn at school. Where your child needs direct help with their school curriculum, I also offer separate curriculum-aligned classes.',
+      'No. Vedic Maths builds calculation fluency and confidence. It complements, rather than replaces, the Maths children learn at school. Where your child needs direct help with their school curriculum, I also offer separate curriculum-aligned Maths.',
   },
 ];
 
 /**
- * 5 Pillar FAQs for Curriculum-Aligned Classes (/curriculum-aligned)
+ * 5 Pillar FAQs for Curriculum-Aligned Maths (/curriculum-aligned)
  */
 export const CURRICULUM_ALIGNED_FAQS: FAQItem[] = [
   {

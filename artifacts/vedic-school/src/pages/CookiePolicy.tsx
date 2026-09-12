@@ -9,12 +9,12 @@ export default function CookiePolicy() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Seo
-        title="Cookies Policy | The Vedic School"
+        title="Cookie Policy | The Vedic School"
         description="Learn about the essential cookies and analytics used on The Vedic School website."
         path="/cookie-policy"
         schema={getLegalPageSchema(
           '/cookie-policy',
-          'Cookies Policy',
+          'Cookie Policy',
           'Learn about the essential cookies and analytics used on The Vedic School website.'
         )}
       />

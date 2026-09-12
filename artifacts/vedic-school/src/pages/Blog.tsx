@@ -130,7 +130,7 @@ export default function Blog() {
   return (
     <div className="bg-[hsl(var(--background))] min-h-screen">
       <Seo
-        title="Insights & Ideas — The Vedic School Blog"
+        title="Insights & Ideas | The Vedic School Blog"
         description="Practical ideas and insights for a calmer, more confident Maths journey."
         path="/blog"
         schema={getBlogHubSchema()}
@@ -172,7 +172,7 @@ export default function Blog() {
           </svg>
 
           {/* Floating decorative typography in upper-right area */}
-          <div className="absolute top-6 right-6 sm:right-16 hidden md:block select-none text-right rotate-[5deg]">
+          <div className="absolute top-6 right-6 sm:right-16 hidden xl:block select-none text-right rotate-[5deg]">
             <p className="font-serif italic text-lg lg:text-xl text-[hsl(var(--primary))]/75 leading-tight font-medium tracking-wide">
               Calmer<br />
               Brighter<br />
@@ -411,7 +411,7 @@ export default function Blog() {
                   href="/curriculum-aligned"
                   className="text-xs font-semibold text-[hsl(var(--primary))] hover:underline"
                 >
-                  Curriculum Classes →
+                  Curriculum-Aligned Maths →
                 </Link>
               </div>
             </div>

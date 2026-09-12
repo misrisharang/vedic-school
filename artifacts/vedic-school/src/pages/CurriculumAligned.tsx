@@ -150,7 +150,7 @@ export default function CurriculumAligned() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Seo
-        title="Curriculum-Aligned Classes | The Vedic School"
+        title="Curriculum-Aligned Maths | The Vedic School"
         description="Focused Maths teaching aligned with school curriculum (CBSE, ICSE, IB), addressing conceptual gaps and building lasting confidence."
         path="/curriculum-aligned"
         schema={getCurriculumAlignedSchema()}
@@ -165,7 +165,7 @@ export default function CurriculumAligned() {
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
             <FadeIn className="max-w-2xl">
-              <span className="sage-eyebrow mb-6">CURRICULUM-ALIGNED CLASSES</span>
+              <span className="sage-eyebrow mb-6">CURRICULUM-ALIGNED MATHS</span>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-foreground leading-tight mb-6">
                 Understand the Maths. Use it with <span className="text-primary italic">confidence</span>.
               </h1>

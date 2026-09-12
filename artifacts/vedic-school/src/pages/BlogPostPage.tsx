@@ -7,12 +7,21 @@ import { useRoute, Link } from 'wouter';
 import { marked } from 'marked';
 import NotFound from '@/pages/not-found';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import type { BlogPost, BlogCategory } from '@/types/blog';
+import type { BlogPost, BlogCategory, BlogFAQItem } from '@/types/blog';
 import { BLOG_CATEGORY_META } from '@/types/blog';
 import { getBlogImageUrl, fetchPublishedPostBySlug, fetchPublishedBlogPosts } from '@/lib/blog';
 import { Seo } from '@/seo/Seo';
+import { abs } from '@/seo/site';
 import { getBlogPostSchema, getVedicMathsVsAbacusArticleSchema } from '@/seo/schema';
+import { PUBLISHED_ARTICLES } from '@/data/published-articles';
 import { useDemoModal } from '@/context/DemoModalContext';
+import { SummariseWithAI } from '@/components/blog/SummariseWithAI';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import {
   ArrowLeft,
   Clock,
@@ -25,6 +34,51 @@ import {
   Loader2,
   Check,
 } from 'lucide-react';
+
+/**
+ * Extracts FAQ questions and answers from article markdown and removes the duplicated
+ * raw markdown FAQ block so it never appears as literal markdown headings in the article body.
+ */
+function extractFaqsAndCleanContent(
+  rawContent: string,
+  currentFaqs?: BlogFAQItem[]
+): {
+  cleanContent: string;
+  effectiveFaqs: BlogFAQItem[];
+} {
+  if (!rawContent) {
+    return { cleanContent: '', effectiveFaqs: currentFaqs || [] };
+  }
+
+  // Regex to match FAQ section: starts with ## **...FAQ... and ends before About the author, Sources, or horizontal rule
+  const faqSectionRegex = /(?:^|\n)(##\s*(?:\*\*)?[^\n]*FAQs?(?:\*\*)?[\s\S]*?)(?=(?:^|\n)(?:##\s*(?:\*\*)?About the author|\*\*About the author|---\s*\n\s*\*\*About the author|$))/i;
+
+  const match = rawContent.match(faqSectionRegex);
+  if (!match) {
+    return { cleanContent: rawContent, effectiveFaqs: currentFaqs || [] };
+  }
+
+  const faqBlock = match[1];
+  const cleanContent = rawContent.replace(faqBlock, '\n\n').replace(/\n{3,}/g, '\n\n');
+
+  if (currentFaqs && currentFaqs.length > 0) {
+    return { cleanContent, effectiveFaqs: currentFaqs };
+  }
+
+  // Parse questions and answers from the markdown FAQ block
+  const items: BlogFAQItem[] = [];
+  const qRegex = /###\s*(?:\*\*)?([^\n*]+?)(?:\*\*)?\s*\n+([\s\S]*?)(?=(?:###|$))/g;
+  let qMatch: RegExpExecArray | null;
+  while ((qMatch = qRegex.exec(faqBlock)) !== null) {
+    const question = qMatch[1].trim();
+    const answer = qMatch[2].trim();
+    if (question && answer) {
+      items.push({ question, answer });
+    }
+  }
+
+  return { cleanContent, effectiveFaqs: items };
+}
 
 export default function BlogPostPage() {
   const [, params] = useRoute('/blog/:slug');
@@ -76,15 +130,20 @@ export default function BlogPostPage() {
     loadPost();
   }, [slug]);
 
+  // Extract FAQs and de-duplicate raw Markdown FAQ block
+  const { cleanContent, effectiveFaqs } = React.useMemo(() => {
+    return extractFaqsAndCleanContent(post?.content || '', post?.faqs);
+  }, [post?.content, post?.faqs]);
+
   // Render markdown content
   const renderedContent = React.useMemo(() => {
-    if (!post?.content) return '';
+    if (!cleanContent) return '';
     try {
-      return marked.parse(post.content);
+      return marked.parse(cleanContent);
     } catch {
       return '<p>Error rendering article content.</p>';
     }
-  }, [post?.content]);
+  }, [cleanContent]);
 
   // Share handler
   const handleShare = () => {
@@ -128,17 +187,25 @@ export default function BlogPostPage() {
 
   const schema =
     post.slug === 'vedic-maths-vs-abacus'
-      ? getVedicMathsVsAbacusArticleSchema()
+      ? getVedicMathsVsAbacusArticleSchema(effectiveFaqs, coverUrl || undefined)
       : getBlogPostSchema({
           ...post,
+          faqs: effectiveFaqs,
           featured_image: coverUrl,
         });
+
+  const staticArticle = PUBLISHED_ARTICLES.find((p) => p.slug === post.slug);
+  const effectiveSeoDescription =
+    post.slug === 'is-vedic-maths-useful' && post.seo_description?.includes('Compared 8')
+      ? (staticArticle?.seo_description ||
+        "Vedic Maths isn't from the Vedas, and the '10x faster' claims are marketing. But the techniques are real algebra, not tricks, when taught right. A teacher makes the honest case, including where critics are correct.")
+      : (post.seo_description || post.excerpt || 'Practical ideas and insights from The Vedic School.');
 
   return (
     <div className="bg-[hsl(var(--background))] min-h-screen pt-28 pb-20">
       <Seo
         title={post.seo_title || `${post.title} | The Vedic School`}
-        description={post.seo_description || post.excerpt || 'Practical ideas and insights from The Vedic School.'}
+        description={effectiveSeoDescription}
         path={`/blog/${post.slug}`}
         ogType="article"
         ogImage={coverUrl || undefined}
@@ -208,6 +275,12 @@ export default function BlogPostPage() {
             </button>
           </div>
 
+          {/* AI Summarisation Toolbar */}
+          <SummariseWithAI
+            title={post.title}
+            canonicalUrl={abs(`/blog/${post.slug}`)}
+          />
+
           {/* Article Title */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-stone-900 tracking-tight leading-tight">
             {post.title}
@@ -247,6 +320,32 @@ export default function BlogPostPage() {
             className="prose prose-stone prose-lg max-w-none pt-2 font-sans leading-relaxed text-stone-800"
             dangerouslySetInnerHTML={{ __html: renderedContent }}
           />
+
+          {/* CMS-Managed FAQ Accordion */}
+          {effectiveFaqs && effectiveFaqs.length > 0 && (
+            <div className="mt-12 pt-8 border-t border-stone-200">
+              <div className="mb-6">
+                <p className="text-xs font-sans font-bold tracking-[0.15em] uppercase text-[hsl(var(--primary))] mb-2">
+                  Frequently Asked Questions
+                </p>
+                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 tracking-tight">
+                  Questions Parents Often Ask
+                </h2>
+              </div>
+              <Accordion type="single" collapsible className="w-full">
+                {effectiveFaqs.map((faq, idx) => (
+                  <AccordionItem key={idx} value={`faq-${idx}`} className="border-stone-200">
+                    <AccordionTrigger className="font-serif text-lg sm:text-xl text-stone-900 py-5 hover:no-underline text-left">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent forceMount className="text-stone-700 leading-relaxed text-base pb-5">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          )}
 
           {/* Category-Specific Vedic School Programme CTA */}
           <div className="mt-12 pt-8 border-t border-stone-200">
@@ -443,7 +542,7 @@ function ProgrammeCTA({
           href="/curriculum-aligned"
           className="px-4 py-2.5 rounded-xl bg-white/80 hover:bg-white text-stone-800 text-xs font-medium border border-[#E6C5B9] transition-colors whitespace-nowrap text-center"
         >
-          Curriculum Classes →
+          Curriculum-Aligned Maths →
         </Link>
       </div>
     </div>

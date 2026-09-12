@@ -9,6 +9,7 @@
 import { abs } from './site';
 import { VEDIC_MATHS_FAQS, CURRICULUM_ALIGNED_FAQS, FAQItem } from '@/data/faqs';
 import { VEDIC_MATHS_VS_ABACUS_FAQS } from '@/data/published-articles';
+import type { BlogFAQItem } from '@/types/blog';
 
 // ------------------------------------------------------------------------------
 // 1. REUSABLE GLOBAL ENTITIES
@@ -54,7 +55,7 @@ export function getWebSiteEntity() {
     url: abs('/'),
     name: 'The Vedic School',
     description:
-      'Teacher-led Vedic Maths and curriculum-aligned classes helping children build genuine understanding, mathematical fluency, and confidence.',
+      'Teacher-led Vedic Maths and curriculum-aligned Maths helping children build genuine understanding, mathematical fluency, and confidence.',
     publisher: {
       '@id': abs('/#organization'),
     },
@@ -139,7 +140,7 @@ export function getHomeSchema() {
       '@type': 'WebPage',
       '@id': abs('/#webpage'),
       url: abs('/'),
-      name: 'The Vedic School — Vedic Maths & Curriculum-Aligned Classes',
+      name: 'The Vedic School | Vedic Maths & Curriculum-Aligned Classes',
       description:
         'Meenakshi Koul teaches Vedic Maths and curriculum-aligned classes across CBSE, ICSE, IB and beyond, in Gurugram and online. Book a free demo class.',
       isPartOf: {
@@ -204,7 +205,7 @@ export function getVedicMathsSchema(faqs: FAQItem[] = VEDIC_MATHS_FAQS) {
 }
 
 /**
- * Curriculum-Aligned Classes (/curriculum-aligned) Schema
+ * Curriculum-Aligned Maths (/curriculum-aligned) Schema
  * Contains WebPage + Service + FAQPage (using exact 5 visible Curriculum FAQs).
  * References global #website and #organization without duplicating them.
  */
@@ -214,7 +215,7 @@ export function getCurriculumAlignedSchema(faqs: FAQItem[] = CURRICULUM_ALIGNED_
       '@type': 'WebPage',
       '@id': abs('/curriculum-aligned#webpage'),
       url: abs('/curriculum-aligned'),
-      name: 'Curriculum-Aligned Classes | The Vedic School',
+      name: 'Curriculum-Aligned Maths | The Vedic School',
       description:
         'Focused Maths teaching aligned with school curriculum (CBSE, ICSE, IB), addressing conceptual gaps and building lasting confidence.',
       isPartOf: {
@@ -227,7 +228,7 @@ export function getCurriculumAlignedSchema(faqs: FAQItem[] = CURRICULUM_ALIGNED_
     {
       '@type': 'Service',
       '@id': abs('/curriculum-aligned#service'),
-      name: 'Curriculum-Aligned Classes',
+      name: 'Curriculum-Aligned Maths',
       serviceType: 'Curriculum Mathematics Tutoring',
       provider: {
         '@id': abs('/#organization'),
@@ -357,18 +358,20 @@ export interface BlogPostSchemaInput {
   created_at?: string | null;
   updated_at?: string | null;
   author?: string | null;
+  faqs?: BlogFAQItem[];
 }
 
 /**
  * Published Blog Article (/blog/:slug) Schema
  * Contains BlogPosting linked to Author (Person) and Publisher (EducationalOrganization).
+ * When faqs are present, includes an FAQPage node linked to the article WebPage.
  */
 export function getBlogPostSchema(post: BlogPostSchemaInput) {
   const canonicalUrl = abs(`/blog/${post.slug}`);
   const description =
     post.seo_description || post.excerpt || 'Practical ideas and insights from The Vedic School.';
 
-  return createSchemaGraph([
+  const entities: any[] = [
     {
       '@type': 'WebPage',
       '@id': `${canonicalUrl}#webpage`,
@@ -405,7 +408,27 @@ export function getBlogPostSchema(post: BlogPostSchemaInput) {
         '@id': abs('/#website'),
       },
     },
-  ]);
+  ];
+
+  if (post.faqs && post.faqs.length > 0) {
+    entities.push({
+      '@type': 'FAQPage',
+      '@id': `${canonicalUrl}#faq`,
+      isPartOf: {
+        '@id': `${canonicalUrl}#webpage`,
+      },
+      mainEntity: post.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    });
+  }
+
+  return createSchemaGraph(entities);
 }
 
 /**
@@ -417,9 +440,12 @@ export function getBlogPostSchema(post: BlogPostSchemaInput) {
  * - BlogPosting
  * Zero hardcoded Netlify URLs. References canonical #organization, #website, and #meenakshi-koul.
  */
-export function getVedicMathsVsAbacusArticleSchema() {
+export function getVedicMathsVsAbacusArticleSchema(
+  faqs: BlogFAQItem[] = VEDIC_MATHS_VS_ABACUS_FAQS,
+  customImageUrl?: string
+) {
   const articleUrl = abs('/blog/vedic-maths-vs-abacus');
-  const imageUrl = abs('/og/vedic-maths-vs-abacus.jpg');
+  const imageUrl = customImageUrl || abs('/og/vedic-maths-vs-abacus.jpg');
 
   return createSchemaGraph([
     {
@@ -468,7 +494,7 @@ export function getVedicMathsVsAbacusArticleSchema() {
       isPartOf: {
         '@id': `${articleUrl}#webpage`,
       },
-      mainEntity: VEDIC_MATHS_VS_ABACUS_FAQS.map((faq) => ({
+      mainEntity: faqs.map((faq) => ({
         '@type': 'Question',
         name: faq.question,
         acceptedAnswer: {

@@ -56,7 +56,7 @@ export default function About() {
               </p>
               <p>The Vedic School was built around understanding that difference.</p>
               <p>
-                Vedic Maths is one part of that method. It gives children a different way to work with numbers, building fluency and confidence. Curriculum-aligned classes take that foundation into the Maths they encounter at school.
+                Vedic Maths is one part of that method. It gives children a different way to work with numbers, building fluency and confidence. Curriculum-aligned Maths takes that foundation into the Maths they encounter at school.
               </p>
               <p>
                 As the school grows, the aim is to make this method available to more families through live online classes, while keeping the part that matters most: personal teaching, close observation and teaching that responds to the child in front of me.
@@ -142,7 +142,7 @@ export default function About() {
 
             <FadeIn delay={0.2}>
               <div className="bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))] p-8 sm:p-10 rounded-[2rem] shadow-sm border border-[hsl(var(--block-terracotta-light-border))] h-full flex flex-col transition-all duration-300">
-                <h3 className="font-serif text-2xl text-foreground mb-2 font-medium">Curriculum-Aligned Classes</h3>
+                <h3 className="font-serif text-2xl text-foreground mb-2 font-medium">Curriculum-Aligned Maths</h3>
                 <p className="text-foreground/80 leading-relaxed mb-8 flex-1">
                   Bring that confidence into school Maths. Book a Personal Assessment Session to understand where your child is and what they need.
                 </p>
