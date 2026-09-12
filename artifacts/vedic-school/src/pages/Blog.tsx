@@ -172,7 +172,7 @@ export default function Blog() {
           </svg>
 
           {/* Floating decorative typography in upper-right area */}
-          <div className="absolute top-6 right-6 sm:right-16 hidden md:block select-none text-right rotate-[5deg]">
+          <div className="absolute top-6 right-6 sm:right-16 hidden xl:block select-none text-right rotate-[5deg]">
             <p className="font-serif italic text-lg lg:text-xl text-[hsl(var(--primary))]/75 leading-tight font-medium tracking-wide">
               Calmer<br />
               Brighter<br />

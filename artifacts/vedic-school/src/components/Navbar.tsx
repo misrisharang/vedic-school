@@ -70,7 +70,7 @@ export function Navbar() {
           <Logo />
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex items-center gap-8" aria-label="Main Navigation">
+          <nav className="hidden xl:flex items-center gap-6 2xl:gap-8" aria-label="Main Navigation">
             {navLinks.map((link) => {
               const isActive = link.href === '/' ? location === '/' || location === '' : location === link.href;
               return (
@@ -79,7 +79,7 @@ export function Navbar() {
                   href={link.href}
                   aria-current={isActive ? 'page' : undefined}
                   className={cn(
-                    'text-sm font-medium transition-colors',
+                    'text-sm font-medium transition-colors whitespace-nowrap',
                     isActive ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-primary'
                   )}
                 >
@@ -89,26 +89,28 @@ export function Navbar() {
             })}
           </nav>
 
-          <div className="hidden lg:block">
-            <Button size="sm" onClick={openDemoModal}>Book a free demo class</Button>
-          </div>
+          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+            <div className="hidden md:block">
+              <Button size="sm" onClick={openDemoModal}>Book a free demo class</Button>
+            </div>
 
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="lg:hidden p-2 text-foreground focus:outline-hidden"
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="Open Menu"
-            aria-expanded={mobileMenuOpen}
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+            {/* Mobile / Tablet Menu Toggle */}
+            <button 
+              className="xl:hidden p-2 text-foreground hover:text-primary transition-colors focus:outline-hidden cursor-pointer"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open Menu"
+              aria-expanded={mobileMenuOpen}
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Mobile Drawer */}
+      {/* Mobile & Tablet Drawer */}
       <div 
         className={cn(
-          'fixed inset-0 z-[60] bg-foreground/30 backdrop-blur-xs transition-opacity duration-300 lg:hidden',
+          'fixed inset-0 z-[60] bg-foreground/30 backdrop-blur-xs transition-opacity duration-300 xl:hidden',
           mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
         onClick={() => setMobileMenuOpen(false)}
