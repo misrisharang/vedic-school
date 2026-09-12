@@ -55,7 +55,7 @@ export function getWebSiteEntity() {
     url: abs('/'),
     name: 'The Vedic School',
     description:
-      'Teacher-led Vedic Maths and curriculum-aligned classes helping children build genuine understanding, mathematical fluency, and confidence.',
+      'Teacher-led Vedic Maths and curriculum-aligned Maths helping children build genuine understanding, mathematical fluency, and confidence.',
     publisher: {
       '@id': abs('/#organization'),
     },
@@ -140,7 +140,7 @@ export function getHomeSchema() {
       '@type': 'WebPage',
       '@id': abs('/#webpage'),
       url: abs('/'),
-      name: 'The Vedic School — Vedic Maths & Curriculum-Aligned Classes',
+      name: 'The Vedic School | Vedic Maths & Curriculum-Aligned Classes',
       description:
         'Meenakshi Koul teaches Vedic Maths and curriculum-aligned classes across CBSE, ICSE, IB and beyond, in Gurugram and online. Book a free demo class.',
       isPartOf: {
@@ -205,7 +205,7 @@ export function getVedicMathsSchema(faqs: FAQItem[] = VEDIC_MATHS_FAQS) {
 }
 
 /**
- * Curriculum-Aligned Classes (/curriculum-aligned) Schema
+ * Curriculum-Aligned Maths (/curriculum-aligned) Schema
  * Contains WebPage + Service + FAQPage (using exact 5 visible Curriculum FAQs).
  * References global #website and #organization without duplicating them.
  */
@@ -215,7 +215,7 @@ export function getCurriculumAlignedSchema(faqs: FAQItem[] = CURRICULUM_ALIGNED_
       '@type': 'WebPage',
       '@id': abs('/curriculum-aligned#webpage'),
       url: abs('/curriculum-aligned'),
-      name: 'Curriculum-Aligned Classes | The Vedic School',
+      name: 'Curriculum-Aligned Maths | The Vedic School',
       description:
         'Focused Maths teaching aligned with school curriculum (CBSE, ICSE, IB), addressing conceptual gaps and building lasting confidence.',
       isPartOf: {
@@ -228,7 +228,7 @@ export function getCurriculumAlignedSchema(faqs: FAQItem[] = CURRICULUM_ALIGNED_
     {
       '@type': 'Service',
       '@id': abs('/curriculum-aligned#service'),
-      name: 'Curriculum-Aligned Classes',
+      name: 'Curriculum-Aligned Maths',
       serviceType: 'Curriculum Mathematics Tutoring',
       provider: {
         '@id': abs('/#organization'),

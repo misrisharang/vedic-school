@@ -87,7 +87,7 @@ const standards = [
   },
   {
     title: 'Two ways to learn',
-    body: 'Vedic Maths builds calculation fluency and confidence. Curriculum-aligned classes help children apply that understanding to schoolwork.',
+    body: 'Vedic Maths builds calculation fluency and confidence. Curriculum-aligned Maths helps children apply that understanding to schoolwork.',
   },
   {
     title: 'Calm, honest learning',
@@ -110,7 +110,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       <Seo
-        title="The Vedic School — Vedic Maths & Curriculum-Aligned Classes"
+        title="The Vedic School | Vedic Maths & Curriculum-Aligned Classes"
         description="Meenakshi Koul teaches Vedic Maths and curriculum-aligned classes across CBSE, ICSE, IB and beyond, in Gurugram and online. Book a free demo class."
         path="/"
         ogImage="/og/home.jpg"
@@ -141,7 +141,7 @@ export default function Home() {
                 I help children build the understanding, fluency and confidence to approach Maths without second-guessing every step.
               </p>
               <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed mb-8 max-w-xl">
-                Vedic Maths builds fluency with numbers. Curriculum-aligned classes help that confidence show up in schoolwork.
+                Vedic Maths builds fluency with numbers. Curriculum-aligned Maths helps that confidence show up in schoolwork.
               </p>
               <a href="#how-we-do-it" className={buttonVariants({ size: 'lg', className: 'w-full sm:w-auto text-center justify-center' })}>
                 Choose the right starting point <span className="ml-1">→</span>
@@ -249,14 +249,14 @@ export default function Home() {
                 <div className="w-14 h-14 rounded-full bg-primary/15 flex items-center justify-center mb-8 text-primary">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
                 </div>
-                <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2 font-medium">Curriculum-Aligned Classes</h3>
+                <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-2 font-medium">Curriculum-Aligned Maths</h3>
                 <p className="text-primary font-medium mb-4">Make that confidence show up in schoolwork.</p>
                 <p className="text-foreground/80 leading-relaxed mb-8 flex-1">
                   Work through your child's school curriculum while addressing the gaps getting in the way.
                 </p>
                 <Button className="w-full sm:w-auto self-start" onClick={openAssessmentModal}>Book a personal assessment</Button>
                 <Link href="/curriculum-aligned" className="text-primary font-medium inline-flex items-center gap-2 hover:gap-3 transition-all mt-4 text-sm hover:underline">
-                  Explore curriculum-aligned classes <span>→</span>
+                  Explore curriculum-aligned Maths <span>→</span>
                 </Link>
               </div>
             </FadeIn>
@@ -387,7 +387,7 @@ export default function Home() {
             onDark
             paths={[
               { label: 'Vedic Maths', description: 'Experience the teaching method in a real class.', cta: "Join Sunday's free demo", onClick: openDemoModal },
-              { label: 'Curriculum-Aligned Classes', description: 'Understand what your child needs to move forward.', cta: 'Book a personal assessment', onClick: openAssessmentModal },
+              { label: 'Curriculum-Aligned Maths', description: 'Understand what your child needs to move forward.', cta: 'Book a personal assessment', onClick: openAssessmentModal },
             ]}
           />
         </div>

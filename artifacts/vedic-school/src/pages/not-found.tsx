@@ -55,7 +55,7 @@ export default function NotFound() {
         originalTitle.toLowerCase().includes('not found') ||
         originalTitle.includes('404')
       ) {
-        document.title = 'The Vedic School — Vedic Maths & Curriculum-Aligned Classes';
+        document.title = 'The Vedic School | Vedic Maths & Curriculum-Aligned Classes';
       } else {
         document.title = originalTitle;
       }
@@ -122,7 +122,7 @@ export default function NotFound() {
           </Link>
           <span className="text-stone-300">•</span>
           <Link href="/curriculum-aligned" className="hover:text-[hsl(var(--primary))] transition-colors">
-            Curriculum Classes
+            Curriculum-Aligned Maths
           </Link>
           <span className="text-stone-300">•</span>
           <Link href="/about" className="hover:text-[hsl(var(--primary))] transition-colors">

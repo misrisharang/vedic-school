@@ -54,9 +54,9 @@ console.log('✓ Generated public/robots.txt');
 // 3. Generate llm.txt and llms.txt
 const llmTxt = `# The Vedic School
 
-> Teacher-led mathematics education providing Vedic Maths and curriculum-aligned classes, focused on building genuine understanding, fluency, and lasting confidence.
+> Teacher-led mathematics education providing Vedic Maths and curriculum-aligned Maths, focused on building genuine understanding, fluency, and lasting confidence.
 
-The Vedic School is a learning institution founded and taught by Meenakshi Koul. The school offers two core paths: Vedic Maths classes that develop number sense, mental calculation fluency, and confidence, and curriculum-aligned classes across CBSE, ICSE, IB, and international curricula that help students develop understanding and apply that understanding to schoolwork and exams. Vedic Maths does not replace mathematical understanding; it builds on it.
+The Vedic School is a learning institution founded and taught by Meenakshi Koul. The school offers two core paths: Vedic Maths classes that develop number sense, mental calculation fluency, and confidence, and curriculum-aligned Maths across CBSE, ICSE, IB, and international curricula that help students develop understanding and apply that understanding to schoolwork and exams. Vedic Maths does not replace mathematical understanding; it builds on it.
 
 ## About
 
@@ -65,7 +65,7 @@ The Vedic School is a learning institution founded and taught by Meenakshi Koul.
 ## Programs
 
 - [Vedic Maths](${SITE_URL}/vedic-maths): Structured mental mathematics and Vedic calculation methods to build number fluency, speed, and confidence.
-- [Curriculum-Aligned Classes](${SITE_URL}/curriculum-aligned): Personalised school curriculum support (CBSE, ICSE, IB, and international curricula) from primary through senior grades.
+- [Curriculum-Aligned Maths](${SITE_URL}/curriculum-aligned): Personalised school curriculum support (CBSE, ICSE, IB, and international curricula) from primary through senior grades.
 
 ## Resources
 

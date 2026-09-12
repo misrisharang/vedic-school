@@ -243,7 +243,7 @@ Let's begin by understanding where they are today. Choose the path that fits you
 
 [Join Sunday's free Vedic Maths demo class →](/vedic-maths)
 
-**Curriculum-aligned classes (CBSE, ICSE, IB · Grades 1 to 10):** make that confidence show up in schoolwork. We start with a personal assessment to find the gaps that are getting in the way.
+**Curriculum-aligned Maths (CBSE, ICSE, IB · Grades 1 to 10):** make that confidence show up in schoolwork. We start with a personal assessment to find the gaps that are getting in the way.
 
 [Book a personal assessment →](/curriculum-aligned)
 
@@ -297,7 +297,7 @@ In threads on r/learnmath, r/india and parenting subreddits, users mostly descri
 
 ## **About the author**
 
-**Meenakshi Koul** is the founder of The Vedic School. She has taught Maths for more than 15 years, first in India and now online to students across time zones, and teaches Vedic Maths and curriculum-aligned classes (CBSE, ICSE and IB) for Grades 1 to 10. [Read more about her approach](/about)
+**Meenakshi Koul** is the founder of The Vedic School. She has taught Maths for more than 15 years, first in India and now online to students across time zones, and teaches Vedic Maths and curriculum-aligned Maths (CBSE, ICSE and IB) for Grades 1 to 10. [Read more about her approach](/about)
 
 ## **Sources**
 

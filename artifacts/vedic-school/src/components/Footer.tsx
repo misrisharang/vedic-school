@@ -72,7 +72,7 @@ export function Footer() {
             <h4 className="font-sans font-semibold tracking-wider text-xs uppercase text-background/50 mb-6">Programs</h4>
             <ul className="space-y-4">
               <li><Link href="/vedic-maths" className="text-background/80 hover:text-white transition-colors text-sm">Vedic Maths</Link></li>
-              <li><Link href="/curriculum-aligned" className="text-background/80 hover:text-white transition-colors text-sm">Curriculum-Aligned Classes</Link></li>
+              <li><Link href="/curriculum-aligned" className="text-background/80 hover:text-white transition-colors text-sm">Curriculum-Aligned Maths</Link></li>
             </ul>
           </div>
 

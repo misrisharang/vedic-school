@@ -1,7 +1,7 @@
 kind = "web"
 previewPath = "/"
 title = "The Vedic School"
-description = "A warm, personal maths tutoring website for Meenakshi Koul, a solo educator. Features Home, Vedic Maths Classes, About, and Curriculum-Aligned Classes pages. Brand: terracotta #C85A32, sage green #78A875, cream #F3ECE3. Founder-led, personal voice throughout."
+description = "A warm, personal maths tutoring website for Meenakshi Koul, a solo educator. Features Home, Vedic Maths Classes, About, and Curriculum-Aligned Maths pages. Brand: terracotta #C85A32, sage green #78A875, cream #F3ECE3. Founder-led, personal voice throughout."
 version = "1.0.0"
 id = "artifacts/vedic-school"
 router = "path"

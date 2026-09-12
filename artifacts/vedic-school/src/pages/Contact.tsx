@@ -19,7 +19,7 @@ import { getContactSchema } from '@/seo/schema';
 
 const INQUIRY_TYPES = [
   'Vedic Maths',
-  'Curriculum-Aligned Classes',
+  'Curriculum-Aligned Maths',
   'Personal Assessment',
   'General enquiry',
   'Something else',

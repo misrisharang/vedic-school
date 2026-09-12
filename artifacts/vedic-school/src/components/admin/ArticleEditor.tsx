@@ -2,7 +2,7 @@
 // THE VEDIC SCHOOL — ARTICLE EDITOR VIEW (CREATE & EDIT)
 // ==============================================================================
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import type { BlogPost, BlogCategory, BlogStatus, BlogFAQItem } from '@/types/blog';
 import { BLOG_CATEGORIES, BLOG_CATEGORY_META } from '@/types/blog';
@@ -40,15 +40,42 @@ interface ArticleEditorProps {
   onCancel: () => void;
 }
 
+function extractFaqsFromContent(content: string): { cleanContent: string; faqs: BlogFAQItem[] } {
+  if (!content) return { cleanContent: '', faqs: [] };
+  const faqSectionRegex = /(?:^|\n)(##\s*(?:\*\*)?[^\n]*FAQs?(?:\*\*)?[\s\S]*?)(?=(?:^|\n)(?:##\s*(?:\*\*)?About the author|\*\*About the author|---\s*\n\s*\*\*About the author|$))/i;
+  const match = content.match(faqSectionRegex);
+  if (!match) return { cleanContent: content, faqs: [] };
+
+  const faqBlock = match[1];
+  const cleanContent = content.replace(faqBlock, '\n\n').replace(/\n{3,}/g, '\n\n');
+  const items: BlogFAQItem[] = [];
+  const qRegex = /###\s*(?:\*\*)?([^\n*]+?)(?:\*\*)?\s*\n+([\s\S]*?)(?=(?:###|$))/g;
+  let qMatch: RegExpExecArray | null;
+  while ((qMatch = qRegex.exec(faqBlock)) !== null) {
+    const question = qMatch[1].trim();
+    const answer = qMatch[2].trim();
+    if (question && answer) items.push({ question, answer });
+  }
+  return { cleanContent, faqs: items };
+}
+
 export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorProps) {
   const isEditing = Boolean(post?.id);
+
+  const parsed = useMemo(() => {
+    if (post?.faqs && post.faqs.length > 0) {
+      const { cleanContent } = extractFaqsFromContent(post?.content || '');
+      return { cleanContent, faqs: post.faqs };
+    }
+    return extractFaqsFromContent(post?.content || '');
+  }, [post]);
 
   // Form state
   const [title, setTitle] = useState(post?.title || '');
   const [slug, setSlug] = useState(post?.slug || '');
   const [isSlugLocked, setIsSlugLocked] = useState(isEditing); // Auto-generate slug while unlocked
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
-  const [content, setContent] = useState(post?.content || '');
+  const [content, setContent] = useState(parsed.cleanContent || post?.content || '');
   const [featuredImage, setFeaturedImage] = useState<string | null>(post?.featured_image || null);
   const [imageAlt, setImageAlt] = useState('');
   const [category, setCategory] = useState<BlogCategory>(post?.category || 'vedic-maths');
@@ -60,7 +87,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
   const [isFeatured, setIsFeatured] = useState<boolean>(post?.is_featured || false);
   const [seoTitle, setSeoTitle] = useState(post?.seo_title || '');
   const [seoDescription, setSeoDescription] = useState(post?.seo_description || '');
-  const [faqs, setFaqs] = useState<BlogFAQItem[]>(post?.faqs || []);
+  const [faqs, setFaqs] = useState<BlogFAQItem[]>(parsed.faqs);
 
   // UI state
   const [saving, setSaving] = useState(false);

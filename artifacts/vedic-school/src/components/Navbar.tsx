@@ -52,7 +52,7 @@ export function Navbar() {
   const navLinks = [
     { label: 'Home', href: '/' },
     { label: 'Vedic Maths', href: '/vedic-maths' },
-    { label: 'Curriculum-Aligned Classes', href: '/curriculum-aligned' },
+    { label: 'Curriculum-Aligned Maths', href: '/curriculum-aligned' },
     { label: 'About', href: '/about' },
     { label: 'Blog', href: '/blog' },
     { label: 'Contact', href: '/contact' },
