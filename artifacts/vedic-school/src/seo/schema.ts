@@ -9,6 +9,7 @@
 import { abs } from './site';
 import { VEDIC_MATHS_FAQS, CURRICULUM_ALIGNED_FAQS, FAQItem } from '@/data/faqs';
 import { VEDIC_MATHS_VS_ABACUS_FAQS } from '@/data/published-articles';
+import type { BlogFAQItem } from '@/types/blog';
 
 // ------------------------------------------------------------------------------
 // 1. REUSABLE GLOBAL ENTITIES
@@ -357,18 +358,20 @@ export interface BlogPostSchemaInput {
   created_at?: string | null;
   updated_at?: string | null;
   author?: string | null;
+  faqs?: BlogFAQItem[];
 }
 
 /**
  * Published Blog Article (/blog/:slug) Schema
  * Contains BlogPosting linked to Author (Person) and Publisher (EducationalOrganization).
+ * When faqs are present, includes an FAQPage node linked to the article WebPage.
  */
 export function getBlogPostSchema(post: BlogPostSchemaInput) {
   const canonicalUrl = abs(`/blog/${post.slug}`);
   const description =
     post.seo_description || post.excerpt || 'Practical ideas and insights from The Vedic School.';
 
-  return createSchemaGraph([
+  const entities: any[] = [
     {
       '@type': 'WebPage',
       '@id': `${canonicalUrl}#webpage`,
@@ -405,7 +408,27 @@ export function getBlogPostSchema(post: BlogPostSchemaInput) {
         '@id': abs('/#website'),
       },
     },
-  ]);
+  ];
+
+  if (post.faqs && post.faqs.length > 0) {
+    entities.push({
+      '@type': 'FAQPage',
+      '@id': `${canonicalUrl}#faq`,
+      isPartOf: {
+        '@id': `${canonicalUrl}#webpage`,
+      },
+      mainEntity: post.faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    });
+  }
+
+  return createSchemaGraph(entities);
 }
 
 /**
@@ -417,9 +440,12 @@ export function getBlogPostSchema(post: BlogPostSchemaInput) {
  * - BlogPosting
  * Zero hardcoded Netlify URLs. References canonical #organization, #website, and #meenakshi-koul.
  */
-export function getVedicMathsVsAbacusArticleSchema() {
+export function getVedicMathsVsAbacusArticleSchema(
+  faqs: BlogFAQItem[] = VEDIC_MATHS_VS_ABACUS_FAQS,
+  customImageUrl?: string
+) {
   const articleUrl = abs('/blog/vedic-maths-vs-abacus');
-  const imageUrl = abs('/og/vedic-maths-vs-abacus.jpg');
+  const imageUrl = customImageUrl || abs('/og/vedic-maths-vs-abacus.jpg');
 
   return createSchemaGraph([
     {
@@ -468,7 +494,7 @@ export function getVedicMathsVsAbacusArticleSchema() {
       isPartOf: {
         '@id': `${articleUrl}#webpage`,
       },
-      mainEntity: VEDIC_MATHS_VS_ABACUS_FAQS.map((faq) => ({
+      mainEntity: faqs.map((faq) => ({
         '@type': 'Question',
         name: faq.question,
         acceptedAnswer: {

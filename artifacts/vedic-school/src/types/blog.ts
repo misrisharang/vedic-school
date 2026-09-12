@@ -6,6 +6,11 @@ export type BlogCategory = 'vedic-maths' | 'curriculum-support' | 'parenting';
 
 export type BlogStatus = 'draft' | 'published';
 
+export interface BlogFAQItem {
+  question: string;
+  answer: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -21,6 +26,7 @@ export interface BlogPost {
   is_featured: boolean;
   seo_title: string | null;
   seo_description: string | null;
+  faqs?: BlogFAQItem[];
   created_at: string;
   updated_at: string;
 }
@@ -30,6 +36,7 @@ export type BlogPostInsert = Omit<BlogPost, 'id' | 'created_at' | 'updated_at'> 
   author?: string;
   status?: BlogStatus;
   is_featured?: boolean;
+  faqs?: BlogFAQItem[];
 };
 
 export type BlogPostUpdate = Partial<BlogPostInsert>;

@@ -11,8 +11,16 @@ import type { BlogPost, BlogCategory } from '@/types/blog';
 import { BLOG_CATEGORY_META } from '@/types/blog';
 import { getBlogImageUrl, fetchPublishedPostBySlug, fetchPublishedBlogPosts } from '@/lib/blog';
 import { Seo } from '@/seo/Seo';
+import { abs } from '@/seo/site';
 import { getBlogPostSchema, getVedicMathsVsAbacusArticleSchema } from '@/seo/schema';
 import { useDemoModal } from '@/context/DemoModalContext';
+import { SummariseWithAI } from '@/components/blog/SummariseWithAI';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import {
   ArrowLeft,
   Clock,
@@ -128,7 +136,7 @@ export default function BlogPostPage() {
 
   const schema =
     post.slug === 'vedic-maths-vs-abacus'
-      ? getVedicMathsVsAbacusArticleSchema()
+      ? getVedicMathsVsAbacusArticleSchema(post.faqs, coverUrl || undefined)
       : getBlogPostSchema({
           ...post,
           featured_image: coverUrl,
@@ -208,6 +216,12 @@ export default function BlogPostPage() {
             </button>
           </div>
 
+          {/* AI Summarisation Toolbar */}
+          <SummariseWithAI
+            title={post.title}
+            canonicalUrl={abs(`/blog/${post.slug}`)}
+          />
+
           {/* Article Title */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-stone-900 tracking-tight leading-tight">
             {post.title}
@@ -247,6 +261,32 @@ export default function BlogPostPage() {
             className="prose prose-stone prose-lg max-w-none pt-2 font-sans leading-relaxed text-stone-800"
             dangerouslySetInnerHTML={{ __html: renderedContent }}
           />
+
+          {/* CMS-Managed FAQ Accordion */}
+          {post.faqs && post.faqs.length > 0 && (
+            <div className="mt-12 pt-8 border-t border-stone-200">
+              <div className="mb-6">
+                <p className="text-xs font-sans font-bold tracking-[0.15em] uppercase text-[hsl(var(--primary))] mb-2">
+                  Frequently Asked Questions
+                </p>
+                <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 tracking-tight">
+                  Questions Parents Often Ask
+                </h2>
+              </div>
+              <Accordion type="single" collapsible className="w-full">
+                {post.faqs.map((faq, idx) => (
+                  <AccordionItem key={idx} value={`faq-${idx}`} className="border-stone-200">
+                    <AccordionTrigger className="font-serif text-lg sm:text-xl text-stone-900 py-5 hover:no-underline text-left">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent forceMount className="text-stone-700 leading-relaxed text-base pb-5">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            </div>
+          )}
 
           {/* Category-Specific Vedic School Programme CTA */}
           <div className="mt-12 pt-8 border-t border-stone-200">

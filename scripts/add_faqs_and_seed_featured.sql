@@ -1,76 +1,42 @@
-// ==============================================================================
-// THE VEDIC SCHOOL — PUBLISHED BLOG ARTICLES REPOSITORY
-// ==============================================================================
-// Baseline published articles available both statically and dynamically.
-// Guarantees zero downtime, offline builds, and deterministic static prerendering.
-// ==============================================================================
+-- ==============================================================================
+-- THE VEDIC SCHOOL — CMS EXTENSION: ADD FAQS & SEED FEATURED BLOG POST
+-- ==============================================================================
+-- Run this script in your Supabase SQL Editor:
+-- Supabase Dashboard > SQL Editor > New query > Paste & Run
+--
+-- What this script accomplishes:
+-- 1. Adds public.blog_posts.faqs (jsonb default '[]'::jsonb) column safely.
+-- 2. Seeds 'vedic-maths-vs-abacus' as a fully CMS-editable article in public.blog_posts.
+-- 3. Sets is_featured = true (auto-demoting any other featured article via trigger).
+-- 4. Attaches all 11 FAQs and sets featured_image to '/og/vedic-maths-vs-abacus.jpg'.
+-- ==============================================================================
 
-import type { BlogPost } from '@/types/blog';
+-- 1. ADD FAQS COLUMN TO public.blog_posts
+alter table public.blog_posts 
+  add column if not exists faqs jsonb default '[]'::jsonb;
 
-export interface BlogFAQItem {
-  question: string;
-  answer: string;
-}
-
-export const VEDIC_MATHS_VS_ABACUS_FAQS: BlogFAQItem[] = [
-  {
-    question: 'Is Vedic Maths the same as abacus?',
-    answer:
-      'No. Abacus uses a bead frame, and later a mental image of it, to calculate. Vedic Maths is a set of calculation methods done mentally or on paper. They share a goal, faster and more confident calculation, but they train different skills.',
-  },
-  {
-    question: 'Which is better, abacus or Vedic Maths?',
-    answer:
-      'Neither is better for every child. Abacus has stronger evidence for arithmetic speed when a child starts young and practises for years. Vedic Maths suits children who already know their number facts and need flexibility and confidence.',
-  },
-  {
-    question: 'What is the right age to start abacus?',
-    answer:
-      'Most programmes start between ages 5 and 8; SIP Abacus, for example, describes its programme as being for ages 6 to 12. Research suggests children do better once they have some understanding of place value.',
-  },
-  {
-    question: 'What is the right age to start Vedic Maths?',
-    answer:
-      'Usually from about age 8, once a child is secure with times tables and place value. Younger children can learn individual methods, but they get more from them once the basics are solid.',
-  },
-  {
-    question: 'Can a child learn abacus and Vedic Maths together?',
-    answer:
-      "It usually works better in sequence: abacus when younger, Vedic Maths later. Learning both at once can compete for a young child's attention and practice time.",
-  },
-  {
-    question: 'Does abacus increase IQ or brain development?',
-    answer:
-      "The research doesn't show that. Randomised trials in India and China found better arithmetic, and one found better visuospatial working memory, but none found an increase in general intelligence.",
-  },
-  {
-    question: 'Is Vedic Maths useful for school exams like CBSE and ICSE?',
-    answer:
-      "It can help with calculation speed and with checking answers, which saves time in exams. It doesn't replace understanding the syllabus, so it works best alongside curriculum-aligned learning.",
-  },
-  {
-    question: 'Is Vedic Maths really from the Vedas?',
-    answer:
-      "Scholars say no. The methods come from Bharati Krishna Tirtha's 1965 book, and historians such as S. G. Dani found no source for its sutras in the Vedas. The methods can still be useful teaching tools.",
-  },
-  {
-    question: 'What are the disadvantages of abacus?',
-    answer:
-      "It takes years of regular practice, the gains depend partly on a child's spatial working memory, it focuses mainly on arithmetic, and children can learn to calculate fast without understanding why.",
-  },
-  {
-    question: 'What are the limitations of Vedic Maths?',
-    answer:
-      'The research is limited, some methods only work for particular numbers, and when taught as tricks it can confuse children. It needs secure number facts first.',
-  },
-  {
-    question: 'What does Reddit say about Vedic Maths vs abacus?',
-    answer:
-      'In threads on r/learnmath, r/india and parenting subreddits, users mostly describe abacus-trained children calculating fast, but disagree on whether that helps with school Maths later. Positive parent stories focus on confidence, while sceptics argue plain methods are often enough.',
-  },
-];
-
-const VEDIC_MATHS_VS_ABACUS_CONTENT = `*I compared both on what they actually train, what the research shows, and what parents and former abacus kids say on Reddit, including where each one falls short.*
+-- 2. SEED / UPSERT FEATURED ARTICLE: 'vedic-maths-vs-abacus'
+insert into public.blog_posts (
+  title,
+  slug,
+  excerpt,
+  content,
+  featured_image,
+  category,
+  author,
+  reading_time,
+  status,
+  published_at,
+  is_featured,
+  seo_title,
+  seo_description,
+  faqs
+)
+values (
+  'Vedic Maths vs Abacus: Which Is Better for Your Child? A Maths Teacher''s Honest Comparison',
+  'vedic-maths-vs-abacus',
+  'A Maths teacher compares Vedic Maths and abacus: what each trains, the right age, what research and Reddit parents say, and how to choose.',
+  $BLOG_CONTENT$*I compared both on what they actually train, what the research shows, and what parents and former abacus kids say on Reddit, including where each one falls short.*
 
 **By [Meenakshi Koul](/about)**, Founder, The Vedic School  
 **Last updated:** 12 September 2026
@@ -352,28 +318,34 @@ In threads on r/learnmath, r/india and parenting subreddits, users mostly descri
 * International Journal of Research and Innovation in Social Science: The Effects of Vedic Mathematics on the Basic Mathematical Skills and Engagement of Grade 7 Students. [https://rsisinternational.org/journals/ijriss/articles/the-effects-of-vedic-mathematics-on-the-basic-mathematical-skills-and-engagement-of-grade-7-students/](https://rsisinternational.org/journals/ijriss/articles/the-effects-of-vedic-mathematics-on-the-basic-mathematical-skills-and-engagement-of-grade-7-students/)
 
 * Gulf News: Launch of SIP Abacus in UAE (programme for ages 6 to 12). [https://gulfnews.com/business/corporate-news/launch-of-sip-abacus-in-uae-empowering-children-worldwide-to-face-future-challenges-with-confidence-1.1686134174124](https://gulfnews.com/business/corporate-news/launch-of-sip-abacus-in-uae-empowering-children-worldwide-to-face-future-challenges-with-confidence-1.1686134174124)
-`;
+$BLOG_CONTENT$,
+  '/og/vedic-maths-vs-abacus.jpg',
+  'vedic-maths',
+  'Meenakshi Koul',
+  11,
+  'published',
+  '2026-09-12 00:00:00+00',
+  true,
+  'Vedic Maths vs Abacus: Which Is Better? (Teacher + Reddit)',
+  'A Maths teacher compares Vedic Maths and abacus: what each trains, the right age, what research and Reddit parents say, and how to choose.',
+  "[{\"question\":\"Is Vedic Maths the same as abacus?\",\"answer\":\"No. Abacus uses a bead frame, and later a mental image of it, to calculate. Vedic Maths is a set of calculation methods done mentally or on paper. They share a goal, faster and more confident calculation, but they train different skills.\"},{\"question\":\"Which is better, abacus or Vedic Maths?\",\"answer\":\"Neither is better for every child. Abacus has stronger evidence for arithmetic speed when a child starts young and practises for years. Vedic Maths suits children who already know their number facts and need flexibility and confidence.\"},{\"question\":\"What is the right age to start abacus?\",\"answer\":\"Most programmes start between ages 5 and 8; SIP Abacus, for example, describes its programme as being for ages 6 to 12. Research suggests children do better once they have some understanding of place value.\"},{\"question\":\"What is the right age to start Vedic Maths?\",\"answer\":\"Usually from about age 8, once a child is secure with times tables and place value. Younger children can learn individual methods, but they get more from them once the basics are solid.\"},{\"question\":\"Can a child learn abacus and Vedic Maths together?\",\"answer\":\"It usually works better in sequence: abacus when younger, Vedic Maths later. Learning both at once can compete for a young child's attention and practice time.\"},{\"question\":\"Does abacus increase IQ or brain development?\",\"answer\":\"The research doesn't show that. Randomised trials in India and China found better arithmetic, and one found better visuospatial working memory, but none found an increase in general intelligence.\"},{\"question\":\"Is Vedic Maths useful for school exams like CBSE and ICSE?\",\"answer\":\"It can help with calculation speed and with checking answers, which saves time in exams. It doesn't replace understanding the syllabus, so it works best alongside curriculum-aligned learning.\"},{\"question\":\"Is Vedic Maths really from the Vedas?\",\"answer\":\"Scholars say no. The methods come from Bharati Krishna Tirtha's 1965 book, and historians such as S. G. Dani found no source for its sutras in the Vedas. The methods can still be useful teaching tools.\"},{\"question\":\"What are the disadvantages of abacus?\",\"answer\":\"It takes years of regular practice, the gains depend partly on a child's spatial working memory, it focuses mainly on arithmetic, and children can learn to calculate fast without understanding why.\"},{\"question\":\"What are the limitations of Vedic Maths?\",\"answer\":\"The research is limited, some methods only work for particular numbers, and when taught as tricks it can confuse children. It needs secure number facts first.\"},{\"question\":\"What does Reddit say about Vedic Maths vs abacus?\",\"answer\":\"In threads on r/learnmath, r/india and parenting subreddits, users mostly describe abacus-trained children calculating fast, but disagree on whether that helps with school Maths later. Positive parent stories focus on confidence, while sceptics argue plain methods are often enough.\"}]"::jsonb
+)
+on conflict (slug) do update set
+  title = excluded.title,
+  excerpt = excluded.excerpt,
+  content = excluded.content,
+  featured_image = excluded.featured_image,
+  category = excluded.category,
+  author = excluded.author,
+  reading_time = excluded.reading_time,
+  status = excluded.status,
+  published_at = excluded.published_at,
+  is_featured = excluded.is_featured,
+  seo_title = excluded.seo_title,
+  seo_description = excluded.seo_description,
+  faqs = excluded.faqs,
+  updated_at = now();
 
-export const PUBLISHED_ARTICLES: BlogPost[] = [
-  {
-    id: 'vedic-maths-vs-abacus',
-    title: "Vedic Maths vs Abacus: Which Is Better for Your Child? A Maths Teacher's Honest Comparison",
-    slug: 'vedic-maths-vs-abacus',
-    excerpt:
-      'A Maths teacher compares Vedic Maths and abacus: what each trains, the right age, what research and Reddit parents say, and how to choose.',
-    content: VEDIC_MATHS_VS_ABACUS_CONTENT,
-    featured_image: '/og/vedic-maths-vs-abacus.jpg',
-    category: 'vedic-maths',
-    author: 'Meenakshi Koul',
-    reading_time: 11,
-    status: 'published',
-    published_at: '2026-09-12T00:00:00.000Z',
-    is_featured: true,
-    seo_title: 'Vedic Maths vs Abacus: Which Is Better? (Teacher + Reddit)',
-    seo_description:
-      'A Maths teacher compares Vedic Maths and abacus: what each trains, the right age, what research and Reddit parents say, and how to choose.',
-    faqs: VEDIC_MATHS_VS_ABACUS_FAQS,
-    created_at: '2026-09-12T00:00:00.000Z',
-    updated_at: '2026-09-12T00:00:00.000Z',
-  },
-];
+-- ==============================================================================
+-- END OF MIGRATION
+-- ==============================================================================
