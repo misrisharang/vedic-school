@@ -1,2 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+
+Sitemap: https://the-vedic-school.netlify.app/sitemap.xml

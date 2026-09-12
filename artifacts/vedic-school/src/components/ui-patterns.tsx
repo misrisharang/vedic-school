@@ -517,7 +517,7 @@ export function FAQAccordion({ items }: { items: FAQItem[] }) {
             <AccordionTrigger className="font-serif text-lg md:text-xl text-foreground py-6 hover:no-underline">
               {item.question}
             </AccordionTrigger>
-            <AccordionContent className="text-foreground/70 leading-relaxed text-base pb-6">
+            <AccordionContent forceMount className="text-foreground/70 leading-relaxed text-base pb-6">
               {item.answer}
             </AccordionContent>
           </AccordionItem>

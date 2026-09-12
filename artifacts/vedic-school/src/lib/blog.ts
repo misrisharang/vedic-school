@@ -4,6 +4,7 @@
 
 import { supabase, isSupabaseConfigured } from './supabase';
 import type { BlogPost, BlogCategory } from '@/types/blog';
+import { PUBLISHED_ARTICLES } from '@/data/published-articles';
 
 /**
  * Calculates estimated reading time in minutes based on content.
@@ -27,11 +28,17 @@ export function calculateReadingTime(content: string): number {
  * Resolves a storage path or URL for a blog image.
  * If the image is stored in the 'blog-images' bucket, returns the public Supabase CDN URL.
  * If it's already an absolute URL (e.g. external or CDN), returns it directly.
+ * If it's a local public path (e.g. /og/...), returns it directly.
  */
 export function getBlogImageUrl(pathOrUrl: string | null | undefined): string | null {
   if (!pathOrUrl) return null;
 
   if (pathOrUrl.startsWith('http://') || pathOrUrl.startsWith('https://')) {
+    return pathOrUrl;
+  }
+
+  // Preserve local public paths
+  if (pathOrUrl.startsWith('/')) {
     return pathOrUrl;
   }
 
@@ -50,39 +57,52 @@ export async function fetchPublishedBlogPosts(options?: {
   limit?: number;
   offset?: number;
 }): Promise<{ posts: BlogPost[]; count: number | null; error?: string }> {
-  if (!isSupabaseConfigured) {
-    return { posts: [], count: 0, error: 'Database service is not configured.' };
+  let supabasePosts: BlogPost[] = [];
+  let fetchError: string | undefined;
+
+  if (isSupabaseConfigured) {
+    try {
+      let query = supabase
+        .from('blog_posts')
+        .select('*', { count: 'exact' })
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+
+      if (options?.category) {
+        query = query.eq('category', options.category);
+      }
+
+      const { data, error } = await query;
+      if (!error && data) {
+        supabasePosts = data as BlogPost[];
+      } else if (error) {
+        fetchError = error.message;
+      }
+    } catch (err: any) {
+      fetchError = err?.message;
+    }
   }
 
-  try {
-    let query = supabase
-      .from('blog_posts')
-      .select('*', { count: 'exact' })
-      .eq('status', 'published')
-      .order('published_at', { ascending: false });
+  // Combine with baseline published articles (avoiding duplicates by slug)
+  const existingSlugs = new Set(supabasePosts.map((p) => p.slug));
+  let staticMatches = PUBLISHED_ARTICLES.filter((p) => !existingSlugs.has(p.slug));
 
-    if (options?.category) {
-      query = query.eq('category', options.category);
-    }
-
-    if (typeof options?.offset === 'number' && typeof options?.limit === 'number') {
-      query = query.range(options.offset, options.offset + options.limit - 1);
-    } else if (typeof options?.limit === 'number') {
-      query = query.limit(options.limit);
-    }
-
-    const { data, count, error } = await query;
-
-    if (error) {
-      console.error('[Blog Fetch Error]', error);
-      return { posts: [], count: 0, error: error.message };
-    }
-
-    return { posts: (data as BlogPost[]) || [], count };
-  } catch (err: any) {
-    console.error('[Blog Unexpected Fetch Error]', err);
-    return { posts: [], count: 0, error: err?.message || 'Failed to fetch posts.' };
+  if (options?.category) {
+    staticMatches = staticMatches.filter((p) => p.category === options.category);
   }
+
+  const allPosts = [...supabasePosts, ...staticMatches].sort((a, b) => {
+    const timeA = a.published_at ? new Date(a.published_at).getTime() : 0;
+    const timeB = b.published_at ? new Date(b.published_at).getTime() : 0;
+    return timeB - timeA;
+  });
+
+  const totalCount = allPosts.length;
+  const offset = options?.offset || 0;
+  const limit = options?.limit || allPosts.length;
+  const pagedPosts = allPosts.slice(offset, offset + limit);
+
+  return { posts: pagedPosts, count: totalCount, error: fetchError };
 }
 
 /**
@@ -92,28 +112,26 @@ export async function fetchFeaturedBlogPost(): Promise<{
   post: BlogPost | null;
   error?: string;
 }> {
-  if (!isSupabaseConfigured) {
-    return { post: null, error: 'Database service is not configured.' };
-  }
+  if (isSupabaseConfigured) {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('status', 'published')
+        .eq('is_featured', true)
+        .maybeSingle();
 
-  try {
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('status', 'published')
-      .eq('is_featured', true)
-      .maybeSingle();
-
-    if (error) {
-      console.error('[Featured Post Error]', error);
-      return { post: null, error: error.message };
+      if (!error && data) {
+        return { post: data as BlogPost };
+      }
+    } catch {
+      // fallback
     }
-
-    return { post: (data as BlogPost) || null };
-  } catch (err: any) {
-    console.error('[Featured Post Unexpected Error]', err);
-    return { post: null, error: err?.message || 'Failed to fetch featured post.' };
   }
+
+  const staticFeatured =
+    PUBLISHED_ARTICLES.find((p) => p.is_featured) || PUBLISHED_ARTICLES[0] || null;
+  return { post: staticFeatured };
 }
 
 /**
@@ -123,26 +141,23 @@ export async function fetchPublishedPostBySlug(slug: string): Promise<{
   post: BlogPost | null;
   error?: string;
 }> {
-  if (!isSupabaseConfigured) {
-    return { post: null, error: 'Database service is not configured.' };
-  }
+  if (isSupabaseConfigured) {
+    try {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('status', 'published')
+        .eq('slug', slug)
+        .maybeSingle();
 
-  try {
-    const { data, error } = await supabase
-      .from('blog_posts')
-      .select('*')
-      .eq('status', 'published')
-      .eq('slug', slug)
-      .maybeSingle();
-
-    if (error) {
-      console.error('[Post By Slug Error]', error);
-      return { post: null, error: error.message };
+      if (!error && data) {
+        return { post: data as BlogPost };
+      }
+    } catch {
+      // fallback
     }
-
-    return { post: (data as BlogPost) || null };
-  } catch (err: any) {
-    console.error('[Post By Slug Unexpected Error]', err);
-    return { post: null, error: err?.message || 'Failed to fetch post.' };
   }
+
+  const staticPost = PUBLISHED_ARTICLES.find((p) => p.slug === slug) || null;
+  return { post: staticPost, error: staticPost ? undefined : 'Article not found.' };
 }

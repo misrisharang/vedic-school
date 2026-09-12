@@ -7,7 +7,26 @@
   PORT = "5173"
   BASE_PATH = "/"
 
+[[edge_functions]]
+  function = "blog-slug-validator"
+  path = "/blog/*"
+
+# Client-side SPA rewrites for private admin routes (HTTP 200)
 [[redirects]]
-  from = "/*"
+  from = "/admin"
   to = "/index.html"
   status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/index.html"
+  status = 200
+
+# Catch-all fallback for unknown routes (Genuine HTTP 404)
+# Note: Static prerendered files (e.g. /, /about, /vedic-maths, etc.) are served directly
+# by Netlify CDN at HTTP 200 without needing redirect rules.
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+

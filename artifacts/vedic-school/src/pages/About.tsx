@@ -5,11 +5,19 @@ import { Button, buttonVariants } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
 import meenakshiPhoto from '@assets/WhatsApp_Image_2026-08-06_at_12.17.56-removebg-preview_1786000177260.png';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
+import { Seo } from '@/seo/Seo';
+import { getAboutSchema } from '@/seo/schema';
 
 export default function About() {
   const { openDemoModal, openAssessmentModal } = useDemoModal();
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <Seo
+        title="About Meenakshi Koul | The Vedic School"
+        description="Learn about Meenakshi Koul, founder and educator at The Vedic School, and her approach to teaching mathematics."
+        path="/about"
+        schema={getAboutSchema()}
+      />
 
       {/* HERO — THE VEDIC SCHOOL AS A CONCEPT */}
       <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-20 border-b border-border/30 overflow-hidden">

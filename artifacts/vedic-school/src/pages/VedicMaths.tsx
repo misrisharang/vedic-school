@@ -16,8 +16,11 @@ import {
   ClosingCTABand,
 } from '@/components/ui-patterns';
 import { testimonials } from '@/data/testimonials';
+import { VEDIC_MATHS_FAQS } from '@/data/faqs';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
+import { Seo } from '@/seo/Seo';
+import { getVedicMathsSchema } from '@/seo/schema';
 
 const shifts = [
   {
@@ -96,34 +99,19 @@ const journey = [
   { icon: Sparkles, label: 'Build Fluency', description: 'Calculation becomes faster and more natural.' },
 ];
 
-const faqs = [
-  {
-    question: 'Who is Vedic Maths for?',
-    answer: 'Vedic Maths is for children at different starting points. Whether your child is still building their number foundations, understands the basics but calculates slowly, or already enjoys Maths and wants more challenge, I start with where their thinking is today.',
-  },
-  {
-    question: 'Where does my child start?',
-    answer: 'At the level that\'s right for them. Some children begin by strengthening foundations. Others are ready to build fluency or move into more advanced work. The starting point is based on how your child currently thinks with numbers — not simply their age or grade.',
-  },
-  {
-    question: 'Does my child need to be good at Maths to start?',
-    answer: "No. Your child doesn't need to be naturally quick at Maths or already confident with numbers. The important thing is starting from what they understand today and building from there.",
-  },
-  {
-    question: 'Is Vedic Maths just a collection of shortcuts?',
-    answer: 'No. I teach techniques as tools for working with numbers more efficiently, but they are built on understanding rather than replacing it. Understanding comes first. Speed follows.',
-  },
-  {
-    question: 'Will Vedic Maths replace school Maths?',
-    answer: 'No. Vedic Maths builds calculation fluency and confidence. It complements, rather than replaces, the Maths children learn at school. Where your child needs direct help with their school curriculum, I also offer separate curriculum-aligned classes.',
-  },
-];
+const faqs = VEDIC_MATHS_FAQS;
 
 export default function VedicMaths() {
   const { openDemoModal } = useDemoModal();
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Seo
+        title="Vedic Maths Classes | The Vedic School"
+        description="Vedic Maths classes that give children flexible ways to work with numbers — making calculation faster, clearer and more confident."
+        path="/vedic-maths"
+        schema={getVedicMathsSchema()}
+      />
 
       {/* HERO SECTION */}
       <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-20 bg-background border-b border-border/30 overflow-hidden">

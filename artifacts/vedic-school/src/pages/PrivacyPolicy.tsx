@@ -2,10 +2,22 @@ import React from 'react';
 import { Link } from 'wouter';
 import { FadeIn } from '@/components/ui-patterns';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
+import { Seo } from '@/seo/Seo';
+import { getLegalPageSchema } from '@/seo/schema';
 
 export default function PrivacyPolicy() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <Seo
+        title="Privacy Policy | The Vedic School"
+        description="Learn how The Vedic School collects, uses, and protects your personal information."
+        path="/privacy-policy"
+        schema={getLegalPageSchema(
+          '/privacy-policy',
+          'Privacy Policy',
+          'Learn how The Vedic School collects, uses, and protects your personal information.'
+        )}
+      />
       {/* Hero Header */}
       <section className="relative pt-32 pb-12 lg:pt-40 lg:pb-16 border-b border-border/30 overflow-hidden">
         <div

@@ -2,10 +2,22 @@ import React from 'react';
 import { Link } from 'wouter';
 import { FadeIn } from '@/components/ui-patterns';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
+import { Seo } from '@/seo/Seo';
+import { getLegalPageSchema } from '@/seo/schema';
 
 export default function TermsOfService() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <Seo
+        title="Terms of Service | The Vedic School"
+        description="Review the terms and conditions governing the use of The Vedic School website and educational programmes."
+        path="/terms-of-service"
+        schema={getLegalPageSchema(
+          '/terms-of-service',
+          'Terms of Service',
+          'Review the terms and conditions governing the use of The Vedic School website and educational programmes.'
+        )}
+      />
       {/* Hero Header */}
       <section className="relative pt-32 pb-12 lg:pt-40 lg:pb-16 border-b border-border/30 overflow-hidden">
         <div

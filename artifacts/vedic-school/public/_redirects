@@ -1,0 +1,9 @@
+# Client-side SPA rewrites for private admin routes (HTTP 200)
+/admin                          /index.html   200
+/admin/*                        /index.html   200
+
+# Catch-all fallback for unknown routes (Genuine HTTP 404)
+# Note: Static prerendered files (e.g. /, /about, /vedic-maths, etc.) are served directly
+# by Netlify CDN at HTTP 200 without needing redirect rules.
+/*                              /404.html     404
+

@@ -14,6 +14,8 @@ import { submitInquiry } from '@/lib/supabase';
 import { CustomSelect } from '@/components/CustomSelect';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import { cn } from '@/lib/utils';
+import { Seo } from '@/seo/Seo';
+import { getContactSchema } from '@/seo/schema';
 
 const INQUIRY_TYPES = [
   'Vedic Maths',
@@ -169,6 +171,12 @@ export default function Contact() {
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <Seo
+        title="Contact The Vedic School"
+        description="Get in touch with Meenakshi Koul at The Vedic School in Gurugram or online for Vedic Maths and curriculum-aligned classes."
+        path="/contact"
+        schema={getContactSchema()}
+      />
       {/* 1. HERO SECTION */}
       <section className="relative pt-32 pb-12 lg:pt-40 lg:pb-16 border-b border-border/30 overflow-hidden">
         <div

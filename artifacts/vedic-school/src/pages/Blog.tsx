@@ -7,7 +7,7 @@ import { Link } from 'wouter';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import { BLOG_CATEGORY_META } from '@/types/blog';
-import { getBlogImageUrl } from '@/lib/blog';
+import { getBlogImageUrl, fetchPublishedBlogPosts } from '@/lib/blog';
 import {
   Search,
   X,
@@ -20,6 +20,8 @@ import {
   BookOpen,
   Loader2,
 } from 'lucide-react';
+import { Seo } from '@/seo/Seo';
+import { getBlogHubSchema } from '@/seo/schema';
 
 const POSTS_PER_PAGE = 6;
 
@@ -35,35 +37,22 @@ export default function Blog() {
   const [sortOrder, setSortOrder] = useState<'latest' | 'oldest'>('latest');
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Fetch published blog posts from Supabase
+  // Fetch published blog posts
   useEffect(() => {
     async function loadBlogData() {
       setLoading(true);
       setError(null);
 
-      if (!isSupabaseConfigured) {
-        setPosts([]);
-        setFeaturedPost(null);
-        setLoading(false);
-        return;
-      }
-
       try {
-        // Query strictly published posts, ordered chronologically
-        const { data, error: fetchError } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .eq('status', 'published')
-          .order('published_at', { ascending: false });
-
-        if (fetchError) throw fetchError;
-
-        const published = (data as BlogPost[]) || [];
-        setPosts(published);
-
-        // Find single featured post, or gracefully fallback to latest post
-        const featured = published.find((p) => p.is_featured) || (published.length > 0 ? published[0] : null);
-        setFeaturedPost(featured);
+        const { posts: published, error: fetchErr } = await fetchPublishedBlogPosts();
+        if (fetchErr && published.length === 0) {
+          setError(fetchErr);
+        } else {
+          setPosts(published);
+          const featured =
+            published.find((p) => p.is_featured) || (published.length > 0 ? published[0] : null);
+          setFeaturedPost(featured);
+        }
       } catch (err: any) {
         console.error('[Blog Load Error]', err);
         setError(err?.message || 'Failed to load blog posts.');
@@ -140,6 +129,12 @@ export default function Blog() {
 
   return (
     <div className="bg-[hsl(var(--background))] min-h-screen">
+      <Seo
+        title="Insights & Ideas — The Vedic School Blog"
+        description="Practical ideas and insights for a calmer, more confident Maths journey."
+        path="/blog"
+        schema={getBlogHubSchema()}
+      />
       {/* Top Hero Section with Approved Decorative Background */}
       <section className="relative overflow-hidden pt-28 pb-10 sm:pb-14 border-b border-stone-200/70">
         {/* Decorative Background Elements from Approved Reference */}

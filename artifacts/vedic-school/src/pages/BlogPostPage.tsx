@@ -5,10 +5,13 @@
 import React, { useState, useEffect } from 'react';
 import { useRoute, Link } from 'wouter';
 import { marked } from 'marked';
+import NotFound from '@/pages/not-found';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import { BLOG_CATEGORY_META } from '@/types/blog';
-import { getBlogImageUrl } from '@/lib/blog';
+import { getBlogImageUrl, fetchPublishedPostBySlug, fetchPublishedBlogPosts } from '@/lib/blog';
+import { Seo } from '@/seo/Seo';
+import { getBlogPostSchema, getVedicMathsVsAbacusArticleSchema } from '@/seo/schema';
 import { useDemoModal } from '@/context/DemoModalContext';
 import {
   ArrowLeft,
@@ -41,47 +44,24 @@ export default function BlogPostPage() {
       setLoading(true);
       setError(null);
 
-      if (!isSupabaseConfigured) {
-        setError('Database service not configured.');
-        setLoading(false);
-        return;
-      }
-
       try {
-        // Query strictly published posts where slug matches
-        const { data, error: fetchError } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .eq('slug', slug)
-          .eq('status', 'published')
-          .maybeSingle();
+        const { post: loadedPost, error: fetchErr } = await fetchPublishedPostBySlug(slug);
 
-        if (fetchError) throw fetchError;
-
-        if (!data) {
-          setError('Article not found.');
+        if (fetchErr || !loadedPost) {
+          setError(fetchErr || 'Article not found.');
           setPost(null);
           setLoading(false);
           return;
         }
 
-        const currentPost = data as BlogPost;
-        setPost(currentPost);
+        setPost(loadedPost);
 
-        // Fetch up to 3 related published posts (preferring same category)
-        const { data: relatedData } = await supabase
-          .from('blog_posts')
-          .select('*')
-          .eq('status', 'published')
-          .neq('id', currentPost.id)
-          .order('published_at', { ascending: false })
-          .limit(6);
-
-        const relatedList = (relatedData as BlogPost[]) || [];
-        // Prioritize same category first
+        // Fetch related published posts (preferring same category)
+        const { posts: allPublished } = await fetchPublishedBlogPosts();
+        const relatedList = allPublished.filter((p) => p.slug !== loadedPost.slug);
         const sortedRelated = [
-          ...relatedList.filter((p) => p.category === currentPost.category),
-          ...relatedList.filter((p) => p.category !== currentPost.category),
+          ...relatedList.filter((p) => p.category === loadedPost.category),
+          ...relatedList.filter((p) => p.category !== loadedPost.category),
         ].slice(0, 3);
 
         setRelatedPosts(sortedRelated);
@@ -95,85 +75,6 @@ export default function BlogPostPage() {
 
     loadPost();
   }, [slug]);
-
-  // Dynamic SEO Title, Meta Tags & JSON-LD Structured Data
-  useEffect(() => {
-    if (!post) return;
-
-    // Document title
-    const prevTitle = document.title;
-    document.title = post.seo_title || `${post.title} | The Vedic School`;
-
-    // Meta description
-    let metaDesc = document.querySelector('meta[name="description"]');
-    const prevMetaDesc = metaDesc ? metaDesc.getAttribute('content') : null;
-    if (!metaDesc) {
-      metaDesc = document.createElement('meta');
-      metaDesc.setAttribute('name', 'description');
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute(
-      'content',
-      post.seo_description || post.excerpt || 'Practical ideas and insights from The Vedic School.'
-    );
-
-    // Canonical link
-    let canonical = document.querySelector('link[rel="canonical"]');
-    const canonicalUrl = `${window.location.origin}/blog/${post.slug}`;
-    if (!canonical) {
-      canonical = document.createElement('link');
-      canonical.setAttribute('rel', 'canonical');
-      document.head.appendChild(canonical);
-    }
-    canonical.setAttribute('href', canonicalUrl);
-
-    // JSON-LD Schema.org Structured Data
-    const scriptId = 'blog-post-schema';
-    let script = document.getElementById(scriptId) as HTMLScriptElement | null;
-    if (!script) {
-      script = document.createElement('script');
-      script.id = scriptId;
-      script.type = 'application/ld+json';
-      document.head.appendChild(script);
-    }
-
-    const structuredData = {
-      '@context': 'https://schema.org',
-      '@type': 'BlogPosting',
-      headline: post.title,
-      description: post.excerpt || post.seo_description,
-      image: post.featured_image ? [getBlogImageUrl(post.featured_image)] : [],
-      datePublished: post.published_at || post.created_at,
-      dateModified: post.updated_at || post.published_at,
-      author: {
-        '@type': 'Person',
-        name: post.author || 'Meenakshi Koul',
-        jobTitle: 'Founder & Educator',
-        worksFor: {
-          '@type': 'EducationalOrganization',
-          name: 'The Vedic School',
-          url: 'https://thevedicschool.com',
-        },
-      },
-      publisher: {
-        '@type': 'Organization',
-        name: 'The Vedic School',
-        url: 'https://thevedicschool.com',
-      },
-      mainEntityOfPage: {
-        '@type': 'WebPage',
-        '@id': canonicalUrl,
-      },
-    };
-
-    script.textContent = JSON.stringify(structuredData);
-
-    return () => {
-      document.title = prevTitle;
-      if (prevMetaDesc && metaDesc) metaDesc.setAttribute('content', prevMetaDesc);
-      if (script && script.parentNode) script.parentNode.removeChild(script);
-    };
-  }, [post]);
 
   // Render markdown content
   const renderedContent = React.useMemo(() => {
@@ -211,30 +112,7 @@ export default function BlogPostPage() {
 
   // Not Found / Error View
   if (error || !post) {
-    return (
-      <div className="min-h-screen bg-[hsl(var(--background))] pt-32 pb-20">
-        <div className="container mx-auto px-4 max-w-lg text-center space-y-4">
-          <div className="w-14 h-14 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center mx-auto border border-amber-200">
-            <BookOpen className="w-7 h-7" />
-          </div>
-          <h1 className="text-2xl font-serif font-bold text-stone-900">
-            Article Not Found
-          </h1>
-          <p className="text-xs sm:text-sm text-stone-600 leading-relaxed">
-            The article you're looking for doesn't exist, has been unpublished, or the link may have changed.
-          </p>
-          <div className="pt-2">
-            <Link
-              href="/blog"
-              className="inline-flex items-center text-xs font-semibold text-[hsl(var(--primary))] hover:underline gap-1.5"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Return to The Vedic School Blog
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <NotFound />;
   }
 
   const categoryMeta = BLOG_CATEGORY_META[post.category] || BLOG_CATEGORY_META['vedic-maths'];
@@ -248,8 +126,31 @@ export default function BlogPostPage() {
       })
     : '';
 
+  const schema =
+    post.slug === 'vedic-maths-vs-abacus'
+      ? getVedicMathsVsAbacusArticleSchema()
+      : getBlogPostSchema({
+          ...post,
+          featured_image: coverUrl,
+        });
+
   return (
     <div className="bg-[hsl(var(--background))] min-h-screen pt-28 pb-20">
+      <Seo
+        title={post.seo_title || `${post.title} | The Vedic School`}
+        description={post.seo_description || post.excerpt || 'Practical ideas and insights from The Vedic School.'}
+        path={`/blog/${post.slug}`}
+        ogType="article"
+        ogImage={coverUrl || undefined}
+        ogImageWidth={1200}
+        ogImageHeight={630}
+        articleMeta={{
+          publishedTime: post.published_at ? post.published_at.split('T')[0] : '2026-09-12',
+          modifiedTime: post.updated_at ? post.updated_at.split('T')[0] : '2026-09-12',
+          author: post.author || 'Meenakshi Koul',
+        }}
+        schema={schema}
+      />
       {/* Top Breadcrumb & Return Link */}
       <div className="container mx-auto px-4 sm:px-6 max-w-4xl mb-6 sm:mb-8">
         <Link

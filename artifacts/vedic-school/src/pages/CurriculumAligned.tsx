@@ -13,10 +13,13 @@ import {
   ClosingCTABand,
 } from '@/components/ui-patterns';
 import { testimonials } from '@/data/testimonials';
+import { CURRICULUM_ALIGNED_FAQS } from '@/data/faqs';
 import { Button } from '@/components/Button';
 import { useAssessmentModal } from '@/context/DemoModalContext';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
+import { Seo } from '@/seo/Seo';
+import { getCurriculumAlignedSchema } from '@/seo/schema';
 
 const shifts = [
   {
@@ -109,28 +112,7 @@ const journey = [
   { icon: Target, label: 'Apply', description: 'Use it in schoolwork, unfamiliar and exam-style problems.' },
 ];
 
-const faqs = [
-  {
-    question: 'Who are these classes for?',
-    answer: 'For children who understand some Maths but struggle to apply it, have gaps in earlier concepts, find it difficult to keep up with schoolwork, need more individual attention, or want stronger preparation for tests and exams.',
-  },
-  {
-    question: 'Where does my child start?',
-    answer: "We start with where your child actually is. We look at their current schoolwork and identify whether a gap in an earlier concept is making the current topic difficult. If it is, we work on that foundation before moving forward. The starting point is always their actual level, not simply their grade.",
-  },
-  {
-    question: "Does my child's class follow their school textbook and syllabus?",
-    answer: 'Yes. Classes are built around what your child is actually learning at school, using their current topics and textbook where relevant. The exact content depends on their school and board.',
-  },
-  {
-    question: 'Which boards do you support?',
-    answer: 'I currently work with students following CBSE, ICSE and IB curricula. The exact topics covered depend on the child\'s school curriculum and learning needs.',
-  },
-  {
-    question: 'Is this a replacement for school Maths?',
-    answer: 'No. These classes complement school by giving your child focused teaching, practice and individual support around the Maths they are already learning.',
-  },
-];
+const faqs = CURRICULUM_ALIGNED_FAQS;
 
 const gradeThemes = [
   {
@@ -167,6 +149,12 @@ export default function CurriculumAligned() {
   const { openAssessmentModal } = useAssessmentModal();
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <Seo
+        title="Curriculum-Aligned Classes | The Vedic School"
+        description="Focused Maths teaching aligned with school curriculum (CBSE, ICSE, IB), addressing conceptual gaps and building lasting confidence."
+        path="/curriculum-aligned"
+        schema={getCurriculumAlignedSchema()}
+      />
 
       {/* HERO */}
       <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-20 border-b border-border/30 overflow-hidden">

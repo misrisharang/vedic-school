@@ -19,6 +19,8 @@ import { testimonials } from '@/data/testimonials';
 import meenakshiPhoto from '@assets/WhatsApp_Image_2026-08-06_at_12.17.56-removebg-preview_1786000177260.png';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
+import { Seo } from '@/seo/Seo';
+import { getHomeSchema } from '@/seo/schema';
 
 const shifts = [
   {
@@ -107,6 +109,15 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
+      <Seo
+        title="The Vedic School — Vedic Maths & Curriculum-Aligned Classes"
+        description="Meenakshi Koul teaches Vedic Maths and curriculum-aligned classes across CBSE, ICSE, IB and beyond, in Gurugram and online. Book a free demo class."
+        path="/"
+        ogImage="/og/home.jpg"
+        ogImageWidth={1200}
+        ogImageHeight={630}
+        schema={getHomeSchema()}
+      />
       {/* HERO SECTION */}
       <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-20 overflow-hidden">
         <div className="absolute inset-0 z-0 opacity-20 pointer-events-none"
@@ -337,13 +348,22 @@ export default function Home() {
           </FadeIn>
           <FadeInStagger className="grid sm:grid-cols-3 gap-4 max-w-5xl mx-auto mb-10">
             {[
-              "What is Vedic Maths?",
-              "Three multiplication tricks any child can learn this week",
-              "What good curriculum tuition should actually look like"
-            ].map((title, i) => (
+              {
+                title: "Vedic Maths vs Abacus: Which Is Better?",
+                href: "/blog/vedic-maths-vs-abacus",
+              },
+              {
+                title: "Three multiplication tricks any child can learn this week",
+                href: "/blog",
+              },
+              {
+                title: "What good curriculum tuition should actually look like",
+                href: "/blog",
+              },
+            ].map((item, i) => (
               <FadeInStaggerItem key={i}>
-                <Link href="/blog" className="block bg-background border border-border/40 rounded-2xl px-6 py-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
-                  <span className="font-serif text-base text-foreground/80 hover:text-primary transition-colors leading-snug">{title}</span>
+                <Link href={item.href} className="block bg-background border border-border/40 rounded-2xl px-6 py-5 shadow-xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 h-full">
+                  <span className="font-serif text-base text-foreground/80 hover:text-primary transition-colors leading-snug">{item.title}</span>
                 </Link>
               </FadeInStaggerItem>
             ))}
