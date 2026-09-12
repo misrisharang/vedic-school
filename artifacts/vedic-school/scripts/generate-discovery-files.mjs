@@ -22,6 +22,8 @@ const PUBLIC_ROUTES = [
   '/contact',
   '/blog',
   '/blog/vedic-maths-vs-abacus',
+  '/blog/is-vedic-maths-useful',
+  '/blog/best-vedic-maths-online-classes-for-kids',
   '/privacy-policy',
   '/terms-of-service',
   '/cookie-policy',
