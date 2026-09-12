@@ -8,6 +8,7 @@
 import fs from 'fs';
 import path from 'path';
 import http from 'http';
+import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import puppeteer from 'puppeteer';
 
@@ -183,7 +184,7 @@ async function main() {
 
   // Launch headless browser
   console.log('[prerender] Launching headless browser...');
-  const browser = await puppeteer.launch({
+  const launchOptions = {
     headless: true,
     args: [
       '--no-sandbox',
@@ -193,7 +194,20 @@ async function main() {
       '--no-first-run',
       '--no-zygote',
     ],
-  });
+  };
+
+  let browser;
+  try {
+    browser = await puppeteer.launch(launchOptions);
+  } catch (err) {
+    if (err.message && err.message.includes('Could not find Chrome')) {
+      console.log('[prerender] Chrome not found in environment cache. Installing Chrome now...');
+      execSync('npx puppeteer browsers install chrome', { stdio: 'inherit' });
+      browser = await puppeteer.launch(launchOptions);
+    } else {
+      throw err;
+    }
+  }
 
   const results = [];
 
