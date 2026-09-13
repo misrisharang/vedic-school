@@ -47,12 +47,12 @@ export default function TermsOfService() {
                 <p>
                   Welcome to The Vedic School. These Terms of Service (&quot;Terms&quot;) govern your access to and use of the The Vedic School website at{' '}
                   <a
-                    href="https://thevedicschool.com"
+                    href="https://www.thevedicschool.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary underline hover:text-[#A84824] transition-colors"
                   >
-                    https://thevedicschool.com
+                    https://www.thevedicschool.com
                   </a>{' '}
                   and your interactions with our educational services.
                 </p>

@@ -99,12 +99,12 @@ export default function CookiePolicy() {
                   <li>
                     <strong className="text-foreground">Website</strong> refers to The Vedic School, accessible from{' '}
                     <a
-                      href="https://thevedicschool.com"
+                      href="https://www.thevedicschool.com"
                       target="_blank"
                       rel="external nofollow noopener noreferrer"
                       className="text-primary underline hover:text-[#A84824] transition-colors"
                     >
-                      https://thevedicschool.com
+                      https://www.thevedicschool.com
                     </a>
                     .
                   </li>

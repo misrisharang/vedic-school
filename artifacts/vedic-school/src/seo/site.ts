@@ -10,7 +10,7 @@
  */
 export const SITE_URL: string = (
   (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SITE_URL) ||
-  'https://thevedicschool.com'
+  'https://www.thevedicschool.com'
 ).replace(/\/+$/, '');
 
 /**
@@ -18,10 +18,10 @@ export const SITE_URL: string = (
  * Ensures that the path begins with a single leading slash and avoids double slashes.
  *
  * @example
- * abs('/about')  // 'https://thevedicschool.com/about'
- * abs('about')   // 'https://thevedicschool.com/about'
- * abs('/')       // 'https://thevedicschool.com/'
- * abs('')        // 'https://thevedicschool.com'
+ * abs('/about')  // 'https://www.thevedicschool.com/about'
+ * abs('about')   // 'https://www.thevedicschool.com/about'
+ * abs('/')       // 'https://www.thevedicschool.com/'
+ * abs('')        // 'https://www.thevedicschool.com'
  */
 export function abs(path: string = ''): string {
   if (!path) {

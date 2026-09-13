@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
 
-const SITE_URL = (process.env.VITE_SITE_URL || 'https://thevedicschool.com').replace(/\/+$/, '');
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://www.thevedicschool.com').replace(/\/+$/, '');
 
 const PUBLIC_ROUTES = [
   '/',
@@ -40,7 +40,7 @@ ${PUBLIC_ROUTES.map(route => {
 `;
 
 fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
-console.log('✓ Generated public/sitemap.xml (10 URLs)');
+console.log('✓ Generated public/sitemap.xml (12 URLs)');
 
 // 2. Generate robots.txt
 const robotsTxt = `User-agent: *

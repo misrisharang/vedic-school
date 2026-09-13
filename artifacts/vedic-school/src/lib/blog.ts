@@ -56,11 +56,17 @@ function normalizePost(post: BlogPost): BlogPost {
   if (content && content.includes('Meenakshi Khar')) {
     content = content.replaceAll('Meenakshi Khar', 'Meenakshi Koul');
   }
-  if (content && content.includes('https://the-vedic-school.netlify.app')) {
-    content = content.replaceAll('https://the-vedic-school.netlify.app', '');
+  if (content) {
+    content = content
+      .replaceAll('https://the-vedic-school.netlify.app', '')
+      .replaceAll('https://www.thevedicschool.com', '')
+      .replaceAll('https://thevedicschool.com', '');
   }
-  if (content_markdown && content_markdown.includes('https://the-vedic-school.netlify.app')) {
-    content_markdown = content_markdown.replaceAll('https://the-vedic-school.netlify.app', '');
+  if (content_markdown) {
+    content_markdown = content_markdown
+      .replaceAll('https://the-vedic-school.netlify.app', '')
+      .replaceAll('https://www.thevedicschool.com', '')
+      .replaceAll('https://thevedicschool.com', '');
   }
   return { ...post, author, content, content_markdown };
 }

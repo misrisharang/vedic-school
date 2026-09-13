@@ -11,6 +11,13 @@
   function = "blog-slug-validator"
   path = "/blog/*"
 
+# Canonical redirect: apex domain to www primary domain
+[[redirects]]
+  from = "https://thevedicschool.com/*"
+  to = "https://www.thevedicschool.com/:splat"
+  status = 301
+  force = true
+
 # Client-side SPA rewrites for private admin routes (HTTP 200)
 [[redirects]]
   from = "/admin"

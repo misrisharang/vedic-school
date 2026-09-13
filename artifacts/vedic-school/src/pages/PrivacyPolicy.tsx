@@ -50,12 +50,12 @@ export default function PrivacyPolicy() {
                 <p>
                   Our website is available at{' '}
                   <a
-                    href="https://thevedicschool.com"
+                    href="https://www.thevedicschool.com"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary underline hover:text-[#A84824] transition-colors"
                   >
-                    thevedicschool.com
+                    www.thevedicschool.com
                   </a>
                   .
                 </p>

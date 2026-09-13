@@ -151,6 +151,72 @@ function AdminRoot() {
 }
 
 export default function Admin() {
+  React.useEffect(() => {
+    const originalTitle = document.title;
+    document.title = 'Admin | The Vedic School';
+
+    let robotsMeta = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
+    let createdRobots = false;
+    let originalRobots = '';
+
+    if (!robotsMeta) {
+      robotsMeta = document.createElement('meta');
+      robotsMeta.name = 'robots';
+      robotsMeta.content = 'noindex, nofollow';
+      document.head.appendChild(robotsMeta);
+      createdRobots = true;
+    } else {
+      originalRobots = robotsMeta.content;
+      robotsMeta.content = 'noindex, nofollow';
+    }
+
+    const canonicalLink = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    const originalCanonical = canonicalLink?.getAttribute('href') || null;
+    if (canonicalLink) {
+      canonicalLink.remove();
+    }
+
+    const jsonLdScripts = document.querySelectorAll('script[type="application/ld+json"]');
+    const removedScripts: { node: Node; parent: Node }[] = [];
+    jsonLdScripts.forEach((script) => {
+      if (script.parentNode) {
+        removedScripts.push({ node: script, parent: script.parentNode });
+        script.parentNode.removeChild(script);
+      }
+    });
+
+    return () => {
+      if (
+        !originalTitle ||
+        originalTitle.toLowerCase().includes('admin') ||
+        originalTitle.includes('404')
+      ) {
+        document.title = 'The Vedic School | Vedic Maths & Curriculum-Aligned Classes';
+      } else {
+        document.title = originalTitle;
+      }
+
+      if (robotsMeta) {
+        if (createdRobots) {
+          robotsMeta.remove();
+        } else {
+          robotsMeta.content = originalRobots;
+        }
+      }
+
+      if (originalCanonical) {
+        const restoredCanonical = document.createElement('link');
+        restoredCanonical.rel = 'canonical';
+        restoredCanonical.href = originalCanonical;
+        document.head.appendChild(restoredCanonical);
+      }
+
+      removedScripts.forEach(({ node, parent }) => {
+        parent.appendChild(node);
+      });
+    };
+  }, []);
+
   return (
     <AdminAuthProvider>
       <AdminRoot />
