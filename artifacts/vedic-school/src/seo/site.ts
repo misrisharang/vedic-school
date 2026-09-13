@@ -10,7 +10,7 @@
  */
 export const SITE_URL: string = (
   (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_SITE_URL) ||
-  'https://the-vedic-school.netlify.app'
+  'https://thevedicschool.com'
 ).replace(/\/+$/, '');
 
 /**
@@ -18,10 +18,10 @@ export const SITE_URL: string = (
  * Ensures that the path begins with a single leading slash and avoids double slashes.
  *
  * @example
- * abs('/about')  // 'https://the-vedic-school.netlify.app/about'
- * abs('about')   // 'https://the-vedic-school.netlify.app/about'
- * abs('/')       // 'https://the-vedic-school.netlify.app/'
- * abs('')        // 'https://the-vedic-school.netlify.app'
+ * abs('/about')  // 'https://thevedicschool.com/about'
+ * abs('about')   // 'https://thevedicschool.com/about'
+ * abs('/')       // 'https://thevedicschool.com/'
+ * abs('')        // 'https://thevedicschool.com'
  */
 export function abs(path: string = ''): string {
   if (!path) {

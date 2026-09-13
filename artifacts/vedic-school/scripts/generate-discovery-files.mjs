@@ -12,7 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
 
-const SITE_URL = (process.env.VITE_SITE_URL || 'https://the-vedic-school.netlify.app').replace(/\/+$/, '');
+const SITE_URL = (process.env.VITE_SITE_URL || 'https://thevedicschool.com').replace(/\/+$/, '');
 
 const PUBLIC_ROUTES = [
   '/',

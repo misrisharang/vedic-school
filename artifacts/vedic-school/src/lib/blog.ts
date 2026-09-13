@@ -49,14 +49,20 @@ export function getBlogImageUrl(pathOrUrl: string | null | undefined): string | 
 }
 
 function normalizePost(post: BlogPost): BlogPost {
-  let { author, content } = post;
+  let { author, content, content_markdown } = post;
   if (author === 'Meenakshi Khar') {
     author = 'Meenakshi Koul';
   }
   if (content && content.includes('Meenakshi Khar')) {
     content = content.replaceAll('Meenakshi Khar', 'Meenakshi Koul');
   }
-  return { ...post, author, content };
+  if (content && content.includes('https://the-vedic-school.netlify.app')) {
+    content = content.replaceAll('https://the-vedic-school.netlify.app', '');
+  }
+  if (content_markdown && content_markdown.includes('https://the-vedic-school.netlify.app')) {
+    content_markdown = content_markdown.replaceAll('https://the-vedic-school.netlify.app', '');
+  }
+  return { ...post, author, content, content_markdown };
 }
 
 /**
