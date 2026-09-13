@@ -375,7 +375,7 @@ export function FeatureGrid({
           return (
             <FadeInStaggerItem key={i}>
               <div className="bg-white p-8 rounded-2xl shadow-sm border border-border/40 flex flex-col card-lift h-full">
-                <h4 className="font-serif text-xl text-foreground mb-3">{item.title}</h4>
+                <div className="font-serif text-xl text-foreground mb-3 font-medium">{item.title}</div>
                 <p className="text-foreground/70 text-sm leading-relaxed">{item.body}</p>
               </div>
             </FadeInStaggerItem>
@@ -396,9 +396,9 @@ export function FeatureGrid({
                   {num}
                 </span>
               </div>
-              <h4 className={`font-serif text-xl sm:text-2xl ${theme.title} mb-3 font-medium`}>
+              <div className={`font-serif text-xl sm:text-2xl ${theme.title} mb-3 font-medium`}>
                 {item.title}
-              </h4>
+              </div>
               <p className={`${theme.body} text-sm sm:text-[15px] leading-relaxed flex-1`}>
                 {item.body}
               </p>

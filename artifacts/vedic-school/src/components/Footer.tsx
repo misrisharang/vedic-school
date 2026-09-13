@@ -69,7 +69,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-sans font-semibold tracking-wider text-xs uppercase text-background/50 mb-6">Programs</h4>
+            <p className="font-sans font-semibold tracking-wider text-xs uppercase text-background/50 mb-6">Programs</p>
             <ul className="space-y-4">
               <li><Link href="/vedic-maths" className="text-background/80 hover:text-white transition-colors text-sm">Vedic Maths</Link></li>
               <li><Link href="/curriculum-aligned" className="text-background/80 hover:text-white transition-colors text-sm">Curriculum-Aligned Maths</Link></li>
@@ -77,7 +77,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-sans font-semibold tracking-wider text-xs uppercase text-background/50 mb-6">Company</h4>
+            <p className="font-sans font-semibold tracking-wider text-xs uppercase text-background/50 mb-6">Company</p>
             <ul className="space-y-4">
               <li><Link href="/about" className="text-background/80 hover:text-white transition-colors text-sm">About Meenakshi Koul</Link></li>
               <li><Link href="/#testimonials" className="text-background/80 hover:text-white transition-colors text-sm">Testimonials</Link></li>
@@ -86,7 +86,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-sans font-semibold tracking-wider text-xs uppercase text-background/50 mb-6">Contact</h4>
+            <p className="font-sans font-semibold tracking-wider text-xs uppercase text-background/50 mb-6">Contact</p>
             <ul className="space-y-4">
               <li>
                 <a href="mailto:meenakshi@thevedicschool.com" className="text-background/80 hover:text-white transition-colors text-sm">

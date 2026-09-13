@@ -196,14 +196,14 @@ export const PUBLISHED_ARTICLES: BlogPost[] = [
   },
   {
     id: 'best-vedic-maths-online-classes-for-kids',
-    title: '8 Best Vedic Maths Online Classes for Kids (2026 Comparison)',
+    title: '8 Best Vedic Maths Online Classes for Kids in 2026',
     slug: 'best-vedic-maths-online-classes-for-kids',
     excerpt:
       'I compared 8 popular Vedic Maths online classes for kids in 2026 on price, format, 1:1 vs group, and what Reddit says. Here is what to know before you pay.',
     content: BEST_VEDIC_MATHS_ONLINE_CLASSES_CONTENT,
     featured_image: '/og/vedic-maths-vs-abacus.jpg',
     category: 'vedic-maths',
-    author: 'Meenakshi Khar',
+    author: 'Meenakshi Koul',
     reading_time: 12,
     status: 'published',
     published_at: '2026-09-12T00:00:00.000Z',
