@@ -17,7 +17,7 @@ import { CURRICULUM_ALIGNED_FAQS } from '@/data/faqs';
 import { Button } from '@/components/Button';
 import { useAssessmentModal } from '@/context/DemoModalContext';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
-import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
+import tutoringPhoto from '@assets/curriculum-aligned-girl-studying.jpg';
 import { Seo } from '@/seo/Seo';
 import { getCurriculumAlignedSchema } from '@/seo/schema';
 
@@ -176,17 +176,16 @@ export default function CurriculumAligned() {
               <p className="text-xs text-foreground/60 mt-4">Find out where they are and what they need.</p>
             </FadeIn>
 
-            <FadeIn delay={0.2} className="relative h-[340px] lg:h-[440px] flex items-center justify-center">
-              <div className="absolute inset-0 bg-primary/10 rounded-[40%_60%_70%_30%/40%_50%_60%_50%] blur-3xl animate-[spin_20s_linear_infinite]" />
-              <div className="absolute inset-8 bg-secondary/5 rounded-[60%_40%_30%_70%/50%_40%_60%_50%] blur-2xl animate-[spin_25s_linear_infinite_reverse]" />
-              <img
-                src={heroIllustration}
-                alt="Abstract mathematical concepts"
-                className="relative z-10 w-full max-w-sm h-auto object-contain drop-shadow-2xl"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
+            <FadeIn delay={0.2} className="relative flex items-center justify-center">
+              <div className="w-full max-w-md lg:max-w-lg aspect-square rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
+                <img
+                  src={tutoringPhoto}
+                  alt="Mentor helping a student work through a Maths problem"
+                  className="w-full h-full object-cover object-[50%_35%]"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
             </FadeIn>
           </div>
         </div>

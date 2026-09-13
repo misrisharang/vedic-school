@@ -48,6 +48,17 @@ export function getBlogImageUrl(pathOrUrl: string | null | undefined): string | 
   return data?.publicUrl || null;
 }
 
+function normalizePost(post: BlogPost): BlogPost {
+  let { author, content } = post;
+  if (author === 'Meenakshi Khar') {
+    author = 'Meenakshi Koul';
+  }
+  if (content && content.includes('Meenakshi Khar')) {
+    content = content.replaceAll('Meenakshi Khar', 'Meenakshi Koul');
+  }
+  return { ...post, author, content };
+}
+
 /**
  * Fetches published blog posts, optionally filtered by category.
  * Ordered chronologically by published_at DESC.
@@ -74,7 +85,7 @@ export async function fetchPublishedBlogPosts(options?: {
 
       const { data, error } = await query;
       if (!error && data) {
-        supabasePosts = data as BlogPost[];
+        supabasePosts = (data as BlogPost[]).map(normalizePost);
       } else if (error) {
         fetchError = error.message;
       }
@@ -85,7 +96,7 @@ export async function fetchPublishedBlogPosts(options?: {
 
   // Combine with baseline published articles (avoiding duplicates by slug)
   const existingSlugs = new Set(supabasePosts.map((p) => p.slug));
-  let staticMatches = PUBLISHED_ARTICLES.filter((p) => !existingSlugs.has(p.slug));
+  let staticMatches = PUBLISHED_ARTICLES.filter((p) => !existingSlugs.has(p.slug)).map(normalizePost);
 
   if (options?.category) {
     staticMatches = staticMatches.filter((p) => p.category === options.category);
@@ -122,7 +133,7 @@ export async function fetchFeaturedBlogPost(): Promise<{
         .maybeSingle();
 
       if (!error && data) {
-        return { post: data as BlogPost };
+        return { post: normalizePost(data as BlogPost) };
       }
     } catch {
       // fallback
@@ -131,7 +142,7 @@ export async function fetchFeaturedBlogPost(): Promise<{
 
   const staticFeatured =
     PUBLISHED_ARTICLES.find((p) => p.is_featured) || PUBLISHED_ARTICLES[0] || null;
-  return { post: staticFeatured };
+  return { post: staticFeatured ? normalizePost(staticFeatured) : null };
 }
 
 /**
@@ -151,7 +162,7 @@ export async function fetchPublishedPostBySlug(slug: string): Promise<{
         .maybeSingle();
 
       if (!error && data) {
-        return { post: data as BlogPost };
+        return { post: normalizePost(data as BlogPost) };
       }
     } catch {
       // fallback
@@ -159,5 +170,5 @@ export async function fetchPublishedPostBySlug(slug: string): Promise<{
   }
 
   const staticPost = PUBLISHED_ARTICLES.find((p) => p.slug === slug) || null;
-  return { post: staticPost, error: staticPost ? undefined : 'Article not found.' };
+  return { post: staticPost ? normalizePost(staticPost) : null, error: staticPost ? undefined : 'Article not found.' };
 }

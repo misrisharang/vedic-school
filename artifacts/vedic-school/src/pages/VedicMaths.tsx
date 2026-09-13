@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, PenLine, Target, Sparkles, Sigma } from 'lucide-react';
+import { BookOpen, PenLine, Target, Sparkles } from 'lucide-react';
 import { Button } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
 import {
@@ -18,7 +18,8 @@ import {
 import { testimonials } from '@/data/testimonials';
 import { VEDIC_MATHS_FAQS } from '@/data/faqs';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
-import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
+import boyStudyingPhoto from '@assets/vedic-maths-boy-studying.jpg';
+import workbookPhoto from '@assets/vedic-maths-workbook.jpg';
 import { Seo } from '@/seo/Seo';
 import { getVedicMathsSchema } from '@/seo/schema';
 
@@ -130,20 +131,18 @@ export default function VedicMaths() {
                 Vedic Maths is a collection of techniques from ancient Indian mathematics that gives children more flexible ways to work with numbers — making calculation faster, clearer and more confident.
               </p>
               <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
-              <p className="text-xs text-foreground/60 mt-4">See the method in a real class. No pressure, no commitment.</p>
             </FadeIn>
 
-            <FadeIn delay={0.2} className="relative h-[340px] lg:h-[440px] flex items-center justify-center">
-              <div className="absolute inset-0 bg-secondary/10 rounded-[40%_60%_70%_30%/40%_50%_60%_50%] blur-3xl animate-[spin_20s_linear_infinite]" />
-              <div className="absolute inset-8 bg-primary/5 rounded-[60%_40%_30%_70%/50%_40%_60%_50%] blur-2xl animate-[spin_25s_linear_infinite_reverse]" />
-              <img
-                src={heroIllustration}
-                alt="Abstract mathematical concepts"
-                className="relative z-10 w-full max-w-sm h-auto object-contain drop-shadow-2xl"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
-              />
+            <FadeIn delay={0.2} className="relative flex items-center justify-center">
+              <div className="w-full max-w-md lg:max-w-lg aspect-[3/2] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
+                <img
+                  src={boyStudyingPhoto}
+                  alt="Child working on Maths at home"
+                  className="w-full h-full object-cover object-center"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
             </FadeIn>
           </div>
         </div>
@@ -166,11 +165,14 @@ export default function VedicMaths() {
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <FadeIn className="relative flex justify-center order-2 md:order-1">
-              <div className="absolute w-[80%] h-[85%] bg-secondary/15 rounded-[40%_60%_70%_30%/40%_50%_60%_50%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-6 blur-lg" />
-              <div className="absolute w-[70%] h-[75%] bg-primary/10 rounded-[60%_40%_30%_70%/50%_40%_60%_50%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-6 blur-md" />
-              <div className="relative z-10 w-full aspect-square max-w-sm rounded-[2rem] bg-white/70 border border-border/40 shadow-sm flex flex-col items-center justify-center gap-3">
-                <Sigma className="w-14 h-14 text-primary/50" strokeWidth={1.5} />
-                <span className="text-xs font-sans uppercase tracking-wider text-foreground/40">Image placeholder</span>
+              <div className="w-full max-w-sm sm:max-w-md aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
+                <img
+                  src={workbookPhoto}
+                  alt="Child working through Maths problems in a workbook"
+                  className="w-full h-full object-cover object-center"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
             </FadeIn>
 

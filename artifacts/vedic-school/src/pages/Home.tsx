@@ -16,7 +16,7 @@ import {
   ClosingCTABand,
 } from '@/components/ui-patterns';
 import { testimonials } from '@/data/testimonials';
-import meenakshiPhoto from '@assets/WhatsApp_Image_2026-08-06_at_12.17.56-removebg-preview_1786000177260.png';
+import meenakshiPhoto from '@assets/meenakshi-koul-portrait.jpg';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
 import { Seo } from '@/seo/Seo';
@@ -150,12 +150,9 @@ export default function Home() {
 
             <FadeIn className="max-w-2xl">
               <span className="sage-eyebrow">CALM · CAPABLE · CONFIDENT</span>
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-foreground leading-[1.15] sm:leading-[1.1] tracking-tight mb-4">
-                Where Maths stops feeling like <span className="text-primary italic">guesswork</span>.
-              </h1>
-              <p className="text-lg sm:text-xl md:text-2xl font-serif text-foreground/90 font-medium mb-4 max-w-xl">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-serif text-foreground leading-[1.15] sm:leading-[1.1] tracking-tight mb-6">
                 Watch 'I can't do Maths' become 'I can.'
-              </p>
+              </h1>
               <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed mb-4 max-w-xl">
                 At The Vedic School, children build understanding, fluency and confidence — so they stop second-guessing every step.
               </p>
@@ -300,14 +297,15 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
             <FadeIn className="relative flex justify-center">
-              <div className="absolute w-[80%] h-[90%] bg-primary/20 rounded-[40%_60%_70%_30%/40%_50%_60%_50%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-12 blur-lg" />
-              <div className="absolute w-[70%] h-[100%] bg-secondary/20 rounded-[60%_40%_30%_70%/50%_40%_60%_50%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-12 blur-md" />
-
-              <img
-                src={meenakshiPhoto}
-                alt="Meenakshi Koul"
-                className="relative z-10 w-[85%] max-w-sm h-auto drop-shadow-2xl scale-105"
-              />
+              <div className="w-full max-w-sm sm:max-w-md aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
+                <img
+                  src={meenakshiPhoto}
+                  alt="Meenakshi Koul, founder and mentor of The Vedic School"
+                  className="w-full h-full object-cover object-[48%_20%] scale-110 origin-[48%_26%]"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
             </FadeIn>
 
             <FadeIn delay={0.2}>

@@ -3,7 +3,7 @@ import { Link } from 'wouter';
 import { FadeIn, SectionHeader, ClosingCTABand } from '@/components/ui-patterns';
 import { Button, buttonVariants } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
-import meenakshiPhoto from '@assets/WhatsApp_Image_2026-08-06_at_12.17.56-removebg-preview_1786000177260.png';
+import meenakshiPhoto from '@assets/meenakshi-koul-portrait.jpg';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import { Seo } from '@/seo/Seo';
 import { getAboutSchema } from '@/seo/schema';
@@ -76,18 +76,14 @@ export default function About() {
 
             {/* Left: Photo */}
             <FadeIn className="relative flex justify-center order-2 lg:order-1 mt-10 lg:mt-0">
-              <div className="absolute w-[80%] h-[90%] bg-secondary/20 rounded-[40%_60%_70%_30%/50%_40%_60%_50%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-6 blur-md" />
-              <div className="absolute w-[85%] h-[85%] bg-primary/10 rounded-[60%_40%_30%_70%/40%_50%_60%_50%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-12 blur-lg" />
-
-              <img
-                src={meenakshiPhoto}
-                alt="Meenakshi Koul"
-                className="relative z-10 w-full max-w-md h-auto drop-shadow-[0_20px_40px_rgba(59,66,76,0.15)] scale-110 object-contain origin-bottom"
-              />
-
-              <div className="absolute top-10 right-0 sm:-right-4 lg:-right-12 z-20 bg-white shadow-xl rounded-full px-4 sm:px-5 py-2.5 sm:py-3 flex items-center gap-2.5 sm:gap-3 border border-border/50 animate-[bounce_5s_ease-in-out_infinite]">
-                <div className="w-2 h-2 rounded-full bg-primary" />
-                <span className="font-sans font-medium text-xs sm:text-sm text-foreground">15+ Years Teaching</span>
+              <div className="w-full max-w-md lg:max-w-lg aspect-[3/4] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg shadow-stone-900/5 border border-border/40 bg-stone-100/50">
+                <img
+                  src={meenakshiPhoto}
+                  alt="Meenakshi Koul, founder and mentor of The Vedic School"
+                  className="w-full h-full object-cover object-[50%_20%]"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
             </FadeIn>
 
