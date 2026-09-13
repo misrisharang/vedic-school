@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'wouter';
 import { Instagram, Facebook, Youtube, Linkedin } from 'lucide-react';
-import logoImg from '@assets/ChatGPT_Image_Jul_22,_2026,_06_12_07_PM_(1)_1786009245523.png';
+import logoImg from '@assets/the-vedic-school-footer-logo.png';
 
 export function Footer() {
   return (
@@ -10,15 +10,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           
           <div className="col-span-1 lg:col-span-1">
-            <div className="mb-6">
+            <div className="mb-10">
               <Link href="/" className="inline-block">
-                <img src={logoImg} alt="The Vedic School" className="h-10 w-auto brightness-[2] contrast-75" />
+                <img src={logoImg} alt="The Vedic School" className="h-11 w-auto" />
               </Link>
             </div>
             <p className="text-background/70 text-sm leading-relaxed max-w-xs">
               Personalised mathematics teaching built around the child, developing understanding, fluency, and lasting confidence.
             </p>
-            <div className="mt-6 flex gap-4">
+            <div className="mt-8 flex gap-4">
               <a
                 href="https://www.instagram.com/thevedicschool/"
                 target="_blank"
