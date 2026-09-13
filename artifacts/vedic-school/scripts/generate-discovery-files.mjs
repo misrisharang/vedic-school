@@ -1,7 +1,8 @@
 // ==============================================================================
 // THE VEDIC SCHOOL — DISCOVERY FILES GENERATOR
 // ==============================================================================
-// Generates robots.txt, sitemap.xml, and llm.txt using canonical SITE_URL.
+// Generates robots.txt, sitemap.xml, llm.txt, and llms.txt using canonical SITE_URL.
+// Supports dynamic blog articles from Supabase and strict XML validation.
 // ==============================================================================
 
 import fs from 'fs';
@@ -11,10 +12,39 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PUBLIC_DIR = path.resolve(__dirname, '../public');
+const DIST_PUBLIC_DIR = path.resolve(__dirname, '../dist/public');
 
-const SITE_URL = (process.env.VITE_SITE_URL || 'https://www.thevedicschool.com').replace(/\/+$/, '');
+// Read environment variables (supports .env and .env.local)
+function loadEnv() {
+  const env = { ...process.env };
+  const envFiles = [
+    path.resolve(__dirname, '../.env'),
+    path.resolve(__dirname, '../.env.local'),
+  ];
+  for (const f of envFiles) {
+    if (fs.existsSync(f)) {
+      const content = fs.readFileSync(f, 'utf-8');
+      for (const line of content.split('\n')) {
+        const trimmed = line.trim();
+        if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+          const idx = trimmed.indexOf('=');
+          const k = trimmed.slice(0, idx).trim();
+          const v = trimmed.slice(idx + 1).trim();
+          if (!env[k]) {
+            env[k] = v;
+          }
+        }
+      }
+    }
+  }
+  return env;
+}
 
-const PUBLIC_ROUTES = [
+const env = loadEnv();
+const SITE_URL = (env.VITE_SITE_URL || 'https://www.thevedicschool.com').replace(/\/+$/, '');
+
+// Static public routes
+const STATIC_PUBLIC_ROUTES = [
   '/',
   '/vedic-maths',
   '/curriculum-aligned',
@@ -29,32 +59,94 @@ const PUBLIC_ROUTES = [
   '/cookie-policy',
 ];
 
-// 1. Generate sitemap.xml
-const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+// Fetch published blog slugs from Supabase
+async function fetchPublishedBlogSlugs() {
+  const supabaseUrl = env.VITE_SUPABASE_URL;
+  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return [];
+  }
+
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/blog_posts?select=slug&status=eq.published`,
+      {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        return data.map((item) => `/blog/${item.slug}`);
+      }
+    }
+  } catch (err) {
+    console.warn('[discovery] Supabase query for blog slugs skipped:', err.message);
+  }
+  return [];
+}
+
+async function main() {
+  console.log('Generating discovery files with SITE_URL:', SITE_URL);
+
+  const dynamicBlogRoutes = await fetchPublishedBlogSlugs();
+  const allRoutes = Array.from(new Set([...STATIC_PUBLIC_ROUTES, ...dynamicBlogRoutes]));
+
+  // 1. Generate sitemap.xml
+  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${PUBLIC_ROUTES.map(route => {
+${allRoutes.map(route => {
   const loc = route === '/' ? `${SITE_URL}/` : `${SITE_URL}${route}`;
   return `  <url>\n    <loc>${loc}</loc>\n  </url>`;
 }).join('\n')}
 </urlset>
 `;
 
-fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
-console.log('✓ Generated public/sitemap.xml (12 URLs)');
+  // Validate sitemap XML structure before writing
+  if (!sitemapXml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
+    throw new Error('Sitemap XML validation failed: Missing XML declaration');
+  }
+  if (!sitemapXml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) {
+    throw new Error('Sitemap XML validation failed: Missing urlset namespace');
+  }
+  if (!sitemapXml.trimEnd().endsWith('</urlset>')) {
+    throw new Error('Sitemap XML validation failed: Unclosed urlset tag');
+  }
+  if (sitemapXml.includes('<!DOCTYPE') || sitemapXml.includes('<html')) {
+    throw new Error('Sitemap XML validation failed: HTML tags detected in XML sitemap');
+  }
 
-// 2. Generate robots.txt
-const robotsTxt = `User-agent: *
+  // Write to public/
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
+  console.log(`✓ Generated public/sitemap.xml (${allRoutes.length} URLs)`);
+
+  // Also write to dist/public/ if it already exists
+  if (fs.existsSync(DIST_PUBLIC_DIR)) {
+    fs.writeFileSync(path.join(DIST_PUBLIC_DIR, 'sitemap.xml'), sitemapXml, 'utf8');
+    console.log(`✓ Synchronized dist/public/sitemap.xml (${allRoutes.length} URLs)`);
+  }
+
+  // 2. Generate robots.txt
+  const robotsTxt = `User-agent: *
 Allow: /
 Disallow: /admin
 
 Sitemap: ${SITE_URL}/sitemap.xml
 `;
 
-fs.writeFileSync(path.join(PUBLIC_DIR, 'robots.txt'), robotsTxt, 'utf8');
-console.log('✓ Generated public/robots.txt');
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'robots.txt'), robotsTxt, 'utf8');
+  console.log('✓ Generated public/robots.txt');
+  if (fs.existsSync(DIST_PUBLIC_DIR)) {
+    fs.writeFileSync(path.join(DIST_PUBLIC_DIR, 'robots.txt'), robotsTxt, 'utf8');
+    console.log('✓ Synchronized dist/public/robots.txt');
+  }
 
-// 3. Generate llm.txt and llms.txt
-const llmTxt = `# The Vedic School
+  // 3. Generate llm.txt and llms.txt
+  const llmTxt = `# The Vedic School
 
 > Teacher-led mathematics education providing Vedic Maths and curriculum-aligned Maths, focused on building genuine understanding, fluency, and lasting confidence.
 
@@ -85,6 +177,18 @@ The Vedic School is a learning institution founded and taught by Meenakshi Koul.
 - [Cookie Policy](${SITE_URL}/cookie-policy): Details on cookies and tracking technologies used on the site.
 `;
 
-fs.writeFileSync(path.join(PUBLIC_DIR, 'llm.txt'), llmTxt, 'utf8');
-fs.writeFileSync(path.join(PUBLIC_DIR, 'llms.txt'), llmTxt, 'utf8');
-console.log('✓ Generated public/llm.txt and public/llms.txt');
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'llm.txt'), llmTxt, 'utf8');
+  fs.writeFileSync(path.join(PUBLIC_DIR, 'llms.txt'), llmTxt, 'utf8');
+  console.log('✓ Generated public/llm.txt and public/llms.txt');
+  if (fs.existsSync(DIST_PUBLIC_DIR)) {
+    fs.writeFileSync(path.join(DIST_PUBLIC_DIR, 'llm.txt'), llmTxt, 'utf8');
+    fs.writeFileSync(path.join(DIST_PUBLIC_DIR, 'llms.txt'), llmTxt, 'utf8');
+    console.log('✓ Synchronized dist/public/llm.txt and dist/public/llms.txt');
+  }
+}
+
+main().catch((err) => {
+  console.error('[discovery] Fatal error generating discovery files:', err);
+  process.exit(1);
+});
+

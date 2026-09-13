@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
     "build:vite": "vite build --config vite.config.ts",
-    "build": "vite build --config vite.config.ts && node scripts/prerender.mjs",
+    "build": "node scripts/generate-discovery-files.mjs && vite build --config vite.config.ts && node scripts/prerender.mjs",
     "serve": "vite preview --config vite.config.ts --host 0.0.0.0",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
