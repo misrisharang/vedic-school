@@ -11,6 +11,15 @@
   function = "blog-slug-validator"
   path = "/blog/*"
 
+# Legacy Netlify subdomain: permanent redirect to the canonical www domain.
+# Host-scoped, so it only matches requests actually arriving at the old
+# *.netlify.app hostname and never touches the canonical domain itself.
+[[redirects]]
+  from = "https://the-vedic-school.netlify.app/*"
+  to = "https://www.thevedicschool.com/:splat"
+  status = 301
+  force = true
+
 # Canonical redirect: apex domain to www primary domain
 [[redirects]]
   from = "https://thevedicschool.com/*"
@@ -76,4 +85,13 @@
     Content-Type = "text/plain; charset=UTF-8"
     X-Content-Type-Options = "nosniff"
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Baseline security headers, applied site-wide
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 

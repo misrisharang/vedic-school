@@ -48,25 +48,66 @@ const grades = [
   {
     range: 'Grades 1–2',
     focus: 'Building the foundations',
-    areas: 'Numbers and place value; addition and subtraction; early multiplication concepts; shapes and patterns; measurement and time; basic data handling; word problems.',
+    bullets: [
+      'Numbers and place value',
+      'Addition and subtraction',
+      'Early multiplication concepts',
+      'Shapes and patterns',
+      'Measurement and time',
+      'Basic data handling',
+      'Word problems',
+    ],
     aim: 'Understanding numbers and developing confidence with basic operations.',
   },
   {
     range: 'Grades 3–5',
     focus: 'Building fluency and applying concepts',
-    areas: 'Multiplication and division; fractions; decimals; factors and multiples; measurement; area and perimeter; geometry; data handling; multi-step word problems.',
+    bullets: [
+      'Multiplication and division',
+      'Fractions',
+      'Decimals',
+      'Factors and multiples',
+      'Measurement',
+      'Area and perimeter',
+      'Geometry',
+      'Data handling',
+      'Multi-step word problems',
+    ],
     aim: 'Making core operations reliable and applying them across different types of problems.',
   },
   {
     range: 'Grades 6–8',
     focus: 'Moving from arithmetic to algebra',
-    areas: 'Integers and rational numbers; fractions, decimals and percentages; ratios and proportions; algebraic expressions; linear equations; geometry; mensuration; coordinate geometry; data handling and probability.',
+    bullets: [
+      'Integers and rational numbers',
+      'Fractions',
+      'Decimals and percentages',
+      'Ratios and proportions',
+      'Algebraic expressions',
+      'Linear equations',
+      'Geometry',
+      'Mensuration',
+      'Coordinate geometry',
+      'Data handling',
+      'Probability',
+    ],
     aim: 'Developing mathematical reasoning as concepts become more abstract.',
   },
   {
     range: 'Grades 9–10',
     focus: 'Building higher-level understanding',
-    areas: 'Number systems; polynomials; linear equations; quadratic equations; coordinate geometry; geometry and proofs; trigonometry; mensuration; statistics; probability.',
+    bullets: [
+      'Number systems',
+      'Polynomials',
+      'Linear equations',
+      'Quadratic equations',
+      'Coordinate geometry',
+      'Geometry and proofs',
+      'Trigonometry',
+      'Mensuration',
+      'Statistics',
+      'Probability',
+    ],
     aim: 'Connecting concepts, solving multi-step problems and applying understanding in exam situations.',
   },
 ];
@@ -120,6 +161,7 @@ const gradeThemes = [
     bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
     border: 'border-[hsl(var(--block-sage-light-border))]',
     pill: 'bg-[#446342]/15 text-[#3D5E3B]',
+    dot: 'bg-[#446342]/70',
     aimLabel: 'text-[#3D5E3B]/70',
   },
   {
@@ -127,6 +169,7 @@ const gradeThemes = [
     bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
     border: 'border-[hsl(var(--block-terracotta-light-border))]',
     pill: 'bg-primary/15 text-primary',
+    dot: 'bg-primary/70',
     aimLabel: 'text-primary/70',
   },
   {
@@ -134,6 +177,7 @@ const gradeThemes = [
     bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
     border: 'border-[hsl(var(--block-sage-light-border))]',
     pill: 'bg-[#446342]/15 text-[#3D5E3B]',
+    dot: 'bg-[#446342]/70',
     aimLabel: 'text-[#3D5E3B]/70',
   },
   {
@@ -141,6 +185,7 @@ const gradeThemes = [
     bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
     border: 'border-[hsl(var(--block-terracotta-light-border))]',
     pill: 'bg-primary/15 text-primary',
+    dot: 'bg-primary/70',
     aimLabel: 'text-primary/70',
   },
 ];
@@ -204,9 +249,9 @@ export default function CurriculumAligned() {
       </section>
 
       {/* GRADE BY GRADE */}
-      <section className="py-16 md:py-20 bg-[#F0EBE1] border-y border-border/30">
+      <section className="py-12 md:py-16 bg-[#F0EBE1] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
-          <FadeIn className="text-center mb-16 max-w-2xl mx-auto">
+          <FadeIn className="text-center mb-12 md:mb-16 max-w-2xl mx-auto">
             <h2 className="sage-eyebrow">GRADE BY GRADE</h2>
             <p className="text-2xl md:text-3xl font-serif text-foreground mb-4">
               What your child learns changes with every grade.
@@ -216,20 +261,27 @@ export default function CurriculumAligned() {
             </p>
           </FadeIn>
 
-          <FadeInStagger className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+          <FadeInStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 max-w-7xl mx-auto">
             {grades.map((grade, i) => {
               const theme = gradeThemes[i % gradeThemes.length];
               return (
                 <FadeInStaggerItem key={i}>
-                  <div className={`${theme.bg} ${theme.border} border p-8 rounded-2xl shadow-sm h-full flex flex-col card-lift transition-all duration-300`}>
-                    <h3 className="font-serif text-2xl text-foreground mb-3 font-medium">{grade.range}</h3>
+                  <div className={`${theme.bg} ${theme.border} border p-5 sm:p-6 rounded-2xl shadow-sm h-full flex flex-col card-lift transition-all duration-300`}>
+                    <h3 className="font-serif text-xl sm:text-2xl text-foreground mb-3 font-medium">{grade.range}</h3>
                     <span className={`self-start text-xs font-sans font-semibold tracking-wider uppercase rounded-full px-3 py-1 mb-4 ${theme.pill}`}>
                       {grade.focus}
                     </span>
-                    <p className="text-foreground/80 leading-relaxed text-sm mb-6 flex-1">{grade.areas}</p>
-                    <div className="border-t border-border/60 pt-4">
+                    <ul className="space-y-1.5 mb-6 flex-1">
+                      {grade.bullets.map((bullet, bIdx) => (
+                        <li key={bIdx} className="flex items-start text-xs sm:text-[13px] text-foreground/80 leading-snug">
+                          <span className={`w-1.5 h-1.5 rounded-full mt-1.5 mr-2 shrink-0 ${theme.dot}`} />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="border-t border-border/60 pt-4 mt-auto">
                       <span className={`text-xs font-sans font-semibold tracking-wider uppercase block mb-1 ${theme.aimLabel}`}>Primary Aim</span>
-                      <span className="font-serif text-foreground font-medium">{grade.aim}</span>
+                      <span className="font-serif text-foreground font-medium text-xs sm:text-sm leading-snug block">{grade.aim}</span>
                     </div>
                   </div>
                 </FadeInStaggerItem>

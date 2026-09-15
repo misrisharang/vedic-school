@@ -9,7 +9,6 @@ import {
   SectionHeader,
   ShiftList,
   MethodSteps,
-  FeatureGrid,
   TestimonialCard,
   TestimonialPlaceholder,
   FAQAccordion,
@@ -84,13 +83,79 @@ const methodSteps = [
   },
 ];
 
-const skills = [
-  { title: 'Number Sense', body: 'Patterns, relationships and the behaviour of numbers.' },
-  { title: 'Addition & Subtraction', body: 'More flexible ways to approach everyday calculations.' },
-  { title: 'Multiplication', body: 'Moving beyond memorised facts to seeing patterns and relationships.' },
-  { title: 'Division', body: 'Building confidence with calculations that often feel more complicated.' },
-  { title: 'Mental Calculation', body: 'Working through more calculations mentally, with fewer unnecessary steps.' },
-  { title: 'Advanced Techniques', body: 'For children ready to extend their fluency and explore more sophisticated calculations.' },
+const progressionStages = [
+  {
+    number: '01',
+    title: 'Starting Out',
+    focus: 'Building the foundations',
+    bullets: [
+      'Tables',
+      'Quick multiplication and division',
+      'Addition and subtraction',
+      'Square roots of perfect squares',
+      'Cube roots of perfect cubes',
+      'Early algebra',
+      'Squares, cubes and base multiplication',
+    ],
+    aim: 'Building the number fluency every technique after this depends on.',
+  },
+  {
+    number: '02',
+    title: 'Building Speed',
+    focus: 'Building speed and flexibility',
+    bullets: [
+      'Square roots of imperfect numbers',
+      'Fourth powers and roots',
+      'Factorisation of quadratics and cubics',
+      'First-principle equations',
+      'Simultaneous linear equations',
+      'Dates and calendars',
+      'Fractions and recurring decimals',
+    ],
+    aim: 'Turning early fluency into faster, more flexible calculation.',
+  },
+  {
+    number: '03',
+    title: 'Exam-Ready',
+    focus: 'Using Vedic techniques alongside higher-level mathematics',
+    bullets: [
+      'Coordinate geometry',
+      'Quadratic and simultaneous quadratic equations',
+      'Trigonometry',
+      'Complex numbers',
+      'Highest common factor',
+      'Factorisation and an introduction to differential calculus',
+      'Determinants',
+    ],
+    aim: 'Applying the skills to more advanced and exam-level mathematics.',
+  },
+];
+
+const stageThemes = [
+  {
+    // 01: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    pill: 'bg-primary/15 text-primary',
+    dot: 'bg-primary/70',
+    aimLabel: 'text-primary/70',
+  },
+  {
+    // 02: Light Sage
+    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
+    border: 'border-[hsl(var(--block-sage-light-border))]',
+    pill: 'bg-[#446342]/15 text-[#3D5E3B]',
+    dot: 'bg-[#446342]/70',
+    aimLabel: 'text-[#3D5E3B]/70',
+  },
+  {
+    // 03: Light Terracotta
+    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
+    border: 'border-[hsl(var(--block-terracotta-light-border))]',
+    pill: 'bg-primary/15 text-primary',
+    dot: 'bg-primary/70',
+    aimLabel: 'text-primary/70',
+  },
 ];
 
 const journey = [
@@ -204,14 +269,47 @@ export default function VedicMaths() {
       </section>
 
       {/* WHAT YOUR CHILD LEARNS */}
-      <section className="py-16 md:py-20 bg-[#F0EBE1] border-y border-border/30">
+      <section className="py-12 md:py-16 bg-[#F0EBE1] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
             eyebrow="WHAT YOUR CHILD LEARNS"
             title="There's more to Vedic Maths than multiplication."
             subtitle="The skills build as your child's fluency grows."
           />
-          <FeatureGrid items={skills} />
+          <FadeInStagger className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+            {progressionStages.map((stage, i) => {
+              const theme = stageThemes[i % stageThemes.length];
+              return (
+                <FadeInStaggerItem key={i}>
+                  <div className={`${theme.bg} ${theme.border} border p-5 sm:p-6 lg:p-8 rounded-2xl shadow-sm h-full flex flex-col card-lift transition-all duration-300`}>
+                    <h3 className="font-serif text-xl sm:text-2xl text-foreground mb-3 font-medium flex items-baseline">
+                      <span className="font-mono text-base sm:text-lg text-foreground/50 mr-2 shrink-0">{stage.number}</span>
+                      <span>{stage.title}</span>
+                    </h3>
+                    <span className={`self-start text-xs font-sans font-semibold tracking-wider uppercase rounded-full px-3 py-1 mb-4 ${theme.pill}`}>
+                      {stage.focus}
+                    </span>
+                    <ul className="space-y-2 mb-6 flex-1">
+                      {stage.bullets.map((bullet, bIdx) => (
+                        <li key={bIdx} className="flex items-start text-xs sm:text-[13px] text-foreground/80 leading-snug">
+                          <span className={`w-1.5 h-1.5 rounded-full mt-1.5 mr-2.5 shrink-0 ${theme.dot}`} />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="border-t border-border/60 pt-4 mt-auto">
+                      <span className={`text-xs font-sans font-semibold tracking-wider uppercase block mb-1 ${theme.aimLabel}`}>
+                        Primary Aim
+                      </span>
+                      <span className="font-serif text-foreground font-medium text-sm sm:text-base leading-snug block">
+                        {stage.aim}
+                      </span>
+                    </div>
+                  </div>
+                </FadeInStaggerItem>
+              );
+            })}
+          </FadeInStagger>
         </div>
       </section>
 

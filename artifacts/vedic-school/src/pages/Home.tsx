@@ -361,7 +361,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
             eyebrow="THE SCHOOL METHOD"
-            title="Built on 15+ years."
+            title="Built on 20+ years."
             subtitle="One approach, adapted to where your child is today."
           />
           <FadeIn className="max-w-2xl mx-auto text-center mb-12 -mt-8">
@@ -519,7 +519,7 @@ export default function Home() {
       <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <FadeIn className="text-center mb-12 max-w-2xl mx-auto">
-            <h2 className="sage-eyebrow">THE BLOG SECTION</h2>
+            <h2 className="sage-eyebrow">FROM OUR BLOGS</h2>
             <p className="text-2xl md:text-3xl font-serif text-foreground mb-3">Useful Maths, explained simply.</p>
             <p className="text-foreground/70 leading-relaxed">
               Practical guidance for parents — what a vedic maths syllabus covers, how to learn vedic maths, and choosing online vedic maths classes. No jargon.

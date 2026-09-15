@@ -27,7 +27,7 @@ export function getEducationalOrganizationEntity() {
     url: abs('/'),
     logo: {
       '@type': 'ImageObject',
-      url: abs('/logo-512.png'),
+      url: abs('/favicon.png'),
     },
     description:
       'Teacher-led mathematics education offering Vedic Maths and curriculum-aligned learning, focused on building genuine understanding, fluency, and lasting confidence.',
@@ -229,7 +229,7 @@ export function getCurriculumAlignedSchema(faqs: FAQItem[] = CURRICULUM_ALIGNED_
       '@type': 'Service',
       '@id': abs('/curriculum-aligned#service'),
       name: 'Curriculum-Aligned Maths',
-      serviceType: 'Curriculum Mathematics Tutoring',
+      serviceType: 'Curriculum-Aligned Mathematics Instruction',
       provider: {
         '@id': abs('/#organization'),
       },
