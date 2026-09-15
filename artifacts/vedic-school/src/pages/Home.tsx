@@ -16,7 +16,7 @@ import {
   ClosingCTABand,
 } from '@/components/ui-patterns';
 import { testimonials } from '@/data/testimonials';
-import meenakshiPhoto from '@assets/meenakshi-koul-portrait.jpg';
+import meenakshiPhoto from '@assets/meenakshi-founder-portrait.jpg';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
 import { Seo } from '@/seo/Seo';
@@ -25,7 +25,7 @@ import { fetchPublishedBlogPosts, getBlogImageUrl } from '@/lib/blog';
 import { PUBLISHED_ARTICLES } from '@/data/published-articles';
 import { BLOG_CATEGORY_META } from '@/types/blog';
 import type { BlogPost } from '@/types/blog';
-import { ArrowRight, BookOpen, User } from 'lucide-react';
+import { ArrowRight, BookOpen, User, Leaf } from 'lucide-react';
 
 const shifts = [
   {
@@ -100,13 +100,148 @@ const standards = [
   },
 ];
 
+// Shared 5-point star polygon (unit size, centered at origin) reused across flags
+const STAR_PATH =
+  'M 0,-1 L 0.2245,-0.309 L 0.9511,-0.309 L 0.3633,0.118 L 0.5878,0.809 L 0,0.382 L -0.5878,0.809 L -0.3633,0.118 L -0.9511,-0.309 L -0.2245,-0.309 Z';
+
+function Star({ cx, cy, r, fill = '#fff' }: { cx: number; cy: number; r: number; fill?: string }) {
+  return <path d={STAR_PATH} fill={fill} transform={`translate(${cx} ${cy}) scale(${r})`} />;
+}
+
+function UaeFlag({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 4 2" className={className}>
+      <rect x="1" width="3" height="0.667" fill="#00732F" />
+      <rect x="1" y="0.667" width="3" height="0.667" fill="#fff" />
+      <rect x="1" y="1.333" width="3" height="0.667" fill="#000" />
+      <rect width="1" height="2" fill="#FF0000" />
+    </svg>
+  );
+}
+
+function UsaFlag({ className }: { className?: string }) {
+  const stripeH = 2 / 13;
+  const cantonH = stripeH * 7;
+  const cantonW = 1.52;
+  return (
+    <svg viewBox="0 0 3.8 2" className={className}>
+      {Array.from({ length: 13 }).map((_, i) => (
+        <rect key={i} y={i * stripeH} width="3.8" height={stripeH} fill={i % 2 === 0 ? '#B22234' : '#fff'} />
+      ))}
+      <rect width={cantonW} height={cantonH} fill="#3C3B6E" />
+      {Array.from({ length: 9 }).map((_, row) =>
+        Array.from({ length: row % 2 === 0 ? 6 : 5 }).map((_, col) => (
+          <circle
+            key={`${row}-${col}`}
+            cx={0.15 + col * 0.24 + (row % 2 !== 0 ? 0.12 : 0)}
+            cy={0.09 + (row * (cantonH - 0.18)) / 8}
+            r="0.028"
+            fill="#fff"
+          />
+        )),
+      )}
+    </svg>
+  );
+}
+
+function IndiaFlag({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 3 2" className={className}>
+      <rect width="3" height="0.667" fill="#FF9933" />
+      <rect y="0.667" width="3" height="0.667" fill="#fff" />
+      <rect y="1.333" width="3" height="0.667" fill="#138808" />
+      <circle cx="1.5" cy="1" r="0.22" fill="none" stroke="#000080" strokeWidth="0.03" />
+      {Array.from({ length: 24 }).map((_, i) => {
+        const angle = (i * 15 * Math.PI) / 180;
+        return (
+          <line
+            key={i}
+            x1="1.5"
+            y1="1"
+            x2={1.5 + 0.2 * Math.cos(angle)}
+            y2={1 + 0.2 * Math.sin(angle)}
+            stroke="#000080"
+            strokeWidth="0.012"
+          />
+        );
+      })}
+      <circle cx="1.5" cy="1" r="0.03" fill="#000080" />
+    </svg>
+  );
+}
+
+function CanadaFlag({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 4 2" className={className}>
+      <rect width="4" height="2" fill="#fff" />
+      <rect width="1" height="2" fill="#D80621" />
+      <rect x="3" width="1" height="2" fill="#D80621" />
+      <path
+        d="M2.0 0.35 L2.08 0.62 L2.35 0.55 L2.22 0.78 L2.45 0.85 L2.18 0.95 L2.28 1.15 L2.05 1.05 L2.0 1.3 L1.95 1.05 L1.72 1.15 L1.82 0.95 L1.55 0.85 L1.78 0.78 L1.65 0.55 L1.92 0.62 Z"
+        fill="#D80621"
+      />
+    </svg>
+  );
+}
+
+function AustraliaFlag({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 4 2" className={className}>
+      <defs>
+        <clipPath id="au-canton">
+          <rect width="2" height="1" />
+        </clipPath>
+      </defs>
+      <rect width="4" height="2" fill="#00247D" />
+      <g clipPath="url(#au-canton)">
+        <rect width="2" height="1" fill="#00247D" />
+        <path d="M0 0 L2 1 M2 0 L0 1" stroke="#fff" strokeWidth="0.2" />
+        <path d="M0 0 L2 1 M2 0 L0 1" stroke="#CF142B" strokeWidth="0.08" />
+        <rect x="0.833" width="0.333" height="1" fill="#fff" />
+        <rect y="0.375" width="2" height="0.25" fill="#fff" />
+        <rect x="0.9" width="0.2" height="1" fill="#CF142B" />
+        <rect y="0.425" width="2" height="0.15" fill="#CF142B" />
+      </g>
+      <Star cx={1} cy={1.55} r={0.1} />
+      <Star cx={2.85} cy={0.4} r={0.07} />
+      <Star cx={3.1} cy={0.85} r={0.085} />
+      <Star cx={2.85} cy={1.3} r={0.07} />
+      <Star cx={2.5} cy={1.05} r={0.06} />
+      <Star cx={3.3} cy={1.35} r={0.05} />
+    </svg>
+  );
+}
+
+function SingaporeFlag({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 4 2" className={className}>
+      <defs>
+        <mask id="sg-crescent">
+          <rect width="4" height="2" fill="#fff" />
+          <circle cx="0.98" cy="0.5" r="0.32" fill="#000" />
+        </mask>
+      </defs>
+      <rect width="4" height="1" fill="#EF3340" />
+      <rect y="1" width="4" height="1" fill="#fff" />
+      <g mask="url(#sg-crescent)">
+        <circle cx="0.85" cy="0.5" r="0.32" fill="#fff" />
+      </g>
+      <Star cx={1.25} cy={0.28} r={0.075} />
+      <Star cx={1.48} cy={0.42} r={0.075} />
+      <Star cx={1.4} cy={0.68} r={0.075} />
+      <Star cx={1.12} cy={0.68} r={0.075} />
+      <Star cx={1.04} cy={0.42} r={0.075} />
+    </svg>
+  );
+}
+
 const countries = [
-  { name: 'United Kingdom', flag: '🇬🇧' },
-  { name: 'India', flag: '🇮🇳' },
-  { name: 'Malaysia', flag: '🇲🇾' },
-  { name: 'Singapore', flag: '🇸🇬' },
-  { name: 'Australia', flag: '🇦🇺' },
-  { name: 'UAE', flag: '🇦🇪' },
+  { name: 'UAE', Flag: UaeFlag, aspect: '2 / 1' },
+  { name: 'USA', Flag: UsaFlag, aspect: '1.9 / 1' },
+  { name: 'India', Flag: IndiaFlag, aspect: '3 / 2' },
+  { name: 'Canada', Flag: CanadaFlag, aspect: '2 / 1' },
+  { name: 'Australia', Flag: AustraliaFlag, aspect: '2 / 1' },
+  { name: 'Singapore', Flag: SingaporeFlag, aspect: '2 / 1' },
 ];
 
 export default function Home() {
@@ -182,24 +317,28 @@ export default function Home() {
       </section>
 
       {/* 2. TICKER */}
-      <section className="py-6 md:py-8 bg-[#F0EBE1]/70 border-y border-border/40 overflow-hidden relative" aria-label="Learning with us, Worldwide">
-        <div className="container mx-auto px-4 mb-3 text-center">
-          <p className="sage-eyebrow mb-0">LEARNING WITH US, WORLDWIDE.</p>
+      <section className="py-8 md:py-12 bg-[#F0EBE1]/70 border-y border-border/40 overflow-hidden relative" aria-label="Learning with us, Worldwide">
+        <div className="container mx-auto px-4 mb-5 md:mb-7 text-center">
+          <div className="inline-flex items-center gap-3 sm:gap-4">
+            <span className="h-px w-6 sm:w-10 bg-secondary/40" />
+            <p className="sage-eyebrow mb-0">LEARNING WITH US, WORLDWIDE.</p>
+            <span className="h-px w-6 sm:w-10 bg-secondary/40" />
+          </div>
         </div>
-        <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          <div className="animate-ticker flex items-center gap-3 sm:gap-4 md:gap-6 py-2">
+        <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+          <div className="animate-ticker flex items-start gap-[35px] sm:gap-[49px] md:gap-[70px]">
             {[...countries, ...countries, ...countries, ...countries].map((country, idx) => (
-              <div
-                key={`${country.name}-${idx}`}
-                className="inline-flex items-center gap-2.5 sm:gap-3 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white/80 border border-border/40 shadow-2xs backdrop-blur-xs shrink-0 select-none hover:border-primary/40 hover:bg-white hover:shadow-xs transition-all"
-              >
-                <span className="text-xl sm:text-2xl md:text-3xl leading-none filter drop-shadow-2xs" aria-hidden="true">
-                  {country.flag}
-                </span>
-                <span className="font-serif text-xs sm:text-sm md:text-base font-medium text-foreground whitespace-nowrap">
-                  {country.name}
-                </span>
-              </div>
+              <React.Fragment key={`${country.name}-${idx}`}>
+                <div className="flex flex-col items-center gap-3 sm:gap-4 shrink-0 select-none">
+                  <div className="h-12 sm:h-14 md:h-16" style={{ aspectRatio: country.aspect }}>
+                    <country.Flag className="w-full h-full" />
+                  </div>
+                  <span className="font-serif text-sm sm:text-base md:text-lg font-medium tracking-[0.08em] uppercase text-foreground/85 whitespace-nowrap">
+                    {country.name}
+                  </span>
+                </div>
+                <span className="hidden sm:block w-6 md:w-8 h-px bg-border/60 shrink-0 mt-6 sm:mt-7 md:mt-8" />
+              </React.Fragment>
             ))}
           </div>
         </div>
@@ -295,31 +434,54 @@ export default function Home() {
       {/* 7. ABOUT THE FOUNDER AND MENTOR */}
       <section className="py-16 md:py-20 bg-[#EAE1D3] overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
-          <div className="grid md:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
-            <FadeIn className="relative flex justify-center">
-              <div className="w-full max-w-sm sm:max-w-md aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
-                <img
-                  src={meenakshiPhoto}
-                  alt="Meenakshi Koul, founder and mentor of The Vedic School"
-                  className="w-full h-full object-cover object-[48%_20%] scale-110 origin-[48%_26%]"
-                  loading="lazy"
-                  decoding="async"
-                />
+          <div className="grid lg:grid-cols-2 gap-16 lg:gap-12 items-center max-w-6xl mx-auto">
+            <FadeIn>
+              <div className="relative mb-16 sm:mb-20">
+                <div className="relative w-full aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg shadow-stone-900/10 bg-[#E5DCCE]/30">
+                  <img
+                    src={meenakshiPhoto}
+                    alt="Meenakshi Koul, founder and mentor of The Vedic School"
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  {/* Subtle warm gradient in the lower portion of the portrait for soft editorial integration */}
+                  <div className="absolute inset-x-0 bottom-0 h-[45%] bg-gradient-to-t from-[#EAE1D3]/85 via-[#EAE1D3]/35 to-transparent pointer-events-none" />
+                  {/* Subtle editorial fade dissolving the right edge into the warm cream canvas */}
+                  <div className="absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-[#EAE1D3]/50 via-[#EAE1D3]/15 to-transparent pointer-events-none" />
+                  {/* Enhanced soft dissolve at the right/lower transition area */}
+                  <div className="absolute right-0 bottom-0 w-1/2 h-3/5 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-[#EAE1D3]/60 via-[#EAE1D3]/20 to-transparent pointer-events-none" />
+                </div>
+                {/* Editorial pull quote overlapping the lower edge of the portrait */}
+                <div className="absolute left-4 sm:left-6 md:left-8 bottom-0 translate-y-[55%] sm:translate-y-[58%] max-w-[290px] sm:max-w-[325px] z-10 flex items-start gap-2.5 sm:gap-3">
+                  <Leaf className="w-4 h-4 sm:w-5 sm:h-5 text-secondary/60 shrink-0 mt-1" strokeWidth={1.5} />
+                  <div>
+                    <p className="font-serif text-lg sm:text-xl md:text-[21px] italic text-[#1c1917] leading-[1.32] tracking-tight">
+                      “Maths is just not a subject, but it defines how you solve problems in real world”
+                    </p>
+                    <p className="text-[11px] sm:text-xs font-sans font-semibold uppercase tracking-[0.2em] text-[#786C5E] mt-2.5">
+                      MEENAKSHI
+                    </p>
+                  </div>
+                </div>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.2}>
               <h2 className="sage-eyebrow">ABOUT THE FOUNDER AND MENTOR</h2>
               <p className="text-3xl md:text-5xl font-serif mb-6 text-foreground">The teacher behind the method.</p>
-              <div className="space-y-4 text-lg text-foreground/80 leading-relaxed mb-8">
+              <div className="space-y-5 text-lg text-foreground/80 leading-relaxed mb-8">
                 <p>
-                  Meenakshi Koul has spent 15+ years teaching Maths — and has learnt that the problem is rarely the problem on the page.
+                  Meenakshi Koul has spent <strong className="font-semibold text-foreground">20+ years</strong> teaching Mathematics and has learnt that the problem is rarely the problem on the page.
                 </p>
                 <p>
                   Sometimes a child has missed a foundation. Sometimes they understand the Maths but don't trust themselves to use it. And sometimes the concept simply hasn't been taught in a way that clicks.
                 </p>
                 <p className="font-serif text-xl text-foreground font-medium italic border-l-2 border-primary/30 pl-4 py-1">
-                  Knowing which one it is — that's the job.
+                  Knowing which one it is: that's the job.
+                </p>
+                <p>
+                  Her approach draws on years of teaching Mathematics, an understanding of child development and learning, and a continued interest in how people approach problems and find solutions.
                 </p>
                 <p>
                   That approach is The Vedic School: personal, structured, focused on progress that shows up in how a child actually works.

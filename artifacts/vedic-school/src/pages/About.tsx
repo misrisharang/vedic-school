@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'wouter';
+import { Leaf } from 'lucide-react';
 import { FadeIn, SectionHeader, ClosingCTABand } from '@/components/ui-patterns';
 import { Button, buttonVariants } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
-import meenakshiPhoto from '@assets/meenakshi-koul-portrait.jpg';
+import meenakshiPhoto from '@assets/meenakshi-founder-portrait.jpg';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import { Seo } from '@/seo/Seo';
 import { getAboutSchema } from '@/seo/schema';
@@ -75,28 +76,45 @@ export default function About() {
           <div className="grid lg:grid-cols-2 gap-16 lg:gap-12 items-center max-w-6xl mx-auto">
 
             {/* Left: Photo */}
-            <FadeIn className="relative flex justify-center order-2 lg:order-1 mt-10 lg:mt-0">
-              <div className="w-full max-w-md lg:max-w-lg aspect-[3/4] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg shadow-stone-900/5 border border-border/40 bg-stone-100/50">
-                <img
-                  src={meenakshiPhoto}
-                  alt="Meenakshi Koul, founder and mentor of The Vedic School"
-                  className="w-full h-full object-cover object-[50%_20%]"
-                  loading="lazy"
-                  decoding="async"
-                />
+            <FadeIn className="order-2 lg:order-1 mt-10 lg:mt-0">
+              <div className="relative mb-16 sm:mb-20">
+                <div className="relative w-full aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg shadow-stone-900/10 bg-stone-100/50">
+                  <img
+                    src={meenakshiPhoto}
+                    alt="Meenakshi Koul, founder and mentor of The Vedic School"
+                    className="w-full h-full object-cover object-top"
+                    loading="lazy"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-background/85 via-background/35 to-transparent pointer-events-none" />
+                </div>
+                <div className="absolute left-3 right-14 sm:left-5 sm:right-20 bottom-0 translate-y-[60%] flex items-start gap-3">
+                  <Leaf className="w-5 h-5 text-secondary/60 shrink-0 mt-1" strokeWidth={1.5} />
+                  <div>
+                    <p className="font-serif text-lg md:text-xl italic text-foreground/90 leading-snug">
+                      "Maths is just not a subject, but it defines how you solve problems in real world"
+                    </p>
+                    <p className="text-xs font-sans font-semibold uppercase tracking-[0.15em] text-foreground/50 mt-2">
+                      Meenakshi
+                    </p>
+                  </div>
+                </div>
               </div>
             </FadeIn>
 
             {/* Right: Bio */}
             <FadeIn delay={0.2} className="order-1 lg:order-2">
-              <h2 className="sage-eyebrow mb-6">MEET MEENAKSHI KOUL</h2>
+              <h2 className="sage-eyebrow mb-6">ABOUT THE FOUNDER</h2>
               <p className="text-3xl md:text-4xl font-serif text-foreground mb-6">Hello, I'm Meenakshi Koul.</p>
               <div className="space-y-5 text-lg text-foreground/80 leading-relaxed">
                 <p>
-                  I've been teaching Maths for 15+ years first in India, and more recently, to students across different time zones.
+                  I've been teaching Mathematics for <strong className="font-semibold text-foreground">20+ years</strong>, first in India, and more recently, to students across different time zones.
                 </p>
                 <p>
                   Over the years, I've realised that teaching Maths is rarely just about explaining the question in front of you. I've learnt to look for the pattern behind the problem.
+                </p>
+                <p>
+                  My work has also been shaped by a deeper interest in how children learn, develop confidence and approach challenges. An <strong className="font-semibold text-foreground">Advanced Program in UX & Algorithms from IISc, Bangalore</strong> has further strengthened the way I think about problem-solving, learning and the way people interact with complex ideas.
                 </p>
                 <p>
                   Within the first few minutes of sitting with a child, I can often tell whether they are genuinely stuck on the Maths, or whether they have started believing that they simply aren't good at it.
