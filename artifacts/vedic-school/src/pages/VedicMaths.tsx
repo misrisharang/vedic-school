@@ -261,9 +261,8 @@ export default function VedicMaths() {
             subtitle="I first understand where your child is. Then we build from there."
           />
           <MethodSteps steps={methodSteps} variant="cards" />
-          <FadeIn delay={0.3} className="text-center mt-16">
+          <FadeIn delay={0.3} className="text-center mt-12 sm:mt-14">
             <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
-            <p className="text-xs text-foreground/60 mt-4">Come experience the method in a real class.</p>
           </FadeIn>
         </div>
       </section>
@@ -317,8 +316,8 @@ export default function VedicMaths() {
       <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <FadeIn className="text-center mb-16">
-            <h2 className="sage-eyebrow">HOW CLASSES WORK</h2>
-            <p className="text-3xl md:text-4xl font-serif text-foreground mb-4">We don't rush to speed.</p>
+            <span className="sage-eyebrow">HOW CLASSES WORK</span>
+            <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-4">We don't rush to speed.</h2>
             <p className="text-lg text-foreground/70">We build it, one step at a time.</p>
           </FadeIn>
 
@@ -348,13 +347,12 @@ export default function VedicMaths() {
             </FadeInStagger>
           </div>
 
-          <FadeIn delay={0.2} className="text-center mt-16">
-            <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-4">Now, experience it for yourself.</h3>
-            <p className="text-foreground/70 max-w-xl mx-auto mb-8 leading-relaxed">
+          <FadeIn delay={0.2} className="text-center mt-12 sm:mt-14">
+            <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-3 sm:mb-4">Now, experience it for yourself.</h3>
+            <p className="text-foreground/70 max-w-xl mx-auto mb-6 sm:mb-7 leading-relaxed">
               Every Sunday, I run a free Vedic Maths group demo where your child can experience the way I teach before you decide what comes next.
             </p>
             <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
-            <p className="text-xs text-foreground/60 mt-4">No pressure. No commitment. Just a real class.</p>
           </FadeIn>
         </div>
       </section>
@@ -392,7 +390,6 @@ export default function VedicMaths() {
         title="What if your child could stop second-guessing every calculation?"
         subtitle="Let them experience a different way of working with numbers."
         cta="Join Sunday's free Vedic Maths demo class"
-        ctaSupport="See how your child responds to the method before you decide what comes next."
         onCtaClick={openDemoModal}
       />
 

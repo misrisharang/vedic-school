@@ -252,10 +252,10 @@ export default function CurriculumAligned() {
       <section className="py-12 md:py-16 bg-[#F0EBE1] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <FadeIn className="text-center mb-12 md:mb-16 max-w-2xl mx-auto">
-            <h2 className="sage-eyebrow">GRADE BY GRADE</h2>
-            <p className="text-2xl md:text-3xl font-serif text-foreground mb-4">
+            <span className="sage-eyebrow">GRADE BY GRADE</span>
+            <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-4">
               What your child learns changes with every grade.
-            </p>
+            </h2>
             <p className="text-foreground/70">
               Classes follow your child's school curriculum, with teaching adapted to their current level and learning gaps.
             </p>
@@ -307,10 +307,10 @@ export default function CurriculumAligned() {
       <section className="py-16 md:py-20 bg-[#F0EBE1] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
           <FadeIn className="text-center mb-16">
-            <h2 className="sage-eyebrow">HOW CLASSES WORK</h2>
-            <p className="text-3xl md:text-4xl font-serif text-foreground mb-4">
+            <span className="sage-eyebrow">HOW CLASSES WORK</span>
+            <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-4">
               We don't just move through the syllabus.
-            </p>
+            </h2>
             <p className="text-lg text-foreground/70">We make sure your child can use what they're learning.</p>
           </FadeIn>
 
@@ -391,7 +391,6 @@ export default function CurriculumAligned() {
         title="Help your child understand the Maths behind the marks."
         subtitle="When the foundation is stronger, schoolwork becomes easier to approach — and your child becomes more confident working through it."
         cta="Book your child's personal assessment session"
-        ctaSupport="A private session to understand where your child is and what they need."
         onCtaClick={openAssessmentModal}
       />
 

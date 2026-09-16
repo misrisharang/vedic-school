@@ -4,7 +4,7 @@ import { Leaf } from 'lucide-react';
 import { FadeIn, SectionHeader, ClosingCTABand } from '@/components/ui-patterns';
 import { Button, buttonVariants } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
-import meenakshiPhoto from '@assets/meenakshi-founder-portrait.jpg';
+import meenakshiPhoto from '@assets/meenakshi-founder-landscape.jpg';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import { Seo } from '@/seo/Seo';
 import { getAboutSchema } from '@/seo/schema';
@@ -71,30 +71,39 @@ export default function About() {
       </section>
 
       {/* MEET MEENAKSHI */}
-      <section className="py-16 md:py-20 bg-background overflow-hidden">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="grid lg:grid-cols-2 gap-16 lg:gap-12 items-center max-w-6xl mx-auto">
+      <section className="py-16 md:py-24 bg-background overflow-hidden">
+        <div className="container mx-auto px-4 md:px-6 max-w-5xl">
 
-            {/* Left: Photo */}
-            <FadeIn className="order-2 lg:order-1 mt-10 lg:mt-0">
-              <div className="relative mb-16 sm:mb-20">
-                <div className="relative w-full aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg shadow-stone-900/10 bg-stone-100/50">
-                  <img
-                    src={meenakshiPhoto}
-                    alt="Meenakshi Koul, founder and mentor of The Vedic School"
-                    className="w-full h-full object-cover object-top"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-background/85 via-background/35 to-transparent pointer-events-none" />
-                </div>
-                <div className="absolute left-3 right-14 sm:left-5 sm:right-20 bottom-0 translate-y-[60%] flex items-start gap-3">
-                  <Leaf className="w-5 h-5 text-secondary/60 shrink-0 mt-1" strokeWidth={1.5} />
+          {/* Wide Landscape Founder Image */}
+          <FadeIn className="mb-12 md:mb-16">
+            <div className="relative w-full aspect-[3/2] rounded-2xl md:rounded-3xl overflow-hidden shadow-lg shadow-stone-900/5 border border-stone-200/60 bg-stone-100/50">
+              <img
+                src={meenakshiPhoto}
+                alt="Meenakshi Koul, founder and mentor of The Vedic School, teaching at her desk"
+                className="w-full h-full object-cover object-center"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </FadeIn>
+
+          {/* Founder Content Beneath */}
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+
+            {/* Left: Section Header & Pull Quote */}
+            <FadeIn delay={0.1} className="lg:col-span-5 lg:sticky lg:top-28">
+              <span className="sage-eyebrow mb-4">ABOUT THE FOUNDER</span>
+              <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-6 leading-tight">
+                Hello, I'm Meenakshi Koul.
+              </h2>
+              <div className="pt-6 border-t border-border/60">
+                <div className="flex items-start gap-3">
+                  <Leaf className="w-5 h-5 text-secondary/70 shrink-0 mt-1" strokeWidth={1.5} />
                   <div>
-                    <p className="font-serif text-lg md:text-xl italic text-foreground/90 leading-snug">
+                    <blockquote className="font-serif text-lg md:text-xl italic text-foreground/90 leading-snug">
                       "Maths is just not a subject, but it defines how you solve problems in real world"
-                    </p>
-                    <p className="text-xs font-sans font-semibold uppercase tracking-[0.15em] text-foreground/50 mt-2">
+                    </blockquote>
+                    <p className="text-xs font-sans font-semibold uppercase tracking-[0.15em] text-foreground/50 mt-3">
                       Meenakshi
                     </p>
                   </div>
@@ -103,9 +112,7 @@ export default function About() {
             </FadeIn>
 
             {/* Right: Bio */}
-            <FadeIn delay={0.2} className="order-1 lg:order-2">
-              <h2 className="sage-eyebrow mb-6">ABOUT THE FOUNDER</h2>
-              <p className="text-3xl md:text-4xl font-serif text-foreground mb-6">Hello, I'm Meenakshi Koul.</p>
+            <FadeIn delay={0.2} className="lg:col-span-7">
               <div className="space-y-5 text-lg text-foreground/80 leading-relaxed">
                 <p>
                   I've been teaching Mathematics for <strong className="font-semibold text-foreground">20+ years</strong>, first in India, and more recently, to students across different time zones.

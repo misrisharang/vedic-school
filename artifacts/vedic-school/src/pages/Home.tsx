@@ -377,8 +377,8 @@ export default function Home() {
       <section id="two-approaches" className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <FadeIn className="text-center mb-16">
-            <h2 className="sage-eyebrow">TWO APPROACHES, ONE STRONGER FOUNDATION</h2>
-            <p className="text-3xl md:text-4xl font-serif text-foreground">How we teach.</p>
+            <span className="sage-eyebrow">TWO APPROACHES, ONE STRONGER FOUNDATION</span>
+            <h2 className="text-3xl md:text-4xl font-serif text-foreground">How we teach.</h2>
           </FadeIn>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -467,9 +467,11 @@ export default function Home() {
               </div>
             </FadeIn>
 
-            <FadeIn delay={0.2}>
-              <h2 className="sage-eyebrow">ABOUT THE FOUNDER AND MENTOR</h2>
-              <p className="text-3xl md:text-5xl font-serif mb-6 text-foreground">The teacher behind the method.</p>
+            <FadeIn delay={0.1} className="lg:order-2 flex flex-col justify-center">
+              <span className="sage-eyebrow">ABOUT THE FOUNDER AND MENTOR</span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-foreground mb-6">
+                The teacher behind the method.
+              </h2>
               <div className="space-y-5 text-lg text-foreground/80 leading-relaxed mb-8">
                 <p>
                   Meenakshi Koul has spent <strong className="font-semibold text-foreground">20+ years</strong> teaching Mathematics and has learnt that the problem is rarely the problem on the page.
@@ -515,12 +517,75 @@ export default function Home() {
         </div>
       </section>
 
+      {/* 8B. GOOGLE REVIEWS CREDIBILITY */}
+      <section id="google-reviews" className="py-8 sm:py-10 bg-[#F0EBE1]/40 border-b border-border/30">
+        <div className="container mx-auto px-4 md:px-6">
+          <FadeIn className="max-w-2xl mx-auto text-center">
+            <span className="sage-eyebrow mb-2 block">VERIFIED ON GOOGLE</span>
+            <h2 className="text-2xl sm:text-3xl font-serif text-foreground mb-2 leading-tight">
+              Trusted by families. Reviewed on Google.
+            </h2>
+            <p className="text-sm sm:text-base text-foreground/75 leading-relaxed max-w-xl mx-auto mb-3.5 sm:mb-4">
+              See what families have shared about learning with The Vedic School.
+            </p>
+
+            {/* Clickable Google Rating Card */}
+            <div>
+              <a
+                href="https://www.google.com/maps/place/The+Vedic+School/@28.4317134,77.1086168,17z/data=!4m8!3m7!1s0x390d1da42d384595:0x51719d674bb453e1!8m2!3d28.4317134!4d77.1086168!9m1!1b1!16s%2Fg%2F11q2y0y7n6?entry=ttu&g_ep=EgoyMDI2MDkxMy4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2.5 sm:gap-3.5 bg-white/95 rounded-2xl border border-stone-200/90 px-5 py-3 sm:px-6 sm:py-3.5 shadow-2xs hover:border-stone-400 hover:bg-white hover:shadow-xs transition-all cursor-pointer group mx-auto mb-3.5"
+                aria-label="5.0 out of 5 stars on Google — view Google reviews"
+              >
+                {/* Google G Logo */}
+                <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z" />
+                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z" />
+                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z" />
+                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
+                </svg>
+
+                <span className="text-xl sm:text-2xl font-serif font-bold text-foreground">5.0</span>
+
+                <div className="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+                  {[...Array(5)].map((_, i) => (
+                    <svg key={i} className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-amber-400 text-amber-400" viewBox="0 0 24 24">
+                      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                  ))}
+                </div>
+
+                <span className="text-stone-300">•</span>
+
+                <span className="text-sm sm:text-base font-medium text-foreground/80 group-hover:text-foreground transition-colors">
+                  Google
+                </span>
+              </a>
+            </div>
+
+            {/* CTA */}
+            <div>
+              <a
+                href="https://www.google.com/maps/place/The+Vedic+School/@28.4317134,77.1086168,17z/data=!4m8!3m7!1s0x390d1da42d384595:0x51719d674bb453e1!8m2!3d28.4317134!4d77.1086168!9m1!1b1!16s%2Fg%2F11q2y0y7n6?entry=ttu&g_ep=EgoyMDI2MDkxMy4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-full text-sm sm:text-base font-medium border border-stone-300 text-foreground hover:bg-white hover:border-stone-400 shadow-2xs transition-all group"
+              >
+                <span>Read our Google reviews</span>
+                <span className="transition-transform group-hover:translate-x-0.5">→</span>
+              </a>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
       {/* 9 & 10. THE BLOG SECTION */}
       <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <FadeIn className="text-center mb-12 max-w-2xl mx-auto">
-            <h2 className="sage-eyebrow">FROM OUR BLOGS</h2>
-            <p className="text-2xl md:text-3xl font-serif text-foreground mb-3">Useful Maths, explained simply.</p>
+            <span className="sage-eyebrow">FROM OUR BLOGS</span>
+            <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-3">Useful Maths, explained simply.</h2>
             <p className="text-foreground/70 leading-relaxed">
               Practical guidance for parents — what a vedic maths syllabus covers, how to learn vedic maths, and choosing online vedic maths classes. No jargon.
             </p>

@@ -89,14 +89,10 @@ export function SectionHeader({
 }) {
   return (
     <FadeIn className={`text-center mb-10 sm:mb-16 ${className}`}>
-      {eyebrow ? (
-        <>
-          <h2 className="sage-eyebrow">{eyebrow}</h2>
-          <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto">{title}</p>
-        </>
-      ) : (
-        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto">{title}</h2>
-      )}
+      {eyebrow && <span className="sage-eyebrow">{eyebrow}</span>}
+      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto">
+        {title}
+      </h2>
       {subtitle && <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed">{subtitle}</p>}
     </FadeIn>
   );
@@ -579,7 +575,6 @@ export function ClosingCTABand({
   title,
   subtitle,
   cta = "Book a free demo class",
-  ctaSupport,
   onCtaClick,
   children,
 }: {
@@ -591,7 +586,7 @@ export function ClosingCTABand({
   children?: React.ReactNode;
 }) {
   return (
-    <section className="py-24 bg-primary text-primary-foreground relative overflow-hidden">
+    <section className="py-18 sm:py-20 bg-primary text-primary-foreground relative overflow-hidden">
       {/* Decorative subtle background rings */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-10 pointer-events-none">
         <svg viewBox="0 0 100 100" className="w-full h-full text-white animate-[spin_60s_linear_infinite]">
@@ -606,19 +601,16 @@ export function ClosingCTABand({
             {title}
           </h2>
           {subtitle && (
-            <p className="text-lg md:text-xl text-white/90 mb-10 font-serif italic">
+            <p className="text-lg md:text-xl text-white/90 mb-8 sm:mb-10 font-serif italic">
               {subtitle}
             </p>
           )}
           {children ? (
             children
           ) : (
-            <>
-              <Button variant="white" size="lg" onClick={onCtaClick} className="text-primary font-semibold hover:bg-white/90">
-                {cta}
-              </Button>
-              {ctaSupport && <p className="text-white/70 text-sm mt-4">{ctaSupport}</p>}
-            </>
+            <Button variant="white" size="lg" onClick={onCtaClick} className="text-primary font-semibold hover:bg-white/90">
+              {cta}
+            </Button>
           )}
         </FadeIn>
       </div>

@@ -154,7 +154,7 @@ The Vedic School is a learning institution founded and taught by Meenakshi Koul.
 
 ## About
 
-- [About Meenakshi Koul](${SITE_URL}/about): Academic authority, 15+ years of teaching experience, educational philosophy, and the diagnostic teaching methodology behind The Vedic School.
+- [About Meenakshi Koul](${SITE_URL}/about): Academic authority, 20+ years of teaching experience, educational philosophy, and the diagnostic teaching methodology behind The Vedic School.
 
 ## Programs
 
