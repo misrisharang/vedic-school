@@ -180,7 +180,7 @@ export const PUBLISHED_ARTICLES: BlogPost[] = [
     excerpt:
       'A Maths teacher asks whether Vedic Maths is actually useful or just memorised tricks, what critics get right, what the research shows, and what Reddit says.',
     content: IS_VEDIC_MATHS_USEFUL_CONTENT,
-    featured_image: '/og/vedic-maths-vs-abacus.jpg',
+    featured_image: 'https://ozhoummzmwevssuchiss.supabase.co/storage/v1/object/public/blog-images/covers/1789234333554-og-is-vedic-maths-useful.jpg',
     category: 'vedic-maths',
     author: 'Meenakshi Koul',
     reading_time: 8,
@@ -201,7 +201,7 @@ export const PUBLISHED_ARTICLES: BlogPost[] = [
     excerpt:
       'I compared 8 popular Vedic Maths online classes for kids in 2026 on price, format, 1:1 vs group, and what Reddit says. Here is what to know before you pay.',
     content: BEST_VEDIC_MATHS_ONLINE_CLASSES_CONTENT,
-    featured_image: '/og/vedic-maths-vs-abacus.jpg',
+    featured_image: 'https://ozhoummzmwevssuchiss.supabase.co/storage/v1/object/public/blog-images/covers/1789232742168-og-best-vedic-maths-online-classes.jpg',
     category: 'vedic-maths',
     author: 'Meenakshi Koul',
     reading_time: 12,
