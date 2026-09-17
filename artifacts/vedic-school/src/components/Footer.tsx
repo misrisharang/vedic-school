@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'wouter';
 import { Instagram, Facebook, Youtube, Linkedin } from 'lucide-react';
-import logoImg from '@assets/the-vedic-school-footer-logo.png';
+import wordmarkLogo from '@assets/the-vedic-school-logo.png';
+import owlMascot from '@assets/the-vedic-school-owl-mascot.png';
 
 export function Footer() {
   return (
@@ -10,9 +11,30 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           
           <div className="col-span-1 lg:col-span-1">
-            <div className="mb-10">
-              <Link href="/" className="inline-block">
-                <img src={logoImg} alt="The Vedic School" className="h-11 w-auto" />
+            <div className="mb-8">
+              <Link 
+                href="/" 
+                className="inline-flex items-center gap-2 md:gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#3B424C] rounded-md"
+                aria-label="The Vedic School Homepage"
+              >
+                <img 
+                  src={owlMascot} 
+                  alt="" 
+                  className="h-7 md:h-[35px] w-auto object-contain shrink-0" 
+                  width={40}
+                  height={35}
+                />
+                <img 
+                  src={wordmarkLogo} 
+                  alt="The Vedic School" 
+                  className="h-10 md:h-12 w-auto object-contain shrink-0" 
+                  style={{
+                    filter: 'invert(1) brightness(1.2)',
+                    mixBlendMode: 'screen',
+                  }}
+                  width={144}
+                  height={48}
+                />
               </Link>
             </div>
             <p className="text-background/70 text-sm leading-relaxed max-w-xs">

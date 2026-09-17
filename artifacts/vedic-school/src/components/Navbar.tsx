@@ -3,7 +3,8 @@ import { Link, useLocation } from 'wouter';
 import { Menu, X } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
-import headerLogo from '@assets/the-vedic-school-header-logo.png';
+import wordmarkLogo from '@assets/the-vedic-school-logo.png';
+import owlMascot from '@assets/the-vedic-school-owl-mascot.png';
 import { useDemoModal } from '@/context/DemoModalContext';
 
 export function Logo({ className }: { className?: string }) {
@@ -11,17 +12,24 @@ export function Logo({ className }: { className?: string }) {
     <Link 
       href="/" 
       className={cn(
-        'inline-flex items-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md transition-opacity hover:opacity-95',
+        'inline-flex items-center gap-2 lg:gap-2.5 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md transition-opacity hover:opacity-95',
         className
       )}
       aria-label="The Vedic School Homepage"
     >
       <img 
-        src={headerLogo} 
+        src={owlMascot} 
+        alt="" 
+        className="h-7 sm:h-8 md:h-9 lg:h-[39px] w-auto object-contain shrink-0" 
+        width={45}
+        height={39}
+      />
+      <img 
+        src={wordmarkLogo} 
         alt="The Vedic School" 
-        className="h-8 sm:h-9 md:h-10 lg:h-11 w-auto object-contain shrink-0" 
-        width={138}
-        height={44}
+        className="h-11 sm:h-12 md:h-14 lg:h-15 w-auto object-contain shrink-0" 
+        width={180}
+        height={60}
       />
     </Link>
   );
@@ -84,15 +92,15 @@ export function Navbar() {
           isScrolled ? 'border-stone-200/90 shadow-2xs py-3' : 'border-stone-200/70 py-3.5 sm:py-4'
         )}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          {/* Left: Brand Logo Lockup */}
-          <div className="flex items-center shrink-0 min-w-0 lg:min-w-[210px]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8 flex items-center justify-between">
+          {/* Left: Brand Area */}
+          <div className="flex items-center shrink-0 min-w-0 xl:min-w-[240px]">
             <Logo />
           </div>
 
           {/* Center: Main Navigation (Desktop) */}
           <nav 
-            className="hidden lg:flex items-center justify-center gap-6 xl:gap-8 2xl:gap-9" 
+            className="hidden lg:flex items-center justify-center gap-3.5 xl:gap-7 2xl:gap-8 mx-4 xl:mx-8" 
             aria-label="Main Navigation"
           >
             {navLinks.map((link) => {
@@ -105,7 +113,7 @@ export function Navbar() {
                   href={link.href}
                   aria-current={isActive ? 'page' : undefined}
                   className={cn(
-                    'text-[14.5px] font-medium transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xs',
+                    'text-[14px] xl:text-[14.5px] font-medium transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xs',
                     isActive 
                       ? 'text-primary font-semibold' 
                       : 'text-stone-700 hover:text-primary'
@@ -118,7 +126,7 @@ export function Navbar() {
           </nav>
 
           {/* Right: Primary CTA & Mobile/Tablet Menu Button */}
-          <div className="flex items-center justify-end shrink-0 lg:min-w-[210px] gap-3 sm:gap-4">
+          <div className="flex items-center justify-end shrink-0 xl:min-w-[240px] gap-3 sm:gap-4">
             <div className="hidden md:block">
               <Button 
                 size="sm" 
