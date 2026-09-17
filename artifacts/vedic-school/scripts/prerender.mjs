@@ -47,6 +47,7 @@ const STATIC_PUBLIC_ROUTES = [
   '/blog/vedic-maths-vs-abacus',
   '/blog/is-vedic-maths-useful',
   '/blog/best-vedic-maths-online-classes-for-kids',
+  '/authors/meenakshi-koul',
   '/privacy-policy',
   '/terms-of-service',
   '/cookie-policy',
@@ -108,6 +109,39 @@ async function fetchPublishedBlogSlugs(env) {
     }
   } catch (err) {
     console.warn('[prerender] Could not connect to Supabase for blog slugs:', err.message);
+  }
+  return [];
+}
+
+// Fetch published author slugs from Supabase
+async function fetchPublishedAuthorSlugs(env) {
+  const supabaseUrl = env.VITE_SUPABASE_URL;
+  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return [];
+  }
+
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/authors?select=slug`,
+      {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        return data.map((item) => `/authors/${item.slug}`);
+      }
+    } else {
+      console.warn(`[prerender] Supabase query for authors returned status ${res.status}`);
+    }
+  } catch (err) {
+    console.warn('[prerender] Could not connect to Supabase for author slugs:', err.message);
   }
   return [];
 }
@@ -177,7 +211,12 @@ async function main() {
     console.log('[prerender] No published blog articles found to prerender.');
   }
 
-  const allRoutes = Array.from(new Set([...STATIC_PUBLIC_ROUTES, ...blogRoutes]));
+  const authorRoutes = await fetchPublishedAuthorSlugs(env);
+  if (authorRoutes.length > 0) {
+    console.log(`[prerender] Found ${authorRoutes.length} author profile(s): ${authorRoutes.join(', ')}`);
+  }
+
+  const allRoutes = Array.from(new Set([...STATIC_PUBLIC_ROUTES, ...blogRoutes, ...authorRoutes]));
   console.log(`[prerender] Total public routes to prerender: ${allRoutes.length}`);
 
   // Start local server

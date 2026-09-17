@@ -54,6 +54,7 @@ const STATIC_PUBLIC_ROUTES = [
   '/blog/vedic-maths-vs-abacus',
   '/blog/is-vedic-maths-useful',
   '/blog/best-vedic-maths-online-classes-for-kids',
+  '/authors/meenakshi-koul',
   '/privacy-policy',
   '/terms-of-service',
   '/cookie-policy',
@@ -90,11 +91,43 @@ async function fetchPublishedBlogSlugs() {
   return [];
 }
 
+// Fetch published author slugs from Supabase
+async function fetchPublishedAuthorSlugs() {
+  const supabaseUrl = env.VITE_SUPABASE_URL;
+  const supabaseKey = env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+  if (!supabaseUrl || !supabaseKey) {
+    return [];
+  }
+
+  try {
+    const res = await fetch(
+      `${supabaseUrl}/rest/v1/authors?select=slug`,
+      {
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+        },
+      }
+    );
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        return data.map((item) => `/authors/${item.slug}`);
+      }
+    }
+  } catch (err) {
+    console.warn('[discovery] Supabase query for author slugs skipped:', err.message);
+  }
+  return [];
+}
+
 async function main() {
   console.log('Generating discovery files with SITE_URL:', SITE_URL);
 
   const dynamicBlogRoutes = await fetchPublishedBlogSlugs();
-  const allRoutes = Array.from(new Set([...STATIC_PUBLIC_ROUTES, ...dynamicBlogRoutes]));
+  const dynamicAuthorRoutes = await fetchPublishedAuthorSlugs();
+  const allRoutes = Array.from(new Set([...STATIC_PUBLIC_ROUTES, ...dynamicBlogRoutes, ...dynamicAuthorRoutes]));
 
   // 1. Generate sitemap.xml
   const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -155,6 +188,7 @@ The Vedic School is a learning institution founded and taught by Meenakshi Koul.
 ## About
 
 - [About Meenakshi Koul](${SITE_URL}/about): Academic authority, 20+ years of teaching experience, educational philosophy, and the diagnostic teaching methodology behind The Vedic School.
+- [Author Profile: Meenakshi Koul](${SITE_URL}/authors/meenakshi-koul): Founder & Educator profile, canonical bio, credentials, and authored publications.
 
 ## Programs
 
