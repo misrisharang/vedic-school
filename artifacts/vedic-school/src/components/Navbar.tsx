@@ -3,17 +3,26 @@ import { Link, useLocation } from 'wouter';
 import { Menu, X } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
-import logoImg from '@assets/ChatGPT_Image_Jul_22,_2026,_06_12_07_PM_(1)_1786009245523.png';
-
+import headerLogo from '@assets/the-vedic-school-header-logo.png';
 import { useDemoModal } from '@/context/DemoModalContext';
 
-export function Logo() {
+export function Logo({ className }: { className?: string }) {
   return (
-    <Link href="/" className="flex items-center gap-3 group">
-      <img src={logoImg} alt="" className="h-10 w-auto" />
-      <span className="font-serif text-base sm:text-lg md:text-xl text-foreground leading-none whitespace-nowrap">
-        The Vedic School
-      </span>
+    <Link 
+      href="/" 
+      className={cn(
+        'inline-flex items-center shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md transition-opacity hover:opacity-95',
+        className
+      )}
+      aria-label="The Vedic School Homepage"
+    >
+      <img 
+        src={headerLogo} 
+        alt="The Vedic School" 
+        className="h-8 sm:h-9 md:h-10 lg:h-11 w-auto object-contain shrink-0" 
+        width={138}
+        height={44}
+      />
     </Link>
   );
 }
@@ -26,9 +35,10 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -37,15 +47,23 @@ export function Navbar() {
     setMobileMenuOpen(false);
   }, [location]);
 
-  // Lock body scroll when mobile menu is open
+  // Lock body scroll and listen for Escape key when mobile menu is open
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
+    if (!mobileMenuOpen) {
       document.body.style.overflow = '';
+      return () => {};
     }
+
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [mobileMenuOpen]);
 
@@ -62,25 +80,35 @@ export function Navbar() {
     <>
       <header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-transparent',
-          isScrolled ? 'bg-background/95 backdrop-blur-md border-border py-3 shadow-sm' : 'bg-transparent py-5'
+          'fixed top-0 left-0 right-0 z-50 bg-white border-b transition-all duration-200',
+          isScrolled ? 'border-stone-200/90 shadow-2xs py-3' : 'border-stone-200/70 py-3.5 sm:py-4'
         )}
       >
-        <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
-          <Logo />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+          {/* Left: Brand Logo Lockup */}
+          <div className="flex items-center shrink-0 min-w-0 lg:min-w-[210px]">
+            <Logo />
+          </div>
 
-          {/* Desktop Nav */}
-          <nav className="hidden xl:flex items-center gap-6 2xl:gap-8" aria-label="Main Navigation">
+          {/* Center: Main Navigation (Desktop) */}
+          <nav 
+            className="hidden lg:flex items-center justify-center gap-6 xl:gap-8 2xl:gap-9" 
+            aria-label="Main Navigation"
+          >
             {navLinks.map((link) => {
-              const isActive = link.href === '/' ? location === '/' || location === '' : location === link.href;
+              const isActive = link.href === '/' 
+                ? location === '/' || location === '' 
+                : location === link.href || location.startsWith(link.href + '/');
               return (
                 <Link 
                   key={link.label} 
                   href={link.href}
                   aria-current={isActive ? 'page' : undefined}
                   className={cn(
-                    'text-sm font-medium transition-colors whitespace-nowrap',
-                    isActive ? 'text-primary font-semibold' : 'text-foreground/80 hover:text-primary'
+                    'text-[14.5px] font-medium transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-xs',
+                    isActive 
+                      ? 'text-primary font-semibold' 
+                      : 'text-stone-700 hover:text-primary'
                   )}
                 >
                   {link.label}
@@ -89,17 +117,27 @@ export function Navbar() {
             })}
           </nav>
 
-          <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+          {/* Right: Primary CTA & Mobile/Tablet Menu Button */}
+          <div className="flex items-center justify-end shrink-0 lg:min-w-[210px] gap-3 sm:gap-4">
             <div className="hidden md:block">
-              <Button size="sm" onClick={openDemoModal}>Book a free demo class</Button>
+              <Button 
+                size="sm" 
+                onClick={openDemoModal}
+                className="bg-primary hover:bg-primary/90 text-white font-medium px-5 py-2.5 rounded-full text-sm shadow-xs hover:shadow-sm transition-all focus-visible:ring-primary"
+                aria-label="Book a free demo class"
+              >
+                Book a free demo class
+              </Button>
             </div>
 
             {/* Mobile / Tablet Menu Toggle */}
             <button 
-              className="xl:hidden p-2 text-foreground hover:text-primary transition-colors focus:outline-hidden cursor-pointer"
+              type="button"
+              className="lg:hidden p-2 -mr-2 text-stone-700 hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg cursor-pointer"
               onClick={() => setMobileMenuOpen(true)}
-              aria-label="Open Menu"
+              aria-label="Open Navigation Menu"
               aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-navigation-drawer"
             >
               <Menu className="w-6 h-6" />
             </button>
@@ -110,40 +148,50 @@ export function Navbar() {
       {/* Mobile & Tablet Drawer */}
       <div 
         className={cn(
-          'fixed inset-0 z-[60] bg-foreground/30 backdrop-blur-xs transition-opacity duration-300 xl:hidden',
+          'fixed inset-0 z-[60] bg-stone-900/40 backdrop-blur-xs transition-opacity duration-300 lg:hidden',
           mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         )}
         onClick={() => setMobileMenuOpen(false)}
+        aria-hidden={!mobileMenuOpen}
       >
         <div 
+          id="mobile-navigation-drawer"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Navigation Menu"
           className={cn(
-            'absolute top-0 right-0 bottom-0 w-[85%] max-w-sm bg-background border-l border-border p-6 shadow-2xl transition-transform duration-300 ease-out flex flex-col',
+            'absolute top-0 right-0 bottom-0 w-[85%] max-w-sm bg-white border-l border-stone-200 p-6 shadow-2xl transition-transform duration-300 ease-out flex flex-col',
             mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           )}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="flex justify-between items-center mb-8">
+          <div className="flex justify-between items-center pb-5 border-b border-stone-100 mb-6">
             <Logo />
             <button 
+              type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="p-2 text-foreground/70 hover:text-foreground"
-              aria-label="Close Menu"
+              className="p-2 -mr-2 text-stone-500 hover:text-stone-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg transition-colors cursor-pointer"
+              aria-label="Close Navigation Menu"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
           
-          <nav className="flex flex-col gap-6 flex-1" aria-label="Mobile Navigation">
+          <nav className="flex flex-col gap-4 flex-1 overflow-y-auto" aria-label="Mobile Navigation">
             {navLinks.map((link) => {
-              const isActive = link.href === '/' ? location === '/' || location === '' : location === link.href;
+              const isActive = link.href === '/' 
+                ? location === '/' || location === '' 
+                : location === link.href || location.startsWith(link.href + '/');
               return (
                 <Link 
                   key={link.label} 
                   href={link.href}
                   aria-current={isActive ? 'page' : undefined}
                   className={cn(
-                    'text-lg font-medium transition-colors',
-                    isActive ? 'text-primary font-semibold' : 'text-foreground hover:text-primary'
+                    'text-base font-medium py-2 px-1 transition-colors rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+                    isActive 
+                      ? 'text-primary font-semibold' 
+                      : 'text-stone-700 hover:text-primary'
                   )}
                 >
                   {link.label}
@@ -152,9 +200,9 @@ export function Navbar() {
             })}
           </nav>
           
-          <div className="pt-6 border-t border-border mt-auto">
+          <div className="pt-6 border-t border-stone-100 mt-auto">
             <Button 
-              className="w-full"
+              className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 rounded-full text-base shadow-xs"
               onClick={() => {
                 setMobileMenuOpen(false);
                 openDemoModal();
