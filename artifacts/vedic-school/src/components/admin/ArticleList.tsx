@@ -23,14 +23,16 @@ import {
   Loader2,
   ExternalLink,
   BookOpen,
+  User,
 } from 'lucide-react';
 
 interface ArticleListProps {
   onNewArticle: () => void;
   onEditArticle: (post: BlogPost) => void;
+  onOpenAuthor?: (authorNameOrId: string) => void;
 }
 
-export function ArticleList({ onNewArticle, onEditArticle }: ArticleListProps) {
+export function ArticleList({ onNewArticle, onEditArticle, onOpenAuthor }: ArticleListProps) {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -427,6 +429,25 @@ export function ArticleList({ onNewArticle, onEditArticle }: ArticleListProps) {
                     <span className="text-stone-400 text-[11px] flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {displayDate}
+                    </span>
+
+                    <span className="text-stone-500 text-[11px] flex items-center gap-1 pl-1 border-l border-stone-200">
+                      <User className="w-3 h-3 text-stone-400" />
+                      {onOpenAuthor ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenAuthor(post.author_id || post.author);
+                          }}
+                          className="hover:text-[hsl(var(--primary))] hover:underline font-medium text-stone-700"
+                          title="View author in CMS"
+                        >
+                          {post.author || 'Meenakshi Koul'}
+                        </button>
+                      ) : (
+                        <span>{post.author || 'Meenakshi Koul'}</span>
+                      )}
                     </span>
                   </div>
 

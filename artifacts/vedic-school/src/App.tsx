@@ -17,6 +17,7 @@ import CookiePolicy from '@/pages/CookiePolicy';
 import Admin from '@/pages/Admin';
 import Blog from '@/pages/Blog';
 import BlogPostPage from '@/pages/BlogPostPage';
+import AuthorProfile from '@/pages/AuthorProfile';
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ function Router() {
             <Route path="/contact" component={Contact} />
             <Route path="/blog" component={Blog} />
             <Route path="/blog/:slug" component={BlogPostPage} />
+            <Route path="/authors/:slug" component={AuthorProfile} />
             <Route path="/privacy-policy" component={PrivacyPolicy} />
             <Route path="/terms-of-service" component={TermsOfService} />
             <Route path="/cookie-policy" component={CookiePolicy} />

@@ -11,6 +11,26 @@ export interface BlogFAQItem {
   answer: string;
 }
 
+export interface BlogSourceItem {
+  publication: string;
+  title: string;
+  url: string;
+  date?: string;
+}
+
+export interface Author {
+  id: string;
+  name: string;
+  slug: string;
+  bio: string | null;
+  role: string | null;
+  photo: string | null;
+  photo_alt?: string | null;
+  linkedin_url?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface BlogPost {
   id: string;
   title: string;
@@ -18,14 +38,20 @@ export interface BlogPost {
   excerpt: string | null;
   content: string;
   featured_image: string | null;
+  featured_image_alt?: string | null;
   category: BlogCategory;
   author: string;
+  author_id?: string | null;
+  author_rel?: Author | null;
   reading_time: number | null;
   status: BlogStatus;
   published_at: string | null;
   is_featured: boolean;
   seo_title: string | null;
   seo_description: string | null;
+  tldr?: string[];
+  quick_verdict?: string | null;
+  sources?: BlogSourceItem[];
   faqs?: BlogFAQItem[];
   created_at: string;
   updated_at: string;
@@ -34,8 +60,13 @@ export interface BlogPost {
 export type BlogPostInsert = Omit<BlogPost, 'id' | 'created_at' | 'updated_at'> & {
   id?: string;
   author?: string;
+  author_id?: string | null;
   status?: BlogStatus;
   is_featured?: boolean;
+  featured_image_alt?: string | null;
+  tldr?: string[];
+  quick_verdict?: string | null;
+  sources?: BlogSourceItem[];
   faqs?: BlogFAQItem[];
 };
 

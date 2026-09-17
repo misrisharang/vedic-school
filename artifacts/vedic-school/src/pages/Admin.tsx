@@ -7,7 +7,10 @@ import { AdminAuthProvider, useAdminAuth } from '@/context/AdminAuthContext';
 import { AdminLogin } from '@/components/admin/AdminLogin';
 import { ArticleList } from '@/components/admin/ArticleList';
 import { ArticleEditor } from '@/components/admin/ArticleEditor';
-import type { BlogPost } from '@/types/blog';
+import { AuthorList } from '@/components/admin/AuthorList';
+import { AuthorEditor } from '@/components/admin/AuthorEditor';
+import type { BlogPost, Author } from '@/types/blog';
+import { fetchAuthors, findAuthorByNameOrSlug } from '@/lib/authors';
 import { Button } from '@/components/ui/button';
 import {
   LogOut,
@@ -15,13 +18,16 @@ import {
   ShieldCheck,
   Loader2,
   BookOpen,
+  Users,
+  FileText,
 } from 'lucide-react';
 import { Link } from 'wouter';
 
 function AdminDashboard() {
   const { user, signOut } = useAdminAuth();
-  const [currentView, setCurrentView] = useState<'list' | 'editor'>('list');
+  const [currentView, setCurrentView] = useState<'articles' | 'editor' | 'authors' | 'author-editor'>('articles');
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [editingAuthor, setEditingAuthor] = useState<Author | null>(null);
 
   const handleNewArticle = () => {
     setEditingPost(null);
@@ -35,15 +41,42 @@ function AdminDashboard() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleOpenAuthor = async (authorIdOrName: string) => {
+    const { authors } = await fetchAuthors();
+    const matched = findAuthorByNameOrSlug(authors, authorIdOrName) || authors.find(a => a.id === authorIdOrName) || authors[0] || null;
+    setEditingAuthor(matched);
+    setCurrentView('author-editor');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNewAuthor = () => {
+    setEditingAuthor(null);
+    setCurrentView('author-editor');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleEditAuthor = (author: Author) => {
+    setEditingAuthor(author);
+    setCurrentView('author-editor');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleSaveSuccess = () => {
-    setCurrentView('list');
+    setCurrentView('articles');
     setEditingPost(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleAuthorSaveSuccess = () => {
+    setCurrentView('authors');
+    setEditingAuthor(null);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const handleCancel = () => {
-    setCurrentView('list');
+    setCurrentView('articles');
     setEditingPost(null);
+    setEditingAuthor(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -76,6 +109,41 @@ function AdminDashboard() {
               <ShieldCheck className="w-3 h-3" />
               Authenticated
             </span>
+
+            {/* Navigation Tabs */}
+            <div className="hidden sm:flex items-center gap-1 bg-stone-100/80 p-1 rounded-lg border border-stone-200 text-xs ml-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingPost(null);
+                  setCurrentView('articles');
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-all ${
+                  currentView === 'articles' || currentView === 'editor'
+                    ? 'bg-white text-stone-900 shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900'
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                Articles
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingAuthor(null);
+                  setCurrentView('authors');
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-medium transition-all ${
+                  currentView === 'authors' || currentView === 'author-editor'
+                    ? 'bg-white text-stone-900 shadow-xs'
+                    : 'text-stone-600 hover:text-stone-900'
+                }`}
+              >
+                <Users className="w-3.5 h-3.5" />
+                Authors
+              </button>
+            </div>
           </div>
 
           {/* Right Header Navigation & Actions */}
@@ -110,20 +178,69 @@ function AdminDashboard() {
             </Button>
           </div>
         </div>
+
+        {/* Mobile Navigation Tabs */}
+        <div className="sm:hidden flex items-center justify-around border-t border-stone-200 bg-white px-4 py-2 text-xs font-medium">
+          <button
+            type="button"
+            onClick={() => {
+              setEditingPost(null);
+              setCurrentView('articles');
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md ${
+              currentView === 'articles' || currentView === 'editor'
+                ? 'bg-stone-100 text-stone-900 font-semibold'
+                : 'text-stone-600'
+            }`}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            Articles
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setEditingAuthor(null);
+              setCurrentView('authors');
+            }}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md ${
+              currentView === 'authors' || currentView === 'author-editor'
+                ? 'bg-stone-100 text-stone-900 font-semibold'
+                : 'text-stone-600'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5" />
+            Authors
+          </button>
+        </div>
       </header>
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {currentView === 'list' ? (
+        {currentView === 'articles' && (
           <ArticleList
             onNewArticle={handleNewArticle}
             onEditArticle={handleEditArticle}
+            onOpenAuthor={handleOpenAuthor}
           />
-        ) : (
+        )}
+        {currentView === 'editor' && (
           <ArticleEditor
             post={editingPost}
             onSaveSuccess={handleSaveSuccess}
             onCancel={handleCancel}
+          />
+        )}
+        {currentView === 'authors' && (
+          <AuthorList
+            onNewAuthor={handleNewAuthor}
+            onEditAuthor={handleEditAuthor}
+          />
+        )}
+        {currentView === 'author-editor' && (
+          <AuthorEditor
+            author={editingAuthor}
+            onSaveSuccess={handleAuthorSaveSuccess}
+            onCancel={() => setCurrentView('authors')}
           />
         )}
       </main>

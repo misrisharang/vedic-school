@@ -1,17 +1,30 @@
 import React from 'react';
 import { Sparkles, ExternalLink } from 'lucide-react';
+import {
+  RiOpenaiFill as ChatGPTIcon,
+  RiClaudeFill as ClaudeIcon,
+  RiGeminiFill as GeminiIcon,
+  RiPerplexityFill as PerplexityIcon,
+  RiGrokAiFill as GrokIcon,
+} from 'react-icons/ri';
 
-interface SummariseWithAIProps {
+export interface SummariseWithAIProps {
   title: string;
   canonicalUrl: string;
+  variant?: 'sidebar' | 'compact' | 'inline';
 }
 
 interface AIProvider {
   name: string;
   getUrl: (prompt: string) => string;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
-export const SummariseWithAI: React.FC<SummariseWithAIProps> = ({ title, canonicalUrl }) => {
+export const SummariseWithAI: React.FC<SummariseWithAIProps> = ({
+  title,
+  canonicalUrl,
+  variant = 'sidebar',
+}) => {
   // Sanitize title: strip quotes, newlines, control characters, extra whitespace
   const sanitizedTitle = (title || '')
     .replace(/[\r\n\t]+/g, ' ')
@@ -27,25 +40,62 @@ export const SummariseWithAI: React.FC<SummariseWithAIProps> = ({ title, canonic
     {
       name: 'ChatGPT',
       getUrl: (q) => `https://chatgpt.com/?q=${q}`,
+      icon: ChatGPTIcon,
     },
     {
       name: 'Claude',
       getUrl: (q) => `https://claude.ai/new?q=${q}`,
+      icon: ClaudeIcon,
     },
     {
       name: 'Gemini',
       getUrl: (q) => `https://gemini.google.com/app?prompt=${q}`,
+      icon: GeminiIcon,
     },
     {
       name: 'Perplexity',
       getUrl: (q) => `https://www.perplexity.ai/search?q=${q}`,
+      icon: PerplexityIcon,
     },
     {
       name: 'Grok',
       getUrl: (q) => `https://x.com/i/grok?text=${q}`,
+      icon: GrokIcon,
     },
   ];
 
+  // Sidebar or compact horizontal icon-only row
+  if (variant === 'sidebar' || variant === 'compact') {
+    return (
+      <div className="space-y-2 select-none">
+        <div className="flex items-center gap-1.5 text-stone-400 text-[11px] font-bold uppercase tracking-[0.14em] font-sans">
+          <Sparkles className="w-3.5 h-3.5 text-[hsl(var(--primary))]" aria-hidden="true" />
+          <span>Summarise with AI</span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {providers.map((p) => {
+            const Icon = p.icon;
+            return (
+              <a
+                key={p.name}
+                href={p.getUrl(encodedPrompt)}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={`Summarise with ${p.name}`}
+                aria-label={`Summarise this article using ${p.name} (opens in a new tab)`}
+                className="w-8 h-8 rounded-lg bg-stone-50 hover:bg-stone-100 text-stone-600 hover:text-stone-900 border border-stone-200/90 flex items-center justify-center transition-colors shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))]/40"
+              >
+                <Icon className="w-4 h-4" />
+              </a>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
+  // Full inline banner fallback if used elsewhere
   return (
     <div className="bg-stone-50/80 border border-stone-200/90 rounded-2xl p-3.5 sm:p-4 my-2">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -55,19 +105,23 @@ export const SummariseWithAI: React.FC<SummariseWithAIProps> = ({ title, canonic
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-          {providers.map((p) => (
-            <a
-              key={p.name}
-              href={p.getUrl(encodedPrompt)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-stone-700 border border-stone-200 hover:border-[hsl(var(--primary))]/50 hover:bg-stone-50 hover:text-stone-900 transition-all shadow-2xs focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30"
-              aria-label={`Summarise this article using ${p.name} (opens in a new tab)`}
-            >
-              <span>{p.name}</span>
-              <ExternalLink className="w-2.5 h-2.5 text-stone-400" aria-hidden="true" />
-            </a>
-          ))}
+          {providers.map((p) => {
+            const Icon = p.icon;
+            return (
+              <a
+                key={p.name}
+                href={p.getUrl(encodedPrompt)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-white text-stone-700 border border-stone-200 hover:border-[hsl(var(--primary))]/50 hover:bg-stone-50 hover:text-stone-900 transition-all shadow-2xs focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30"
+                aria-label={`Summarise this article using ${p.name} (opens in a new tab)`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{p.name}</span>
+                <ExternalLink className="w-2.5 h-2.5 text-stone-400" aria-hidden="true" />
+              </a>
+            );
+          })}
         </div>
       </div>
     </div>
