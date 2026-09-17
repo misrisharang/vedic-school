@@ -45,7 +45,24 @@ import {
   Sparkles,
   FileText,
   User,
+  Layers,
 } from 'lucide-react';
+
+interface EditorSectionItem {
+  id: string;
+  label: string;
+}
+
+const EDITOR_SECTIONS: readonly EditorSectionItem[] = [
+  { id: 'section-basic-details', label: 'Basic Details' },
+  { id: 'section-tldr', label: 'TL;DR' },
+  { id: 'section-quick-verdict', label: 'Quick Verdict' },
+  { id: 'section-content', label: 'Article Content' },
+  { id: 'section-sources', label: 'Sources' },
+  { id: 'section-faqs', label: 'FAQs' },
+  { id: 'section-cover-image', label: 'Cover Image' },
+  { id: 'section-seo', label: 'SEO & Social' },
+];
 
 interface ArticleEditorProps {
   post: BlogPost | null;
@@ -261,6 +278,82 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
+
+  // Active section tracking for right-column Article Sections navigation
+  const [activeSectionId, setActiveSectionId] = useState<string>('section-basic-details');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    let ticking = false;
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const readingLine = scrollY + 140;
+
+          const sectionIds = [
+            'section-basic-details',
+            'section-tldr',
+            'section-quick-verdict',
+            'section-content',
+            'section-sources',
+            'section-faqs',
+            'section-cover-image',
+            'section-seo',
+          ];
+
+          let currentId = 'section-basic-details';
+          for (const id of sectionIds) {
+            const el = document.getElementById(id);
+            if (el) {
+              const top = el.getBoundingClientRect().top + scrollY;
+              if (readingLine >= top - 20) {
+                currentId = id;
+              }
+            }
+          }
+
+          setActiveSectionId(currentId);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const handleSectionNavClick = (id: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const headerOffset = 88; // 64px header + 24px padding
+    const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+    });
+
+    el.scrollIntoView({
+      behavior: prefersReducedMotion ? 'auto' : 'smooth',
+      block: 'nearest',
+    });
+
+    setActiveSectionId(id);
+  };
 
   // Load canonical authors on mount
   useEffect(() => {
@@ -813,78 +906,81 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left / Main Column: Title, Slug, Excerpt, Content */}
         <div className="lg:col-span-8 space-y-6">
-          {/* Title Input */}
-          <div className="space-y-1.5">
-            <Label htmlFor="article-title" className="text-xs font-semibold text-stone-700">
-              Article Title *
-            </Label>
-            <Input
-              id="article-title"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Why Understanding Matters More Than Speed in Maths"
-              className="text-xl sm:text-2xl font-serif font-bold text-stone-900 h-14 bg-white border-stone-200 px-4 rounded-xl placeholder:font-normal placeholder:text-stone-300"
-            />
-          </div>
-
-          {/* Slug URL Field */}
-          <div className="p-3.5 rounded-xl bg-white border border-stone-200 space-y-2">
-            <div className="flex items-center justify-between">
-              <Label className="text-xs font-semibold text-stone-700 flex items-center gap-1.5">
-                <Globe className="w-3.5 h-3.5 text-stone-400" />
-                URL Slug: <span className="text-stone-500 font-normal">/blog/{slug || 'your-slug-here'}</span>
+          {/* Section: Basic Details */}
+          <div id="section-basic-details" className="space-y-6 scroll-mt-24">
+            {/* Title Input */}
+            <div className="space-y-1.5">
+              <Label htmlFor="article-title" className="text-xs font-semibold text-stone-700">
+                Article Title *
               </Label>
-              <button
-                type="button"
-                onClick={() => setIsSlugLocked(!isSlugLocked)}
-                className="text-xs text-[hsl(var(--primary))] hover:underline flex items-center gap-1 font-medium"
-              >
-                {isSlugLocked ? (
-                  <>
-                    <Lock className="w-3 h-3" /> Edit slug manually
-                  </>
-                ) : (
-                  <>
-                    <Unlock className="w-3 h-3 text-amber-600" /> Auto-generate from title
-                  </>
-                )}
-              </button>
-            </div>
-
-            {!isSlugLocked && (
               <Input
+                id="article-title"
                 type="text"
-                value={slug}
-                onChange={(e) => setSlug(slugify(e.target.value))}
-                placeholder="custom-url-slug"
-                className="text-xs font-mono h-8 bg-stone-50 border-stone-200"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Why Understanding Matters More Than Speed in Maths"
+                className="text-xl sm:text-2xl font-serif font-bold text-stone-900 h-14 bg-white border-stone-200 px-4 rounded-xl placeholder:font-normal placeholder:text-stone-300"
               />
-            )}
-          </div>
-
-          {/* Excerpt */}
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="article-excerpt" className="text-xs font-semibold text-stone-700">
-                Article Excerpt / Summary
-              </Label>
-              <span className="text-[11px] text-stone-400">
-                {excerpt.length} characters (ideal: 120-180)
-              </span>
             </div>
-            <Textarea
-              id="article-excerpt"
-              rows={2}
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
-              placeholder="A brief 1-2 sentence overview shown on blog cards and social sharing..."
-              className="text-sm bg-white border-stone-200 rounded-xl resize-none text-stone-700"
-            />
+
+            {/* Slug URL Field */}
+            <div className="p-3.5 rounded-xl bg-white border border-stone-200 space-y-2">
+              <div className="flex items-center justify-between">
+                <Label className="text-xs font-semibold text-stone-700 flex items-center gap-1.5">
+                  <Globe className="w-3.5 h-3.5 text-stone-400" />
+                  URL Slug: <span className="text-stone-500 font-normal">/blog/{slug || 'your-slug-here'}</span>
+                </Label>
+                <button
+                  type="button"
+                  onClick={() => setIsSlugLocked(!isSlugLocked)}
+                  className="text-xs text-[hsl(var(--primary))] hover:underline flex items-center gap-1 font-medium"
+                >
+                  {isSlugLocked ? (
+                    <>
+                      <Lock className="w-3 h-3" /> Edit slug manually
+                    </>
+                  ) : (
+                    <>
+                      <Unlock className="w-3 h-3 text-amber-600" /> Auto-generate from title
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {!isSlugLocked && (
+                <Input
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(slugify(e.target.value))}
+                  placeholder="custom-url-slug"
+                  className="text-xs font-mono h-8 bg-stone-50 border-stone-200"
+                />
+              )}
+            </div>
+
+            {/* Excerpt */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="article-excerpt" className="text-xs font-semibold text-stone-700">
+                  Article Excerpt / Summary
+                </Label>
+                <span className="text-[11px] text-stone-400">
+                  {excerpt.length} characters (ideal: 120-180)
+                </span>
+              </div>
+              <Textarea
+                id="article-excerpt"
+                rows={2}
+                value={excerpt}
+                onChange={(e) => setExcerpt(e.target.value)}
+                placeholder="A brief 1-2 sentence overview shown on blog cards and social sharing..."
+                className="text-sm bg-white border-stone-200 rounded-xl resize-none text-stone-700"
+              />
+            </div>
           </div>
 
           {/* Card: Dedicated TL;DR (Key Takeaways) */}
-          <div className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs">
+          <div id="section-tldr" className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs scroll-mt-24">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
               <div>
                 <div className="flex items-center gap-2">
@@ -985,7 +1081,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
           </div>
 
           {/* Card: Dedicated Quick Verdict */}
-          <div className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs">
+          <div id="section-quick-verdict" className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs scroll-mt-24">
             <div className="pb-3 border-b border-stone-100">
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-stone-900 flex items-center gap-1.5">
@@ -1017,7 +1113,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
           </div>
 
           {/* Body Markdown Editor */}
-          <div className="space-y-1.5">
+          <div id="section-content" className="space-y-1.5 scroll-mt-24">
             <div className="flex items-center justify-between">
               <Label className="text-xs font-semibold text-stone-700">
                 Article Content (Markdown) *
@@ -1035,7 +1131,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
           </div>
 
           {/* Card: Dedicated Sources Section */}
-          <div className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs">
+          <div id="section-sources" className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs scroll-mt-24">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
               <div>
                 <div className="flex items-center gap-2">
@@ -1182,7 +1278,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
           </div>
 
           {/* Article FAQs Section */}
-          <div className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs">
+          <div id="section-faqs" className="bg-white rounded-2xl border border-stone-200 p-5 sm:p-6 space-y-4 shadow-xs scroll-mt-24">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stone-100">
               <div>
                 <h3 className="text-sm font-bold text-stone-900 flex items-center gap-1.5">
@@ -1297,8 +1393,47 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
           </div>
         </div>
 
-        {/* Right Sidebar: Publishing Settings & Metadata */}
-        <div className="lg:col-span-4 space-y-6">
+        {/* Right Sidebar: Sticky Settings, Sections Nav & Metadata */}
+        <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-20 lg:max-h-[calc(100vh-5.5rem)] lg:overflow-y-auto overscroll-contain pr-0.5">
+          {/* Card: Article Sections Navigation */}
+          <div className="bg-white rounded-2xl border border-stone-200 p-4 shadow-xs">
+            <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-stone-100">
+              <h3 className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-400 font-sans select-none">
+                Article Sections
+              </h3>
+              <Layers className="w-3.5 h-3.5 text-stone-400" aria-hidden="true" />
+            </div>
+
+            <nav aria-label="Article sections navigation" className="space-y-0.5">
+              {EDITOR_SECTIONS.map((sec) => {
+                const isActive = activeSectionId === sec.id;
+                return (
+                  <button
+                    key={sec.id}
+                    type="button"
+                    onClick={(e) => handleSectionNavClick(sec.id, e)}
+                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition-colors flex items-center justify-between group cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[hsl(var(--primary))]/40 ${
+                      isActive
+                        ? 'bg-[hsl(var(--primary))]/8 text-[hsl(var(--primary))] font-semibold'
+                        : 'text-stone-600 hover:text-stone-900 hover:bg-stone-50 font-medium'
+                    }`}
+                    aria-current={isActive ? 'location' : undefined}
+                  >
+                    <span className="truncate">{sec.label}</span>
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full transition-all ${
+                        isActive
+                          ? 'bg-[hsl(var(--primary))] scale-100'
+                          : 'bg-stone-300 opacity-0 group-hover:opacity-100 scale-75'
+                      }`}
+                      aria-hidden="true"
+                    />
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
           {/* Card: Category & Status */}
           <div className="bg-white rounded-2xl border border-stone-200 p-5 space-y-5 shadow-xs">
             <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400">
@@ -1427,7 +1562,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
           </div>
 
           {/* Card: Featured Image */}
-          <div className="bg-white rounded-2xl border border-stone-200 p-5 space-y-4 shadow-xs">
+          <div id="section-cover-image" className="bg-white rounded-2xl border border-stone-200 p-5 space-y-4 shadow-xs scroll-mt-24">
             <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400">
               Cover Image
             </h3>
@@ -1442,7 +1577,7 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
           </div>
 
           {/* Card: Search Engine Optimization (SEO) */}
-          <div className="bg-white rounded-2xl border border-stone-200 p-5 space-y-4 shadow-xs">
+          <div id="section-seo" className="bg-white rounded-2xl border border-stone-200 p-5 space-y-4 shadow-xs scroll-mt-24">
             <div className="flex items-center justify-between">
               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-400">
                 SEO & Social Meta
