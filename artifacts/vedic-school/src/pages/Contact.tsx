@@ -436,7 +436,7 @@ export default function Contact() {
                       <div className="flex items-center gap-2 mb-2">
                         <MapPin className="w-5 h-5 text-primary shrink-0" />
                         <h3 className="font-serif text-xl sm:text-2xl text-foreground font-medium">
-                          Emerald Estate, Gurugram
+                          Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurgaon.
                         </h3>
                       </div>
                       <p className="text-[14px] sm:text-[15px] text-foreground/75 leading-relaxed">
@@ -448,14 +448,14 @@ export default function Contact() {
                   {/* Interactive Map */}
                   <div className="w-full flex-1 min-h-[300px] sm:min-h-[340px] lg:min-h-[360px] rounded-2xl overflow-hidden border border-border/60 shadow-xs relative bg-[#FAF6F0]">
                     <iframe
-                      title="The Vedic School Location Map - Emerald Estate, Gurugram"
-                      src="https://maps.google.com/maps?q=Emerald+Estate,+Gurugram&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                      title="The Vedic School Location Map - Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurgaon."
+                      src="https://maps.google.com/maps?q=Emaar+Emerald+Premier+Floors,+Near+World+Mark,+Sector+65,+Gurgaon.&t=&z=15&ie=UTF8&iwloc=&output=embed"
                       width="100%"
                       height="100%"
                       className="w-full h-full min-h-[300px] sm:min-h-[340px] lg:min-h-[360px] border-0"
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      aria-label="Map showing Emerald Estate, Gurugram"
+                      aria-label="Map showing Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurgaon."
                     />
                   </div>
                 </div>
