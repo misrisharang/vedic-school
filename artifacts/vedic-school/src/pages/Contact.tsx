@@ -185,7 +185,6 @@ export default function Contact() {
         />
         <div className="container mx-auto px-4 md:px-6 max-w-3xl text-center relative z-10">
           <FadeIn>
-            <span className="sage-eyebrow mb-3">CONTACT THE VEDIC SCHOOL</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-serif mb-4 text-foreground leading-[1.2] tracking-tight">
               Let's talk about your child's Maths.
             </h1>
@@ -422,8 +421,7 @@ export default function Contact() {
               <div className="lg:col-span-5 flex flex-col">
                 <div className="bg-white/90 backdrop-blur-xs border border-[#E8DFCFA0] shadow-[0_12px_40px_-10px_rgba(59,66,76,0.08)] rounded-[2rem] p-6 sm:p-7 md:p-8 flex flex-col justify-between h-full">
                   <div>
-                    {/* Eyebrow & Heading */}
-                    <span className="sage-eyebrow mb-2 block">LOCATION</span>
+                    {/* Heading */}
                     <h2 className="font-serif text-2xl sm:text-3xl lg:text-[32px] text-foreground font-normal leading-tight mb-4">
                       Find The Vedic School
                     </h2>
