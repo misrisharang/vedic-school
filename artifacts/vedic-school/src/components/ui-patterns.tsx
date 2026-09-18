@@ -88,12 +88,11 @@ export function SectionHeader({
   className?: string;
 }) {
   return (
-    <FadeIn className={`text-center mb-10 sm:mb-16 ${className}`}>
-      {eyebrow && <span className="sage-eyebrow">{eyebrow}</span>}
-      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-4 sm:mb-6 leading-tight max-w-4xl mx-auto">
+    <FadeIn className={`text-center mb-8 sm:mb-12 ${className}`}>
+      <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-3 sm:mb-4 leading-tight max-w-4xl mx-auto">
         {title}
       </h2>
-      {subtitle && <p className="text-base sm:text-lg text-foreground/70 max-w-2xl mx-auto leading-relaxed">{subtitle}</p>}
+      {subtitle && <p className="text-base sm:text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">{subtitle}</p>}
     </FadeIn>
   );
 }
@@ -531,7 +530,7 @@ export interface TwoPathItem {
 }
 
 export function TwoPathCTA({
-  eyebrow,
+  eyebrow: _eyebrow,
   paths,
   onDark = false,
 }: {
@@ -541,11 +540,6 @@ export function TwoPathCTA({
 }) {
   return (
     <div>
-      {eyebrow && (
-        <p className={`text-xs font-sans font-bold tracking-[0.15em] uppercase mb-4 ${onDark ? 'text-white/70' : 'text-secondary'}`}>
-          {eyebrow}
-        </p>
-      )}
       <div className="grid sm:grid-cols-2 gap-4">
         {paths.map((path, i) => (
           <div

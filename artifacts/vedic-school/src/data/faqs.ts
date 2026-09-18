@@ -20,12 +20,12 @@ export const VEDIC_MATHS_FAQS: FAQItem[] = [
   {
     question: 'Who is Vedic Maths for?',
     answer:
-      'Vedic Maths is for children at different starting points. Whether your child is still building their number foundations, understands the basics but calculates slowly, or already enjoys Maths and wants more challenge, I start with where their thinking is today.',
+      'Vedic Maths is for children at different starting points. Whether your child is still building their number foundations, understands the basics but calculates slowly, or already enjoys Maths and wants more challenge, we start with where their thinking is today.',
   },
   {
     question: 'Where does my child start?',
     answer:
-      "At the level that's right for them. Some children begin by strengthening foundations. Others are ready to build fluency or move into more advanced work. The starting point is based on how your child currently thinks with numbers — not simply their age or grade.",
+      "At the level that's right for them. Some children begin by strengthening foundations. Others are ready to build fluency or move into more advanced work. The starting point is based on how your child currently thinks with numbers, not simply their age or grade.",
   },
   {
     question: 'Does my child need to be good at Maths to start?',
@@ -35,12 +35,12 @@ export const VEDIC_MATHS_FAQS: FAQItem[] = [
   {
     question: 'Is Vedic Maths just a collection of shortcuts?',
     answer:
-      'No. I teach techniques as tools for working with numbers more efficiently, but they are built on understanding rather than replacing it. Understanding comes first. Speed follows.',
+      'No. We teach techniques as tools for working with numbers more efficiently, but they are built on understanding rather than replacing it. Understanding comes first. Speed follows.',
   },
   {
     question: 'Will Vedic Maths replace school Maths?',
     answer:
-      'No. Vedic Maths builds calculation fluency and confidence. It complements, rather than replaces, the Maths children learn at school. Where your child needs direct help with their school curriculum, I also offer separate curriculum-aligned Maths.',
+      'No. Vedic Maths builds calculation fluency and confidence. It complements, rather than replaces, the maths your child learns at school. If they need direct help with their CBSE, ICSE, IB or other school syllabus, we also offer curriculum-aligned classes.',
   },
 ];
 
@@ -66,7 +66,7 @@ export const CURRICULUM_ALIGNED_FAQS: FAQItem[] = [
   {
     question: 'Which boards do you support?',
     answer:
-      "I currently work with students following CBSE, ICSE and IB curricula. The exact topics covered depend on the child's school curriculum and learning needs.",
+      "We currently work with students following CBSE, ICSE and IB curricula. The exact topics covered depend on the child's school curriculum and learning needs.",
   },
   {
     question: 'Is this a replacement for school Maths?',

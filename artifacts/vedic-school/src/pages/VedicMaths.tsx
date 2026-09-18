@@ -6,15 +6,12 @@ import {
   FadeIn,
   FadeInStagger,
   FadeInStaggerItem,
-  SectionHeader,
   ShiftList,
   MethodSteps,
   TestimonialCard,
-  TestimonialPlaceholder,
   FAQAccordion,
   ClosingCTABand,
 } from '@/components/ui-patterns';
-import { testimonials } from '@/data/testimonials';
 import { VEDIC_MATHS_FAQS } from '@/data/faqs';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import boyStudyingPhoto from '@assets/vedic-maths-boy-studying.jpg';
@@ -56,8 +53,8 @@ const methodSteps = [
     title: 'Diagnose',
     description: (
       <>
-        <span className="block text-foreground font-medium mb-1">Find what's solid. Find what's missing.</span>
-        I look at how your child currently thinks and works with numbers.
+        <span className="block text-foreground font-medium mb-1">Map the current thinking.</span>
+        We look at how your child currently thinks and works with numbers.
       </>
     ),
   },
@@ -66,7 +63,7 @@ const methodSteps = [
     title: 'Rebuild',
     description: (
       <>
-        <span className="block text-foreground font-medium mb-1">Strengthen the foundation.</span>
+        <span className="block text-foreground font-medium mb-1">Strengthen the shaky parts.</span>
         We work on anything that needs to become secure before moving ahead.
       </>
     ),
@@ -76,8 +73,8 @@ const methodSteps = [
     title: 'Accelerate',
     description: (
       <>
-        <span className="block text-foreground font-medium mb-1">Layer on Vedic and mental Maths techniques.</span>
-        Once the foundation is ready, calculation becomes faster, more flexible and more reliable.
+        <span className="block text-foreground font-medium mb-1">Layer on faster methods.</span>
+        Once the foundation is ready, calculation becomes faster, more flexible and reliable.
       </>
     ),
   },
@@ -87,7 +84,7 @@ const progressionStages = [
   {
     number: '01',
     title: 'Starting Out',
-    focus: 'Building the foundations',
+    focus: 'BUILDING THE FOUNDATIONS',
     bullets: [
       'Tables',
       'Quick multiplication and division',
@@ -97,12 +94,12 @@ const progressionStages = [
       'Early algebra',
       'Squares, cubes and base multiplication',
     ],
-    aim: 'Building the number fluency every technique after this depends on.',
+    aim: 'Building the number fluency every skill depends on.',
   },
   {
     number: '02',
     title: 'Building Speed',
-    focus: 'Building speed and flexibility',
+    focus: 'BUILDING SPEED AND FLEXIBILITY',
     bullets: [
       'Square roots of imperfect numbers',
       'Fourth powers and roots',
@@ -112,12 +109,12 @@ const progressionStages = [
       'Dates and calendars',
       'Fractions and recurring decimals',
     ],
-    aim: 'Turning early fluency into faster, more flexible calculation.',
+    aim: 'Turning early fluency into faster, flexible calculation.',
   },
   {
     number: '03',
     title: 'Exam-Ready',
-    focus: 'Using Vedic techniques alongside higher-level mathematics',
+    focus: 'APPLYING TO EXAM-LEVEL MATHS',
     bullets: [
       'Coordinate geometry',
       'Quadratic and simultaneous quadratic equations',
@@ -127,7 +124,7 @@ const progressionStages = [
       'Factorisation and an introduction to differential calculus',
       'Determinants',
     ],
-    aim: 'Applying the skills to more advanced and exam-level mathematics.',
+    aim: 'Applying those skills to advanced, exam-level maths.',
   },
 ];
 
@@ -165,6 +162,27 @@ const journey = [
   { icon: Sparkles, label: 'Build Fluency', description: 'Calculation becomes faster and more natural.' },
 ];
 
+const vedicMathsTestimonials = [
+  {
+    name: 'Krishang K Sharma',
+    quote:
+      'Maths develops our reasoning, analytical thinking and practical understanding, and its use can be applied in everyday life. Meenakshi Mam has been one of my most amazing Maths teachers. Through Vedic Maths, she has helped me develop an interest in Maths and supported me morally and academically. You taught me never to give up and that there is more than one way to solve everything.',
+  },
+  {
+    name: 'Miti Jindal',
+    relation: '(Mother of Marc Veer Jindal)',
+    location: 'Australia',
+    quote:
+      "We were given Meenakshi's reference by a family member whose two children were being taught by her. We were impressed by their knowledge and understanding, so we decided to try her for our six-year-old son Marc. Her way of handling his questions and her teaching style were very impressive. My son has come a long way with her. Thank you for your continuous support.",
+  },
+  {
+    name: 'Kanupriya Gupta',
+    location: 'Google review',
+    quote:
+      'Meenakshi, founder of The Vedic School, is a very good Maths teacher. She puts in a lot of effort to bring out the best in the learner and gives her time generously so that every child sees real results. Highly recommended for Maths and Vedic Maths teaching for your kids.',
+  },
+];
+
 const faqs = VEDIC_MATHS_FAQS;
 
 export default function VedicMaths() {
@@ -179,27 +197,33 @@ export default function VedicMaths() {
         schema={getVedicMathsSchema()}
       />
 
-      {/* HERO SECTION */}
-      <section className="relative pt-32 pb-16 lg:pt-48 lg:pb-20 bg-background border-b border-border/30 overflow-hidden">
+      {/* 1. HERO SECTION */}
+      <section className="relative pt-24 pb-12 sm:pt-28 sm:pb-14 lg:pt-36 lg:pb-20 border-b border-border/30 overflow-hidden">
         <div
           className="absolute inset-0 z-0 opacity-20 pointer-events-none"
           style={{ backgroundImage: `url(${heroTexture})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         />
         <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] xl:grid-cols-2 gap-10 lg:gap-12 items-center">
             <FadeIn className="max-w-2xl">
-              <span className="sage-eyebrow mb-6">VEDIC MATHS CLASSES</span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-foreground leading-tight mb-6">
-                An ancient approach to numbers. A <span className="text-primary italic">different</span> experience for your child.
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[2.85rem] xl:text-6xl font-serif text-foreground leading-[1.12] mb-5 sm:mb-6 tracking-tight">
+                <span className="block lg:whitespace-nowrap">Maths that clicks, not</span>{' '}
+                <span className="block">confuses.</span>
               </h1>
-              <p className="text-lg md:text-xl text-foreground/80 leading-relaxed mb-8 max-w-xl">
-                Vedic Maths is a collection of techniques from ancient Indian mathematics that gives children more flexible ways to work with numbers — making calculation faster, clearer and more confident.
+              <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed mb-6 sm:mb-8 max-w-xl">
+                We teach your child to understand numbers, not just memorise steps, so maths stops feeling confusing and starts feeling like something they actually enjoy.
               </p>
-              <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
+              <Button
+                size="lg"
+                onClick={openDemoModal}
+                className="max-w-full whitespace-normal sm:whitespace-nowrap h-auto py-3.5 sm:py-0 sm:h-14 px-6 sm:px-8 text-base sm:text-lg text-center"
+              >
+                Join Sunday's free demo class
+              </Button>
             </FadeIn>
 
             <FadeIn delay={0.2} className="relative flex items-center justify-center">
-              <div className="w-full max-w-md lg:max-w-lg aspect-[3/2] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
+              <div className="w-full max-w-md lg:max-w-lg aspect-square rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
                 <img
                   src={boyStudyingPhoto}
                   alt="Child working on Maths at home"
@@ -213,24 +237,34 @@ export default function VedicMaths() {
         </div>
       </section>
 
-      {/* WHAT CHANGES FOR A CHILD */}
-      <section className="py-16 md:py-20 bg-white border-y border-border/30">
+      {/* 2. THE VEDIC MATHS TRICKS BEHIND THE SHIFT */}
+      <section className="py-12 sm:py-14 md:py-16 bg-white border-b border-border/30">
         <div className="container mx-auto px-4 md:px-6">
-          <SectionHeader
-            eyebrow="THE SHIFT"
-            title="What if numbers stopped feeling like something to remember?"
-            subtitle="This is where the shift begins."
-          />
+          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-2 sm:mb-3 leading-tight">
+              The Vedic Maths Tricks Behind The Shift
+            </h2>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-serif text-foreground/80 font-normal leading-relaxed">
+              What if numbers stopped feeling like something to remember?
+            </h3>
+          </FadeIn>
+
           <ShiftList items={shifts} variant="cards" />
         </div>
       </section>
 
-      {/* WHAT IS VEDIC MATHS */}
-      <section className="py-16 md:py-20 bg-[#F0EBE1] border-y border-border/30">
+      {/* 2B. WHAT IS VEDIC MATHS? */}
+      <section className="py-12 sm:py-14 md:py-16 bg-[#F0EBE1] border-b border-border/30">
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <FadeIn className="text-center mb-8 sm:mb-10 max-w-3xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground leading-tight">
+              What is Vedic Maths?
+            </h2>
+          </FadeIn>
+
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
             <FadeIn className="relative flex justify-center order-2 md:order-1">
-              <div className="w-full max-w-sm sm:max-w-md aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
+              <div className="w-full max-w-md lg:max-w-lg aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
                 <img
                   src={workbookPhoto}
                   alt="Child working through Maths problems in a workbook"
@@ -241,61 +275,69 @@ export default function VedicMaths() {
               </div>
             </FadeIn>
 
-            <FadeIn delay={0.1} className="order-1 md:order-2">
-              <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-6">So, what exactly is Vedic Maths?</h2>
-              <p className="text-lg text-foreground/80 leading-relaxed">
-                Vedic Maths is a collection of mathematical techniques rooted in ancient Indian mathematical traditions that can make many calculations shorter, more flexible and easier to work through mentally. Children learn to recognise patterns and choose efficient ways to work with numbers, rather than relying only on one fixed procedure.{' '}
-                <span className="font-medium text-foreground">It doesn't replace understanding — it builds on it.</span>
+            <FadeIn delay={0.1} className="order-1 md:order-2 space-y-4 text-base sm:text-lg text-foreground/85 leading-relaxed">
+              <p>
+                The biggest shift is often not the calculation itself. It's the confidence that comes from experiencing themselves getting better.
+              </p>
+              <p>
+                Vedic Maths gives your child faster, more flexible ways to calculate. Instead of grinding through one long method for every problem, they learn to spot the pattern and see why it works. That's when maths stops feeling like a wall of rules to memorise, and starts feeling like something they can actually enjoy.
               </p>
             </FadeIn>
           </div>
         </div>
       </section>
 
-      {/* THE VEDIC SCHOOL METHOD */}
-      <section className="py-16 md:py-20 bg-white border-y border-border/30">
+      {/* 3. THE RIGHT FOUNDATION COMES FIRST */}
+      <section className="py-12 sm:py-14 md:py-16 bg-white border-b border-border/30">
         <div className="container mx-auto px-4 md:px-6">
-          <SectionHeader
-            eyebrow="THE VEDIC SCHOOL METHOD"
-            title="The right technique only works when it's built on the right foundation."
-            subtitle="I first understand where your child is. Then we build from there."
-          />
-          <MethodSteps steps={methodSteps} variant="cards" />
-          <FadeIn delay={0.3} className="text-center mt-12 sm:mt-14">
-            <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
+          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-2 sm:mb-3 leading-tight">
+              The Right Foundation Comes First
+            </h2>
+            <p className="text-base sm:text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">
+              We first understand where your child is. Then we build from there.
+            </p>
           </FadeIn>
+
+          <MethodSteps steps={methodSteps} variant="cards" />
         </div>
       </section>
 
-      {/* WHAT YOUR CHILD LEARNS */}
-      <section className="py-12 md:py-16 bg-[#F0EBE1] border-y border-border/30">
+      {/* 4. WHAT YOUR CHILD ACTUALLY LEARNS */}
+      <section className="py-12 sm:py-14 md:py-16 bg-[#F0EBE1] border-b border-border/30">
         <div className="container mx-auto px-4 md:px-6">
-          <SectionHeader
-            eyebrow="WHAT YOUR CHILD LEARNS"
-            title="There's more to Vedic Maths than multiplication."
-            subtitle="The skills build as your child's fluency grows."
-          />
-          <FadeInStagger className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto">
+          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-2 sm:mb-3 leading-tight">
+              What Your Child Actually Learns
+            </h2>
+            <p className="text-base sm:text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">
+              The skills build as your child's fluency grows.
+            </p>
+          </FadeIn>
+
+          <FadeInStagger className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
             {progressionStages.map((stage, i) => {
               const theme = stageThemes[i % stageThemes.length];
               return (
-                <FadeInStaggerItem key={i}>
-                  <div className={`${theme.bg} ${theme.border} border p-5 sm:p-6 lg:p-8 rounded-2xl shadow-sm h-full flex flex-col card-lift transition-all duration-300`}>
-                    <h3 className="font-serif text-xl sm:text-2xl text-foreground mb-3 font-medium flex items-baseline">
-                      <span className="font-mono text-base sm:text-lg text-foreground/50 mr-2 shrink-0">{stage.number}</span>
-                      <span>{stage.title}</span>
-                    </h3>
-                    <span className={`self-start text-xs font-sans font-semibold tracking-wider uppercase rounded-full px-3 py-1 mb-4 ${theme.pill}`}>
-                      {stage.focus}
-                    </span>
-                    <ul className="space-y-2 mb-6 flex-1">
-                      {stage.bullets.map((bullet, bIdx) => (
-                        <li key={bIdx} className="flex items-start text-xs sm:text-[13px] text-foreground/80 leading-snug">
-                          <span className={`w-1.5 h-1.5 rounded-full mt-1.5 mr-2.5 shrink-0 ${theme.dot}`} />
-                          <span>{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
+                <FadeInStaggerItem key={i} className="h-full flex flex-col">
+                  <div className={`${theme.bg} ${theme.border} border p-5 sm:p-6 lg:p-8 rounded-2xl shadow-sm h-full flex flex-col justify-between card-lift transition-all duration-300`}>
+                    <div>
+                      <h3 className="font-serif text-xl sm:text-2xl text-foreground mb-3 font-medium flex items-baseline">
+                        <span className="font-mono text-base sm:text-lg text-foreground/50 mr-2 shrink-0">{stage.number}</span>
+                        <span>{stage.title}</span>
+                      </h3>
+                      <span className={`self-start inline-block text-xs font-sans font-semibold tracking-wider uppercase rounded-full px-3 py-1 mb-4 ${theme.pill}`}>
+                        {stage.focus}
+                      </span>
+                      <ul className="space-y-2 mb-6">
+                        {stage.bullets.map((bullet, bIdx) => (
+                          <li key={bIdx} className="flex items-start text-xs sm:text-[13px] text-foreground/80 leading-snug">
+                            <span className={`w-1.5 h-1.5 rounded-full mt-1.5 mr-2.5 shrink-0 ${theme.dot}`} />
+                            <span>{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                     <div className="border-t border-border/60 pt-4 mt-auto">
                       <span className={`text-xs font-sans font-semibold tracking-wider uppercase block mb-1 ${theme.aimLabel}`}>
                         Primary Aim
@@ -312,13 +354,19 @@ export default function VedicMaths() {
         </div>
       </section>
 
-      {/* HOW CLASSES WORK — THE JOURNEY */}
-      <section className="py-16 md:py-20 bg-white border-y border-border/30">
+      {/* 5. HOW OUR VEDIC MATHS CLASSES WORK? */}
+      <section className="py-12 sm:py-14 md:py-16 bg-white border-b border-border/30">
         <div className="container mx-auto px-4 md:px-6 max-w-5xl">
-          <FadeIn className="text-center mb-16">
-            <span className="sage-eyebrow">HOW CLASSES WORK</span>
-            <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-4">We don't rush to speed.</h2>
-            <p className="text-lg text-foreground/70">We build it, one step at a time.</p>
+          <FadeIn className="text-center mb-10 sm:mb-12 max-w-4xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-2 sm:mb-3 leading-tight">
+              How Our Vedic Maths Classes Work?
+            </h2>
+            <h3 className="text-xl sm:text-2xl md:text-3xl font-serif text-foreground/85 font-medium mb-2 sm:mb-3">
+              We don't rush to speed.
+            </h3>
+            <p className="text-base sm:text-lg text-foreground/70 max-w-xl mx-auto leading-relaxed">
+              We build it, one step at a time.
+            </p>
           </FadeIn>
 
           <div className="relative">
@@ -347,23 +395,43 @@ export default function VedicMaths() {
             </FadeInStagger>
           </div>
 
-          <FadeIn delay={0.2} className="text-center mt-12 sm:mt-14">
-            <h3 className="text-2xl md:text-3xl font-serif text-foreground mb-3 sm:mb-4">Now, experience it for yourself.</h3>
-            <p className="text-foreground/70 max-w-xl mx-auto mb-6 sm:mb-7 leading-relaxed">
-              Every Sunday, I run a free Vedic Maths group demo where your child can experience the way I teach before you decide what comes next.
+          <FadeIn delay={0.2} className="text-center mt-10 sm:mt-12 max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-foreground/80 leading-relaxed mb-6 sm:mb-7">
+              Every Sunday, we run a free Vedic Maths group demo where your child can experience the way we teach before you decide what comes next.
             </p>
             <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
           </FadeIn>
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="py-16 md:py-20 bg-[#FAF6F0] border-y border-border/30">
+      {/* 6. TESTIMONIALS & REVIEWS */}
+      <section className="py-12 sm:py-14 md:py-16 bg-[#FAF6F0] border-b border-border/30">
         <div className="container mx-auto px-4 md:px-6">
-          <SectionHeader eyebrow="WHAT PARENTS SAY" title="Don't take my word for it." subtitle="What parents have noticed" />
+          <FadeIn className="text-center mb-10 sm:mb-12 max-w-4xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-3 sm:mb-4 leading-tight">
+              Don't Take Our Word For It
+            </h2>
+            <p className="text-base sm:text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed mb-5 sm:mb-6">
+              What parents have noticed.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-stone-200/80 text-xs sm:text-sm font-medium text-foreground shadow-2xs">
+                <span>5.0 ⭐ rating on Google</span>
+              </div>
+              <a
+                href="https://www.google.com/maps/place/The+Vedic+School/@28.4317134,77.1086168,17z/data=!4m8!3m7!1s0x390d1da42d384595:0x51719d674bb453e1!8m2!3d28.4317134!4d77.1086168!9m1!1b1!16s%2Fg%2F11q2y0y7n6?entry=ttu&g_ep=EgoyMDI2MDkxMy4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-medium border border-stone-300 bg-white text-foreground hover:border-stone-400 hover:bg-stone-50 shadow-2xs transition-all group"
+              >
+                <span>Read our Google reviews</span>
+                <span className="transition-transform group-hover:translate-x-0.5">→</span>
+              </a>
+            </div>
+          </FadeIn>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {testimonials.map((item, index) => (
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
+            {vedicMathsTestimonials.map((item, index) => (
               <TestimonialCard
                 key={item.name}
                 delay={0.1 * (index + 1)}
@@ -377,21 +445,30 @@ export default function VedicMaths() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section className="py-16 md:py-20 bg-background">
+      {/* 7. FAQ */}
+      <section className="py-12 sm:py-14 md:py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <SectionHeader eyebrow="FREQUENTLY ASKED QUESTIONS" title="A few things parents want to know." />
+          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-3 sm:mb-4 leading-tight">
+              A Few Things Parents Want To Know
+            </h2>
+          </FadeIn>
           <FAQAccordion items={faqs} />
         </div>
       </section>
 
-      {/* CLOSING CTA BAND */}
-      <ClosingCTABand
-        title="What if your child could stop second-guessing every calculation?"
-        subtitle="Let them experience a different way of working with numbers."
-        cta="Join Sunday's free Vedic Maths demo class"
-        onCtaClick={openDemoModal}
-      />
+      {/* 8. CLOSING CTA BAND */}
+      <ClosingCTABand title="See Your Child Enjoy Maths Again">
+        <p className="text-lg md:text-xl text-white/90 mb-3 font-serif italic">
+          Let them experience a different way of working with numbers, this Sunday.
+        </p>
+        <p className="text-base md:text-lg text-white/80 mb-8 sm:mb-10">
+          Now teaching Vedic Maths classes near you in Gurugram, live and online.
+        </p>
+        <Button variant="white" size="lg" onClick={openDemoModal} className="text-primary font-semibold hover:bg-white/90">
+          Join Sunday's free demo class
+        </Button>
+      </ClosingCTABand>
 
     </div>
   );
