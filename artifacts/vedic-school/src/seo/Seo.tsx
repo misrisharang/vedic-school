@@ -20,12 +20,18 @@ export interface SeoProps {
   ogImage?: string;
   ogImageWidth?: number;
   ogImageHeight?: number;
+  ogImageAlt?: string;
   articleMeta?: {
     publishedTime?: string;
     modifiedTime?: string;
     author?: string;
   };
 }
+
+const DEFAULT_OG_IMAGE = '/assets/vedic-school-og-image.png';
+const DEFAULT_OG_WIDTH = 1024;
+const DEFAULT_OG_HEIGHT = 576;
+const DEFAULT_OG_ALT = 'The Vedic School with Vedic Maths and Curriculum-Aligned Maths';
 
 export function Seo({
   title,
@@ -34,13 +40,28 @@ export function Seo({
   schema,
   noindex = false,
   ogType = 'website',
-  ogImage = '/og/home.jpg',
-  ogImageWidth = 1200,
-  ogImageHeight = 630,
+  ogImage,
+  ogImageWidth,
+  ogImageHeight,
+  ogImageAlt,
   articleMeta,
 }: SeoProps) {
   const canonicalUrl = abs(path);
-  const effectiveOgImage = noindex ? undefined : ogImage;
+
+  // Normalize ogImage: fallback to default if unspecified or if pointing to legacy /og/home.jpg
+  const effectiveOgImage = noindex
+    ? undefined
+    : (!ogImage || ogImage === '/og/home.jpg' ? DEFAULT_OG_IMAGE : ogImage);
+
+  const isDefaultImage = effectiveOgImage === DEFAULT_OG_IMAGE;
+  const effectiveOgWidth = (isDefaultImage && (!ogImageWidth || ogImageWidth === 1200))
+    ? DEFAULT_OG_WIDTH
+    : (ogImageWidth || (isDefaultImage ? DEFAULT_OG_WIDTH : 1200));
+  const effectiveOgHeight = (isDefaultImage && (!ogImageHeight || ogImageHeight === 630))
+    ? DEFAULT_OG_HEIGHT
+    : (ogImageHeight || (isDefaultImage ? DEFAULT_OG_HEIGHT : 630));
+  const effectiveOgAlt = ogImageAlt || (isDefaultImage ? DEFAULT_OG_ALT : title);
+
   const resolvedOgImage = effectiveOgImage
     ? effectiveOgImage.startsWith('http')
       ? effectiveOgImage
@@ -82,9 +103,18 @@ export function Seo({
     setMeta('property', 'og:description', description);
     setMeta('property', 'og:url', canonicalUrl);
     setMeta('property', 'og:image', resolvedOgImage);
+    setMeta('property', 'og:image:url', resolvedOgImage);
+    if (resolvedOgImage?.startsWith('https://')) {
+      setMeta('property', 'og:image:secure_url', resolvedOgImage);
+    } else {
+      setMeta('property', 'og:image:secure_url', undefined);
+    }
     if (resolvedOgImage) {
-      setMeta('property', 'og:image:width', String(ogImageWidth));
-      setMeta('property', 'og:image:height', String(ogImageHeight));
+      setMeta('property', 'og:image:width', String(effectiveOgWidth));
+      setMeta('property', 'og:image:height', String(effectiveOgHeight));
+      if (effectiveOgAlt) {
+        setMeta('property', 'og:image:alt', effectiveOgAlt);
+      }
     }
 
     // Twitter
@@ -92,6 +122,9 @@ export function Seo({
     setMeta('name', 'twitter:title', title);
     setMeta('name', 'twitter:description', description);
     setMeta('name', 'twitter:image', resolvedOgImage);
+    if (resolvedOgImage && effectiveOgAlt) {
+      setMeta('name', 'twitter:image:alt', effectiveOgAlt);
+    }
 
     // Article
     if (ogType === 'article') {
@@ -105,8 +138,9 @@ export function Seo({
     canonicalUrl,
     ogType,
     resolvedOgImage,
-    ogImageWidth,
-    ogImageHeight,
+    effectiveOgWidth,
+    effectiveOgHeight,
+    effectiveOgAlt,
     articleMeta,
   ]);
 
@@ -123,14 +157,18 @@ export function Seo({
       <meta property="og:description" content={description} />
       <meta property="og:url" content={canonicalUrl} />
       {resolvedOgImage && <meta property="og:image" content={resolvedOgImage} />}
-      {resolvedOgImage && <meta property="og:image:width" content={String(ogImageWidth)} />}
-      {resolvedOgImage && <meta property="og:image:height" content={String(ogImageHeight)} />}
+      {resolvedOgImage && <meta property="og:image:url" content={resolvedOgImage} />}
+      {resolvedOgImage?.startsWith('https://') && <meta property="og:image:secure_url" content={resolvedOgImage} />}
+      {resolvedOgImage && <meta property="og:image:width" content={String(effectiveOgWidth)} />}
+      {resolvedOgImage && <meta property="og:image:height" content={String(effectiveOgHeight)} />}
+      {resolvedOgImage && effectiveOgAlt && <meta property="og:image:alt" content={effectiveOgAlt} />}
 
       {/* Twitter */}
       <meta name="twitter:card" content={resolvedOgImage ? 'summary_large_image' : 'summary'} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
+      {resolvedOgImage && effectiveOgAlt && <meta name="twitter:image:alt" content={effectiveOgAlt} />}
 
       {/* Article Meta */}
       {ogType === 'article' && articleMeta?.publishedTime && (
