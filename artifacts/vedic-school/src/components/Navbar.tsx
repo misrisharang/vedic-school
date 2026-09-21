@@ -4,7 +4,7 @@ import { Menu, X } from 'lucide-react';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
 import wordmarkLogo from '@assets/the-vedic-school-logo.png';
-import owlMascot from '@assets/the-vedic-school-owl-mascot.png';
+import v25Logo from '@assets/the-vedic-school-logo-v25.png';
 import { useDemoModal } from '@/context/DemoModalContext';
 
 export function Logo({ className }: { className?: string }) {
@@ -18,10 +18,10 @@ export function Logo({ className }: { className?: string }) {
       aria-label="The Vedic School Homepage"
     >
       <img 
-        src={owlMascot} 
+        src={v25Logo} 
         alt="" 
         className="h-7 sm:h-8 md:h-9 lg:h-[39px] w-auto object-contain shrink-0" 
-        width={45}
+        width={41}
         height={39}
       />
       <img 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'wouter';
 import { Instagram, Facebook, Youtube, Linkedin } from 'lucide-react';
 import wordmarkLogo from '@assets/the-vedic-school-logo.png';
-import owlMascot from '@assets/the-vedic-school-owl-mascot.png';
+import v25Logo from '@assets/the-vedic-school-logo-v25.png';
 
 export function Footer() {
   return (
@@ -18,10 +18,10 @@ export function Footer() {
                 aria-label="The Vedic School Homepage"
               >
                 <img 
-                  src={owlMascot} 
+                  src={v25Logo} 
                   alt="" 
                   className="h-7 md:h-[35px] w-auto object-contain shrink-0" 
-                  width={40}
+                  width={36}
                   height={35}
                 />
                 <img 
