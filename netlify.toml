@@ -2,6 +2,7 @@
   base = "artifacts/vedic-school"
   command = "pnpm run build"
   publish = "dist/public"
+  edge_functions = "netlify/edge-functions"
 
 [build.environment]
   PORT = "5173"
