@@ -8,6 +8,10 @@
   BASE_PATH = "/"
 
 [[edge_functions]]
+  function = "trailing-slash"
+  path = "/*"
+
+[[edge_functions]]
   function = "blog-slug-validator"
   path = "/blog/*"
 

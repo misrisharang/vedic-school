@@ -152,7 +152,6 @@ function spa404Plugin(supabaseUrl?: string, supabaseKey?: string) {
         }
 
         const urlObj = new URL(req.url, 'http://localhost');
-        const pathname = urlObj.pathname.replace(/\/$/, '') || '/';
 
         if (ASSET_EXT_REGEX.test(urlObj.pathname)) {
           return next();
@@ -163,6 +162,17 @@ function spa404Plugin(supabaseUrl?: string, supabaseKey?: string) {
         if (!isDocRequest) {
           return next();
         }
+
+        // Trailing slash redirect: non-root paths ending with / return 301 to canonical no-slash URL
+        if (urlObj.pathname !== '/' && urlObj.pathname.endsWith('/')) {
+          const cleanPath = urlObj.pathname.replace(/\/+$/, '');
+          res.statusCode = 301;
+          res.setHeader('Location', `${cleanPath}${urlObj.search}`);
+          res.end();
+          return;
+        }
+
+        const pathname = urlObj.pathname.replace(/\/$/, '') || '/';
 
         const outDir = path.resolve(import.meta.dirname, 'dist/public');
 
