@@ -277,14 +277,18 @@ async function main() {
       const renderedHtml = await page.content();
       await page.close();
 
-      // Determine output filepath
+      // Determine output filepath:
+      // Root / generates index.html.
+      // All other canonical routes generate <route>.html so Netlify CDN serves
+      // /<route> directly with HTTP 200 and automatically 301-redirects /<route>/ to /<route>.
       let outFile;
       if (route === '/') {
         outFile = path.join(DIST_DIR, 'index.html');
       } else {
-        const routeSubdir = path.join(DIST_DIR, route.replace(/^\//, ''));
-        fs.mkdirSync(routeSubdir, { recursive: true });
-        outFile = path.join(routeSubdir, 'index.html');
+        const cleanRoute = route.replace(/^\//, '');
+        const targetFile = path.join(DIST_DIR, `${cleanRoute}.html`);
+        fs.mkdirSync(path.dirname(targetFile), { recursive: true });
+        outFile = targetFile;
       }
 
       fs.writeFileSync(outFile, renderedHtml, 'utf-8');

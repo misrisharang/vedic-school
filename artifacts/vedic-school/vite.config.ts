@@ -181,7 +181,11 @@ function spa404Plugin(supabaseUrl?: string, supabaseKey?: string) {
         if (pathname === '/') {
           targetFile = path.resolve(outDir, 'index.html');
         } else {
-          targetFile = path.resolve(outDir, pathname.replace(/^\//, ''), 'index.html');
+          const cleanRoute = pathname.replace(/^\//, '');
+          targetFile = path.resolve(outDir, `${cleanRoute}.html`);
+          if (!fs.existsSync(targetFile)) {
+            targetFile = path.resolve(outDir, cleanRoute, 'index.html');
+          }
         }
 
         if (fs.existsSync(targetFile)) {
