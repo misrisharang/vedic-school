@@ -16,6 +16,7 @@ import {
   ClosingCTABand,
 } from '@/components/ui-patterns';
 import { testimonials } from '@/data/testimonials';
+import { TestimonialCarousel } from '@/components/TestimonialCarousel';
 import meenakshiPhoto from '@assets/meenakshi-founder-portrait.jpg';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import heroIllustration from '@assets/generated_images/hero-warm-math-illustration.png';
@@ -497,23 +498,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. WHAT PARENTS SAY */}
-      <section id="testimonials" className="py-16 md:py-20 bg-[#FAF6F0] border-y border-border/30">
+      <section id="testimonials" className="py-16 md:py-20 bg-[#FAF6F0] border-y border-border/30 overflow-hidden">
         <div className="container mx-auto px-4 md:px-6">
-          <SectionHeader eyebrow="WHAT PARENTS SAY" title="The best proof is what changes for the child." />
+          <SectionHeader title="The best proof is what changes for the child." />
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {testimonials.map((item, index) => (
-              <TestimonialCard
-                key={item.name}
-                delay={0.1 * (index + 1)}
-                quote={item.quote}
-                author={item.name}
-                relation={item.relation}
-                location={item.location}
-              />
-            ))}
-          </div>
+          <FadeIn delay={0.1} className="max-w-6xl mx-auto">
+            <TestimonialCarousel testimonials={testimonials} />
+          </FadeIn>
         </div>
       </section>
 

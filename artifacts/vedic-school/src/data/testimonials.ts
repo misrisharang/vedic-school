@@ -7,21 +7,36 @@ export interface Testimonial {
 
 export const testimonials: Testimonial[] = [
   {
-    name: "Krishang K Sharma",
+    name: "Dhairya Pawalia",
+    location: "India (Indore)",
     quote:
-      "Maths develops our reasoning, analytical thinking and practical understanding, and its use can be applied in everyday life. Meenakshi Mam has been one of my most amazing Maths teachers. Through Vedic Maths, she has helped me develop an interest in Maths and supported me morally and academically. You taught me never to give up and that there is more than one way to solve everything.",
+      "Online Vedic from The Vedic School classes is most helpful & most practical, my son has improved dramatically over in months. She knows her subject, how to teach & cares about the success of her students. Now my Son understands Maths in a whole new way, he learnt the logic & beauty of Maths- not just memorizing facts, but actually enjoys doing Maths.",
   },
   {
-    name: "Miti Jindal",
-    relation: "(Mother – Marc Veer Jindal)",
-    location: "Australia",
+    name: "Priyanka Bankeraika",
     quote:
-      "We were given Meenakshi’s reference by a family member whose two children were being taught by her. We were impressed by their knowledge and understanding, so we decided to try her for our six-year-old son Marc. Her way of handling his questions and her teaching style were very impressive. My son has come a long way with her. Thank you for your continuous support.",
+      "I would like to express my heartfelt gratitude for the wonderful Vedic Maths classes taught to my children, Bhavya and Mansha. Both of them have greatly benefited from the sessions. The techniques and tricks they learned for fast calculations have been incredibly useful, especially in helping them solve problems more efficiently during their Olympiad exams. Thank you for making mathematics a fun and engaging subject for them.",
   },
   {
-    name: "Nikhil Francine",
-    location: "London",
+    name: "Neha Bhandari",
     quote:
-      "She is a great teacher, ever so patient and helpful. She always goes the extra mile to make sure that I understand the topic being taught. Her patience and willingness to explain things clearly make learning Maths much easier. She takes the time to make sure I understand before moving forward, which makes her a wonderful teacher.",
+      "Earlier I was quite apprehensive to decide whether I should confuse my child with a very different approach to learn maths. But Meenakshi changed my apprehension completely. It had a cascading effect on my daughter. Not only that fear was gone but she started enjoying numbers. Her concepts became more strong. She gained confidence. Meenakshi made the whole journey fun and interesting.",
+  },
+  {
+    name: "Radhika Jaykar",
+    relation: "Aryan Mom",
+    quote:
+      "I highly recommend Meenakshi for maths tuition. My son has been taking online classes with her from last year. She is very dedicated to her job. You can connect with her any time and she is always ready to clear ur doubts. She has a very friendly way of teaching and very very detailed explanation also.",
+  },
+  {
+    name: "Snehal Sachin Harane",
+    relation: "Mother of Anivesh Harane",
+    quote:
+      "My son took admission in the month of January and he was least interested in maths, I was so worried about this. But within 2 months, owing to Meenakshi mam's teaching techniques and her efforts, my son started to like maths. Thank you so much for your dedication",
+  },
+  {
+    name: "Mansha Bankeraika",
+    quote:
+      "My daughter had an amazing learning experience of Vedic Maths from you. Thanks for making complex calculations so easy and fast for my kids. Thanks",
   },
 ];

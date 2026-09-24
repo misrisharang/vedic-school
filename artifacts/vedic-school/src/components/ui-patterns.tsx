@@ -461,29 +461,39 @@ export function TestimonialCard({
   relation,
   location,
   delay = 0,
+  animate = true,
 }: {
   quote: string;
   author: string;
   relation?: string;
   location?: string;
   delay?: number;
+  animate?: boolean;
 }) {
+  const cardContent = (
+    <div className="bg-white p-6 sm:p-8 md:p-10 rounded-2xl md:rounded-[2rem] shadow-sm border border-border/50 relative h-full flex flex-col justify-between">
+      <div className="absolute top-6 left-6 sm:top-8 sm:left-8 text-secondary/20 text-5xl sm:text-6xl font-serif leading-none select-none">"</div>
+      <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/90 leading-relaxed relative z-10 mb-6 sm:mb-8 pt-3 sm:pt-4 flex-1">
+        {quote}
+      </p>
+      <div className="border-t border-border/50 pt-4 mt-auto min-h-[4.25rem] sm:min-h-[4.5rem] flex flex-col justify-start">
+        <span className="font-sans font-medium text-sm sm:text-base text-foreground block leading-snug">— {author}</span>
+        {(relation || location) && (
+          <span className="font-sans text-xs sm:text-sm text-foreground/60 block mt-0.5 leading-snug">
+            {[relation, location].filter(Boolean).join(" · ")}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+
+  if (!animate) {
+    return <div className="h-full">{cardContent}</div>;
+  }
+
   return (
     <FadeIn delay={delay} className="h-full">
-      <div className="bg-white p-6 sm:p-8 md:p-10 rounded-2xl md:rounded-[2rem] shadow-sm border border-border/50 relative h-full flex flex-col justify-between">
-        <div className="absolute top-6 left-6 sm:top-8 sm:left-8 text-secondary/20 text-5xl sm:text-6xl font-serif leading-none select-none">"</div>
-        <p className="font-serif text-base sm:text-lg md:text-xl text-foreground/90 leading-relaxed relative z-10 mb-6 sm:mb-8 pt-3 sm:pt-4 flex-1">
-          {quote}
-        </p>
-        <div className="border-t border-border/50 pt-4 mt-auto min-h-[4.25rem] sm:min-h-[4.5rem] flex flex-col justify-start">
-          <span className="font-sans font-medium text-sm sm:text-base text-foreground block leading-snug">— {author}</span>
-          {(relation || location) && (
-            <span className="font-sans text-xs sm:text-sm text-foreground/60 block mt-0.5 leading-snug">
-              {[relation, location].filter(Boolean).join(" · ")}
-            </span>
-          )}
-        </div>
-      </div>
+      {cardContent}
     </FadeIn>
   );
 }
