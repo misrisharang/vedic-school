@@ -9,7 +9,7 @@
 import { abs } from './site';
 import { VEDIC_MATHS_FAQS, CURRICULUM_ALIGNED_FAQS, FAQItem } from '@/data/faqs';
 import { VEDIC_MATHS_VS_ABACUS_FAQS } from '@/data/published-articles';
-import type { BlogFAQItem } from '@/types/blog';
+import type { BlogFAQItem, Author } from '@/types/blog';
 
 // ------------------------------------------------------------------------------
 // 1. REUSABLE GLOBAL ENTITIES
@@ -87,6 +87,38 @@ export function getMeenakshiKoulEntity() {
     description:
       'Founder and educator at The Vedic School, dedicated to helping children develop mathematical reasoning, fluency, and confidence through Vedic Maths and curriculum-aligned support.',
   };
+}
+
+/**
+ * Resolves a Schema.org Person entity for a blog article's author record.
+ * Reuses the canonical Meenakshi Koul entity (same @id as the About page) when the
+ * resolved author is her, so she is never represented as a second/duplicate identity.
+ * For any other author record, generates a Person node from their existing profile
+ * data (name, role, bio, photo, LinkedIn) so future authors are supported automatically
+ * without changes to this function.
+ */
+export function getAuthorPersonEntity(author?: Author | null) {
+  if (!author || author.slug === 'meenakshi-koul') {
+    return getMeenakshiKoulEntity();
+  }
+
+  const authorUrl = abs(`/authors/${author.slug}`);
+  const entity: Record<string, unknown> = {
+    '@type': 'Person',
+    '@id': `${authorUrl}#person`,
+    name: author.name,
+    url: authorUrl,
+    worksFor: {
+      '@id': abs('/#organization'),
+    },
+  };
+
+  if (author.role) entity.jobTitle = author.role;
+  if (author.bio) entity.description = author.bio;
+  if (author.photo) entity.image = author.photo.startsWith('http') ? author.photo : abs(author.photo);
+  if (author.linkedin_url) entity.sameAs = [author.linkedin_url];
+
+  return entity;
 }
 
 // ------------------------------------------------------------------------------
@@ -358,18 +390,24 @@ export interface BlogPostSchemaInput {
   created_at?: string | null;
   updated_at?: string | null;
   author?: string | null;
+  authorRecord?: Author | null;
   faqs?: BlogFAQItem[];
 }
 
 /**
  * Published Blog Article (/blog/:slug) Schema
- * Contains BlogPosting linked to Author (Person) and Publisher (EducationalOrganization).
- * When faqs are present, includes an FAQPage node linked to the article WebPage.
+ * Contains BlogPosting linked to a fully embedded Author (Person) and Publisher
+ * (EducationalOrganization) node, since JSON-LD @id references only resolve within
+ * the same document graph, not across separate pages. When faqs are present,
+ * includes an FAQPage node linked to the article WebPage.
  */
 export function getBlogPostSchema(post: BlogPostSchemaInput) {
   const canonicalUrl = abs(`/blog/${post.slug}`);
   const description =
     post.seo_description || post.excerpt || 'Practical ideas and insights from The Vedic School.';
+
+  const authorEntity = getAuthorPersonEntity(post.authorRecord);
+  const organizationEntity = getEducationalOrganizationEntity();
 
   const entities: any[] = [
     {
@@ -385,6 +423,8 @@ export function getBlogPostSchema(post: BlogPostSchemaInput) {
         '@id': abs('/#organization'),
       },
     },
+    organizationEntity,
+    authorEntity,
     {
       '@type': 'BlogPosting',
       '@id': `${canonicalUrl}#article`,
@@ -395,10 +435,10 @@ export function getBlogPostSchema(post: BlogPostSchemaInput) {
       datePublished: post.published_at || post.created_at,
       dateModified: post.updated_at || post.published_at || post.created_at,
       author: {
-        '@id': abs('/about#meenakshi-koul'),
+        '@id': authorEntity['@id'],
       },
       publisher: {
-        '@id': abs('/#organization'),
+        '@id': organizationEntity['@id'],
       },
       mainEntityOfPage: {
         '@type': 'WebPage',
@@ -442,10 +482,19 @@ export function getBlogPostSchema(post: BlogPostSchemaInput) {
  */
 export function getVedicMathsVsAbacusArticleSchema(
   faqs: BlogFAQItem[] = VEDIC_MATHS_VS_ABACUS_FAQS,
-  customImageUrl?: string
+  customImageUrl?: string,
+  options?: {
+    authorRecord?: Author | null;
+    publishedAt?: string | null;
+    updatedAt?: string | null;
+  }
 ) {
   const articleUrl = abs('/blog/vedic-maths-vs-abacus');
   const imageUrl = customImageUrl || abs('/og/vedic-maths-vs-abacus.jpg');
+  const authorEntity = getAuthorPersonEntity(options?.authorRecord);
+  const organizationEntity = getEducationalOrganizationEntity();
+  const datePublished = options?.publishedAt || '2026-09-12';
+  const dateModified = options?.updatedAt || datePublished;
 
   return createSchemaGraph([
     {
@@ -465,6 +514,8 @@ export function getVedicMathsVsAbacusArticleSchema(
       },
       inLanguage: 'en',
     },
+    organizationEntity,
+    authorEntity,
     {
       '@type': 'BreadcrumbList',
       '@id': `${articleUrl}#breadcrumb`,
@@ -516,8 +567,8 @@ export function getVedicMathsVsAbacusArticleSchema(
         width: 1200,
         height: 630,
       },
-      datePublished: '2026-09-12',
-      dateModified: '2026-09-12',
+      datePublished,
+      dateModified,
       inLanguage: 'en',
       articleSection: 'Guides',
       keywords: [
@@ -528,10 +579,10 @@ export function getVedicMathsVsAbacusArticleSchema(
         'vedic maths vs abacus reddit',
       ],
       author: {
-        '@id': abs('/about#meenakshi-koul'),
+        '@id': authorEntity['@id'],
       },
       publisher: {
-        '@id': abs('/#organization'),
+        '@id': organizationEntity['@id'],
       },
       mainEntityOfPage: {
         '@id': `${articleUrl}#webpage`,

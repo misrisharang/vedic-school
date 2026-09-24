@@ -9,6 +9,7 @@ import { BLOG_CATEGORIES, BLOG_CATEGORY_META } from '@/types/blog';
 import { slugify, validateSlug } from '@/lib/blog-slug';
 import { calculateReadingTime } from '@/lib/blog';
 import { parseMarkdownArticle, type MarkdownImportResult } from '@/lib/markdown-importer';
+import { OFFICIAL_ARTICLE_TEMPLATE } from '@/data/article-template';
 import { fetchAuthors, findAuthorByNameOrSlug } from '@/lib/authors';
 import { DEFAULT_AUTHORS } from '@/data/authors';
 import { ImageUploader } from './ImageUploader';
@@ -1747,9 +1748,21 @@ export function ArticleEditor({ post, onSaveSuccess, onCancel }: ArticleEditorPr
                   <Label htmlFor="raw-markdown-input" className="text-xs font-semibold text-stone-700">
                     Raw Article Markdown
                   </Label>
-                  <span className="text-[11px] text-stone-400">
-                    Supports H1 title, ## TL;DR, **Quick verdict:**, ## Sources, ## FAQs, and Author
-                  </span>
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRawMarkdownInput(OFFICIAL_ARTICLE_TEMPLATE);
+                        if (parsedResult) setParsedResult(null);
+                      }}
+                      className="text-[11px] font-semibold text-amber-700 hover:text-amber-800 underline decoration-amber-300 underline-offset-2 transition-colors cursor-pointer"
+                    >
+                      Insert Official Template
+                    </button>
+                    <span className="text-[11px] text-stone-400 hidden sm:inline">
+                      Supports H1, ## TL;DR, ## Quick Verdict, ## Sources, ## FAQs
+                    </span>
+                  </div>
                 </div>
                 <Textarea
                   id="raw-markdown-input"

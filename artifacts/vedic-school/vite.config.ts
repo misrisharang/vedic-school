@@ -39,6 +39,7 @@ const VALID_STATIC_ROUTES = new Set([
   '/terms-of-service',
   '/cookie-policy',
   '/admin',
+  '/authors/meenakshi-koul',
 ]);
 
 const ASSET_EXT_REGEX = /\.(js|mjs|cjs|ts|tsx|css|svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|eot|json|map|txt|xml|pdf)$/i;
@@ -111,7 +112,7 @@ function spa404Plugin(supabaseUrl?: string, supabaseKey?: string) {
           return next();
         }
 
-        if (VALID_STATIC_ROUTES.has(pathname) || pathname.startsWith('/admin')) {
+        if (VALID_STATIC_ROUTES.has(pathname) || pathname.startsWith('/admin') || pathname.startsWith('/authors/')) {
           return next();
         }
 

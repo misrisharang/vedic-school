@@ -31,9 +31,16 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
           : 'space-y-3'
       }
     >
-      <h2 className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-400 font-sans mb-3 select-none">
+      {/*
+        Intentionally not a heading: this is a UI label for the nav widget, and the
+        widget's accessible name already comes from `aria-label` above. Using a real
+        heading here would create a "Table of Contents" H2 that sits alongside the
+        article's own content headings (the mobile variant renders inside <article>),
+        which is exactly the duplicate/misplaced heading this label must avoid.
+      */}
+      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-stone-400 font-sans mb-3 select-none">
         Table of Contents
-      </h2>
+      </p>
       <ul className={`space-y-2.5 ${isMobile ? '' : 'max-h-[min(48vh,380px)] overflow-y-auto pr-1.5 overscroll-contain'}`}>
         {items.map((item, index) => {
           const isActive = activeId === item.id;

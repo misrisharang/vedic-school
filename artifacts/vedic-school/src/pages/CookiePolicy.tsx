@@ -26,7 +26,6 @@ export default function CookiePolicy() {
         />
         <div className="container mx-auto px-4 md:px-6 max-w-3xl text-center relative z-10">
           <FadeIn>
-            <span className="sage-eyebrow mb-3">THE VEDIC SCHOOL</span>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-4 text-foreground leading-[1.2] tracking-tight">
               Cookies Policy
             </h1>

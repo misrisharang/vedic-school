@@ -117,7 +117,16 @@ export function MarkdownEditor({
         data: { publicUrl },
       } = supabase.storage.from('blog-images').getPublicUrl(data.path);
 
-      insertFormatting(`\n\n![${baseName}](${publicUrl})\n\n`);
+      // Ask for real descriptive alt text rather than silently deriving it from the
+      // filename (e.g. "vedic-maths-abacus"), which is not a genuine description and
+      // fails accessibility/SEO review. Leaving this blank is valid for a purely
+      // decorative image and inserts a correctly-empty alt attribute, not invented text.
+      const altText = window.prompt(
+        'Describe what this image shows (for accessibility and SEO). Leave blank only if the image is purely decorative:',
+        ''
+      );
+
+      insertFormatting(`\n\n![${(altText || '').trim()}](${publicUrl})\n\n`);
     } catch (err: any) {
       alert(`Image upload failed: ${err?.message || 'Unknown error'}`);
     } finally {

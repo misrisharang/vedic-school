@@ -285,7 +285,6 @@ export default function Home() {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
 
             <FadeIn className="max-w-2xl">
-              <span className="sage-eyebrow">CALM · CAPABLE · CONFIDENT</span>
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-serif text-foreground leading-[1.15] sm:leading-[1.1] tracking-tight mb-6">
                 Watch 'I can't do Maths' become 'I can.'
               </h1>
@@ -318,14 +317,7 @@ export default function Home() {
       </section>
 
       {/* 2. TICKER */}
-      <section className="py-8 md:py-12 bg-[#F0EBE1]/70 border-y border-border/40 overflow-hidden relative" aria-label="Learning with us, Worldwide">
-        <div className="container mx-auto px-4 mb-5 md:mb-7 text-center">
-          <div className="inline-flex items-center gap-3 sm:gap-4">
-            <span className="h-px w-6 sm:w-10 bg-secondary/40" />
-            <p className="sage-eyebrow mb-0">LEARNING WITH US, WORLDWIDE.</p>
-            <span className="h-px w-6 sm:w-10 bg-secondary/40" />
-          </div>
-        </div>
+      <section className="py-6 sm:py-8 md:py-10 bg-[#F0EBE1]/70 border-y border-border/40 overflow-hidden relative" aria-label="Learning with us, Worldwide">
         <div className="relative w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
           <div className="animate-ticker flex items-start gap-[35px] sm:gap-[49px] md:gap-[70px]">
             {[...countries, ...countries, ...countries, ...countries].map((country, idx) => (
@@ -349,7 +341,6 @@ export default function Home() {
       <section className="py-16 md:py-20 bg-[#FAF6F0] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
-            eyebrow="HOW LEARNING CHANGES"
             title="Maths doesn't have to feel like something your child is simply trying to get through."
             subtitle="The change we look for is simple: a child who understands what they're doing, trusts their own thinking, and is more willing to work through a problem."
           />
@@ -361,7 +352,6 @@ export default function Home() {
       <section className="py-16 md:py-20 bg-[#F0EBE1] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
-            eyebrow="THE SCHOOL METHOD"
             title="Built on 20+ years."
             subtitle="One approach, adapted to where your child is today."
           />
@@ -377,9 +367,8 @@ export default function Home() {
       {/* 5. TWO APPROACHES, ONE STRONGER FOUNDATION */}
       <section id="two-approaches" className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
-          <FadeIn className="text-center mb-16">
-            <span className="sage-eyebrow">TWO APPROACHES, ONE STRONGER FOUNDATION</span>
-            <h2 className="text-3xl md:text-4xl font-serif text-foreground">How we teach.</h2>
+          <FadeIn className="text-center mb-10 sm:mb-12">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-foreground leading-tight">How we teach.</h2>
           </FadeIn>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
@@ -424,7 +413,6 @@ export default function Home() {
       <section className="py-16 md:py-20 bg-[#F0EBE1] border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <SectionHeader
-            eyebrow="WHY THE VEDIC SCHOOL?"
             title="Why The Vedic School?"
             subtitle="The principles behind how we teach."
           />
@@ -469,7 +457,6 @@ export default function Home() {
             </FadeIn>
 
             <FadeIn delay={0.1} className="lg:order-2 flex flex-col justify-center">
-              <span className="sage-eyebrow">ABOUT THE FOUNDER AND MENTOR</span>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif text-foreground mb-6">
                 The teacher behind the method.
               </h2>
@@ -512,7 +499,6 @@ export default function Home() {
       <section id="google-reviews" className="py-8 sm:py-10 bg-[#F0EBE1]/40 border-b border-border/30">
         <div className="container mx-auto px-4 md:px-6">
           <FadeIn className="max-w-2xl mx-auto text-center">
-            <span className="sage-eyebrow mb-2 block">VERIFIED ON GOOGLE</span>
             <h2 className="text-2xl sm:text-3xl font-serif text-foreground mb-2 leading-tight">
               Trusted by families. Reviewed on Google.
             </h2>
@@ -574,8 +560,7 @@ export default function Home() {
       {/* 9 & 10. THE BLOG SECTION */}
       <section className="py-16 md:py-20 bg-white border-y border-border/30">
         <div className="container mx-auto px-4 md:px-6">
-          <FadeIn className="text-center mb-12 max-w-2xl mx-auto">
-            <span className="sage-eyebrow">FROM OUR BLOGS</span>
+          <FadeIn className="text-center mb-10 sm:mb-12 max-w-2xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-serif text-foreground mb-3">Useful Maths, explained simply.</h2>
             <p className="text-foreground/70 leading-relaxed">
               Practical guidance for parents — what a vedic maths syllabus covers, how to learn vedic maths, and choosing online vedic maths classes. No jargon.
@@ -671,7 +656,6 @@ export default function Home() {
       >
         <div className="max-w-2xl mx-auto text-left">
           <TwoPathCTA
-            eyebrow="CHOOSE HOW YOU'D LIKE TO BEGIN"
             onDark
             paths={[
               { label: 'Vedic Maths', description: 'Experience Vedic Maths online classes, live.', cta: "Join Sunday's free demo", onClick: openDemoModal },

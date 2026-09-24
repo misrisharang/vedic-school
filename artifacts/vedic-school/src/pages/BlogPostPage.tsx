@@ -6,9 +6,10 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRoute, Link } from 'wouter';
 import { marked } from 'marked';
 import NotFound from '@/pages/not-found';
-import type { BlogPost, BlogCategory, BlogFAQItem, BlogSourceItem } from '@/types/blog';
+import type { BlogPost, BlogCategory, BlogFAQItem, BlogSourceItem, Author } from '@/types/blog';
 import { BLOG_CATEGORY_META } from '@/types/blog';
 import { getBlogImageUrl, fetchPublishedPostBySlug, fetchPublishedBlogPosts } from '@/lib/blog';
+import { fetchAuthorById, fetchAuthors, findAuthorByNameOrSlug } from '@/lib/authors';
 import { Seo } from '@/seo/Seo';
 import { abs } from '@/seo/site';
 import { getBlogPostSchema, getVedicMathsVsAbacusArticleSchema } from '@/seo/schema';
@@ -260,6 +261,7 @@ export default function BlogPostPage() {
   const { openDemoModal } = useDemoModal();
 
   const [post, setPost] = useState<BlogPost | null>(null);
+  const [authorRecord, setAuthorRecord] = useState<Author | null>(null);
   const [relatedPosts, setRelatedPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -289,6 +291,16 @@ export default function BlogPostPage() {
 
         setPost(loadedPost);
 
+        // Fetch dynamic author record from centralized author system
+        if (loadedPost.author_id) {
+          const { author: a } = await fetchAuthorById(loadedPost.author_id);
+          if (a) setAuthorRecord(a);
+        } else if (loadedPost.author) {
+          const { authors: allA } = await fetchAuthors();
+          const matched = findAuthorByNameOrSlug(allA, loadedPost.author);
+          if (matched) setAuthorRecord(matched);
+        }
+
         // Fetch related published posts (preferring same category)
         const { posts: allPublished } = await fetchPublishedBlogPosts();
         const relatedList = allPublished.filter((p) => p.slug !== loadedPost.slug);
@@ -307,6 +319,25 @@ export default function BlogPostPage() {
     }
 
     loadPost();
+
+    // Listen for live author updates from CMS
+    const handleAuthorUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<Author>;
+      if (customEvent.detail) {
+        setAuthorRecord((prev) => {
+          if (!prev) return customEvent.detail;
+          if (prev.id === customEvent.detail.id || prev.slug === customEvent.detail.slug) {
+            return customEvent.detail;
+          }
+          return prev;
+        });
+      }
+    };
+    window.addEventListener('vedic_school_author_updated', handleAuthorUpdate);
+
+    return () => {
+      window.removeEventListener('vedic_school_author_updated', handleAuthorUpdate);
+    };
   }, [slug]);
 
   // 1. Extract FAQs and de-duplicate raw Markdown FAQ block
@@ -350,19 +381,23 @@ export default function BlogPostPage() {
     }
   }, [effectiveQuickVerdict]);
 
-  // 5. Author profile link matching
-  const authorSlug = useMemo(() => {
+  // 5. Author profile record matching (used for both the byline link and structured data)
+  const resolvedAuthor = useMemo(() => {
+    if (authorRecord) return authorRecord;
     if (!post) return null;
-    if (post.author_rel?.slug) return post.author_rel.slug;
+    if (post.author_rel) return post.author_rel;
     const authorName = (post.author || 'Meenakshi Koul').trim().toLowerCase();
-    const matched = DEFAULT_AUTHORS.find(
-      (a) =>
-        a.id === post.author_id ||
-        a.name.toLowerCase() === authorName ||
-        a.slug.toLowerCase() === authorName
+    return (
+      DEFAULT_AUTHORS.find(
+        (a) =>
+          a.id === post.author_id ||
+          a.name.toLowerCase() === authorName ||
+          a.slug.toLowerCase() === authorName
+      ) || null
     );
-    return matched ? matched.slug : null;
-  }, [post]);
+  }, [post, authorRecord]);
+
+  const authorSlug = resolvedAuthor?.slug || null;
 
   // Process markdown into HTML with stable heading IDs and collect TOC items
   const { renderedContent, headings } = useMemo(() => {
@@ -544,11 +579,16 @@ export default function BlogPostPage() {
 
   const schema =
     post.slug === 'vedic-maths-vs-abacus'
-      ? getVedicMathsVsAbacusArticleSchema(effectiveFaqs, coverUrl || undefined)
+      ? getVedicMathsVsAbacusArticleSchema(effectiveFaqs, coverUrl || undefined, {
+          authorRecord: resolvedAuthor,
+          publishedAt: post.published_at,
+          updatedAt: post.updated_at,
+        })
       : getBlogPostSchema({
           ...post,
           faqs: effectiveFaqs,
           featured_image: coverUrl,
+          authorRecord: resolvedAuthor,
         });
 
   const staticArticle = PUBLISHED_ARTICLES.find((p) => p.slug === post.slug);
@@ -613,10 +653,10 @@ export default function BlogPostPage() {
                 href={`/authors/${authorSlug}`}
                 className="hover:text-[hsl(var(--primary))] hover:underline underline-offset-2 transition-colors font-medium text-stone-700"
               >
-                {post.author || 'Meenakshi Koul'}
+                {resolvedAuthor?.name || post.author || 'Meenakshi Koul'}
               </Link>
             ) : (
-              <span>{post.author || 'Meenakshi Koul'}</span>
+              <span>{resolvedAuthor?.name || post.author || 'Meenakshi Koul'}</span>
             )}
           </span>
           <span>•</span>
@@ -729,9 +769,6 @@ export default function BlogPostPage() {
             {effectiveSources && effectiveSources.length > 0 && (
               <section id="sources" className="mt-12 pt-8 border-t border-stone-200 scroll-mt-28">
                 <div className="mb-6">
-                  <p className="text-xs font-sans font-bold tracking-[0.15em] uppercase text-[hsl(var(--primary))] mb-2">
-                    References & Research
-                  </p>
                   <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 tracking-tight">
                     Sources
                   </h2>
@@ -740,7 +777,7 @@ export default function BlogPostPage() {
                   {effectiveSources.map((item, idx) => (
                     <li key={idx} className="pl-1 text-stone-500 marker:font-semibold marker:text-stone-700">
                       <span className="font-semibold text-stone-900">{item.publication}</span>
-                      {item.title && <span className="text-stone-700"> — {item.title}</span>}
+                      {item.title && <span className="text-stone-700">: {item.title}</span>}
                       {item.date && <span className="text-stone-500 text-xs ml-1.5">({item.date})</span>}
                       {item.url && (
                         <div className="mt-1 ml-5">
@@ -765,9 +802,6 @@ export default function BlogPostPage() {
             {effectiveFaqs && effectiveFaqs.length > 0 && (
               <div id="questions-parents-often-ask" className="mt-12 pt-8 border-t border-stone-200 scroll-mt-28">
                 <div className="mb-6">
-                  <p className="text-xs font-sans font-bold tracking-[0.15em] uppercase text-[hsl(var(--primary))] mb-2">
-                    Frequently Asked Questions
-                  </p>
                   <h2 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 tracking-tight">
                     Questions Parents Often Ask
                   </h2>
@@ -901,9 +935,6 @@ function ProgrammeCTA({
     return (
       <div className="rounded-2xl p-6 sm:p-8 bg-[hsl(var(--block-sage-light))] border border-[#B7D2B5] flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="space-y-2 max-w-xl">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-[#2E4A2C]">
-            Live Experience
-          </div>
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900">
             Experience Vedic Maths in Action
           </h3>
@@ -935,9 +966,6 @@ function ProgrammeCTA({
     return (
       <div className="rounded-2xl p-6 sm:p-8 bg-[hsl(var(--block-terracotta-light))] border border-[#E6C5B9] flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="space-y-2 max-w-xl">
-          <div className="text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--primary))]">
-            Personalised Guidance
-          </div>
           <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900">
             Need Support with Your Child's School Maths?
           </h3>
@@ -968,9 +996,6 @@ function ProgrammeCTA({
   return (
     <div className="rounded-2xl p-6 sm:p-8 bg-[hsl(var(--block-terracotta-light))] border border-[#E6C5B9] flex flex-col sm:flex-row sm:items-center justify-between gap-6">
       <div className="space-y-2 max-w-xl">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-[hsl(var(--primary))]">
-          The Vedic School Approach
-        </div>
         <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900">
           Transform How Your Child Experiences Maths
         </h3>

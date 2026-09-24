@@ -6,7 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useRoute, Link } from 'wouter';
 import type { Author, BlogPost } from '@/types/blog';
 import { fetchAuthorBySlug } from '@/lib/authors';
-import { fetchPublishedBlogPosts } from '@/lib/blog';
+import { fetchPublishedBlogPosts, getBlogImageUrl } from '@/lib/blog';
 import { Seo } from '@/seo/Seo';
 import { Button } from '@/components/ui/button';
 import {
@@ -63,6 +63,19 @@ export default function AuthorProfile() {
     }
 
     loadAuthorAndArticles();
+
+    // Listen for live author updates saved from the CMS
+    const handleAuthorUpdate = (e: Event) => {
+      const customEvent = e as CustomEvent<Author>;
+      if (customEvent.detail && customEvent.detail.slug === slug) {
+        setAuthor(customEvent.detail);
+      }
+    };
+    window.addEventListener('vedic_school_author_updated', handleAuthorUpdate);
+
+    return () => {
+      window.removeEventListener('vedic_school_author_updated', handleAuthorUpdate);
+    };
   }, [slug]);
 
   if (loading) {
@@ -96,11 +109,10 @@ export default function AuthorProfile() {
     );
   }
 
-  // Sourced portrait fallback for Meenakshi Koul
+  // Priority: custom photo -> bundled portrait fallback for Meenakshi Koul
   const photoSrc =
-    author.slug === 'meenakshi-koul'
-      ? meenakshiPortrait
-      : author.photo || undefined;
+    (author.photo ? getBlogImageUrl(author.photo) : null) ||
+    (author.slug === 'meenakshi-koul' ? meenakshiPortrait : undefined);
 
   const personSchema = {
     '@context': 'https://schema.org',
@@ -110,6 +122,7 @@ export default function AuthorProfile() {
     description: author.bio || undefined,
     url: `https://www.thevedicschool.com/authors/${author.slug}`,
     sameAs: author.linkedin_url ? [author.linkedin_url] : [],
+    image: photoSrc,
   };
 
   return (
@@ -165,10 +178,7 @@ export default function AuthorProfile() {
             {/* Bio & Details */}
             <div className="flex-1 space-y-4">
               <div>
-                <span className="text-[11px] uppercase tracking-widest font-semibold text-[hsl(var(--primary))] font-sans">
-                  Author Profile
-                </span>
-                <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 mt-1">
+                <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900">
                   {author.name}
                 </h1>
                 {author.role && (

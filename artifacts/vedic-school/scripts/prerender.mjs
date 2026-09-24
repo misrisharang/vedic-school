@@ -270,6 +270,34 @@ async function main() {
         { timeout: 10000 }
       );
 
+      // Wait for the page's H1 to have real text. Routes like blog articles resolve
+      // their content asynchronously (e.g. a Supabase fetch) after the initial mount,
+      // so `root.children.length > 0` alone can be satisfied by a loading state and
+      // capture the page before the real content (and its JSON-LD schema) is ready.
+      try {
+        await page.waitForFunction(
+          () => {
+            const h1 = document.querySelector('h1');
+            return Boolean(h1 && h1.textContent && h1.textContent.trim().length > 0);
+          },
+          { timeout: 15000 }
+        );
+      } catch {
+        console.warn(`  ! ${route}: no non-empty <h1> appeared within 15s, capturing current state anyway`);
+      }
+
+      // Wait for the page's JSON-LD structured data script to be injected. Every
+      // current route renders one via <Seo schema=... />, but on async-loaded routes
+      // (blog articles) it only appears once the article data has resolved.
+      try {
+        await page.waitForFunction(
+          () => Boolean(document.querySelector('script[type="application/ld+json"]')),
+          { timeout: 15000 }
+        );
+      } catch {
+        console.warn(`  ! ${route}: no JSON-LD script appeared within 15s, capturing current state anyway`);
+      }
+
       // Brief grace period for any post-mount microtasks or animations
       await new Promise((resolve) => setTimeout(resolve, 200));
 

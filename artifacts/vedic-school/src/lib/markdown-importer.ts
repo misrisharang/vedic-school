@@ -1,13 +1,14 @@
 // ==============================================================================
-// THE VEDIC SCHOOL — DETERMINISTIC SMART MARKDOWN IMPORT ENGINE
+// THE VEDIC SCHOOL — STANDARDIZED & DETERMINISTIC MARKDOWN IMPORT ENGINE
 // ==============================================================================
-// Pure, deterministic rule-based importer:
-// 1. Detects & extracts TL;DR bullets (variable count, verbatim wording preserved)
-// 2. Detects & extracts Quick Verdict (verbatim wording preserved)
-// 3. Detects & extracts Sources & References (structured publication, title, url)
-// 4. Detects & extracts Author metadata & matches against canonical authors
-// 5. Detects & extracts FAQ items
-// 6. Accurately de-duplicates: cleans the extracted blocks from the Main Article Content
+// Pure, deterministic rule-based importer adhering to The Vedic School official format:
+// 1. # Title (H1 article title)
+// 2. ## TL;DR (Variable count of bullets, verbatim wording preserved)
+// 3. ## Quick Verdict (Concise editorial verdict)
+// 4. ## Article Content (Preserved verbatim, H2/H3 hierarchy intact for Table of Contents)
+// 5. ## Sources (Structured: Publication, Title, URL, Date)
+// 6. ## FAQs (Structured: ### Question? with Answers)
+// 7. Complete backward compatibility for legacy formats & published articles
 // ==============================================================================
 
 import type { BlogFAQItem, BlogSourceItem, Author } from '@/types/blog';
@@ -24,6 +25,7 @@ export interface MarkdownImportResult {
   authorMatched?: Author | null;
   authorLinkedIn?: string;
   cleanContent: string;
+  unidentifiedSections?: string[];
   stats: {
     wordCount: number;
     tldrCount: number;
@@ -31,12 +33,13 @@ export interface MarkdownImportResult {
     sourcesCount: number;
     faqsCount: number;
     authorDetected: boolean;
+    articleContentDetected: boolean;
   };
 }
 
 /**
  * Parses an individual source line into a structured BlogSourceItem.
- * Handles diverse citation styles, Markdown links, and naked URLs.
+ * Handles diverse legacy citation styles, Markdown links, and naked URLs.
  */
 export function parseSourceLine(rawLine: string): BlogSourceItem {
   let line = rawLine.trim();
@@ -58,7 +61,7 @@ export function parseSourceLine(rawLine: string): BlogSourceItem {
     }
   }
 
-  // 2. Extract Date / Year if present, e.g. (2016) or (all checked on 12 September 2026)
+  // 2. Extract Date / Year if present, e.g. (2016) or (checked on 12 September 2026)
   const dateCheckMatch = line.match(/\((?:checked on|updated|accessed|published)?\s*([0-9]{1,2}\s+[A-Za-z]+\s+\d{4}|\d{4})\)/i);
   if (dateCheckMatch) {
     date = dateCheckMatch[1].trim();
@@ -117,13 +120,11 @@ export function parseSourceLine(rawLine: string): BlogSourceItem {
   publication = publication.replace(/^[*"']+|[*"']+$/g, '').trim();
   title = title.replace(/^[*"']+|[*"']+$/g, '').trim();
 
-  // If title became publication and publication is empty
   if (!publication && title) {
     publication = title;
     title = '';
   }
 
-  // If text part was completely empty (e.g. naked URL only)
   if (!publication && url) {
     try {
       const parsedUrl = new URL(url);
@@ -142,123 +143,162 @@ export function parseSourceLine(rawLine: string): BlogSourceItem {
 }
 
 /**
- * Extracts TL;DR bullets from markdown.
- * Recognizes:
- * - ## TL;DR / ## TLDR
- * - ## Key Takeaways
- * - ## Summary
- * - > **TL;DR** / **TL;DR**
+ * Parses the body under a ## Sources heading into structured BlogSourceItem records.
+ * First handles the official multi-field format:
+ * 1. **Publication:** Name
+ *    **Title:** Source Title
+ *    **URL:** https://...
+ *    **Date:** YYYY-MM-DD
+ * Falls back to line-by-line parsing for legacy formats.
  */
-export function extractTldr(content: string): {
-  bullets: string[];
-  blockToStrip: string | null;
-} {
-  if (!content) return { bullets: [], blockToStrip: null };
+export function parseSourcesBlock(rawBlock: string): BlogSourceItem[] {
+  if (!rawBlock || !rawBlock.trim()) return [];
 
-  // Match heading or bold marker
-  const tldrHeaderRegex = /(?:^|\n)(#{1,4}\s*(?:\*\*)?(?:TL;?\s*DR|Key Takeaways|Summary)(?:\*\*)?|>\s*\*\*(?:TL;?\s*DR|Key Takeaways|Summary)\*\*|\*\*(?:TL;?\s*DR|Key Takeaways|Summary)\*\*)([\s\S]*?)(?=(?:^|\n)#{1,3}\s+|(?:^|\n)(?:\*\*Quick verdict|Quick verdict:)|\n{3,}|$)/i;
+  const text = rawBlock.trim();
+  const items: BlogSourceItem[] = [];
 
-  const match = content.match(tldrHeaderRegex);
-  if (!match) return { bullets: [], blockToStrip: null };
+  // Check if structured markers (**Publication:** or Publication:) exist
+  const hasStructuredMarkers = /(?:\*\*)?Publication:(?:\*\*)?/i.test(text);
 
-  const fullBlock = match[0];
-  const body = match[2] || '';
+  if (hasStructuredMarkers) {
+    const itemChunks = text
+      .split(/(?:^|\n)\s*(?:\d+\.|\*|\-)\s*(?=(?:\*\*)?Publication:)/i)
+      .map((c) => c.trim())
+      .filter(Boolean);
 
-  const bulletLines = body
-    .split('\n')
-    .map((l) => l.replace(/^\s*>\s?/, '').trim())
-    .filter((l) => l.startsWith('*') || l.startsWith('-') || /^\d+\.\s+/.test(l))
-    .map((l) => l.replace(/^[\s*•\-]+/, '').replace(/^\d+\.\s*/, '').trim())
-    .filter((l) => l.length > 0);
+    for (const chunk of itemChunks) {
+      const pubMatch = chunk.match(/(?:\*\*)?Publication:(?:\*\*)?\s*([^\n*]+)/i);
+      const titleMatch = chunk.match(/(?:\*\*)?Title:(?:\*\*)?\s*([^\n*]+)/i);
+      const urlMatch = chunk.match(/(?:\*\*)?URL:(?:\*\*)?\s*([^\s*\n]+)/i);
+      const dateMatch = chunk.match(/(?:\*\*)?Date:(?:\*\*)?\s*([^\n*]+)/i);
 
-  return {
-    bullets: bulletLines,
-    blockToStrip: bulletLines.length > 0 ? fullBlock : null,
-  };
-}
+      let publication = pubMatch ? pubMatch[1].trim() : '';
+      let title = titleMatch ? titleMatch[1].trim() : '';
+      let url = urlMatch ? urlMatch[1].trim() : '';
+      let date = dateMatch ? dateMatch[1].trim() : undefined;
 
-/**
- * Extracts Quick Verdict text from markdown.
- * Recognizes:
- * - **Quick verdict:** ...
- * - **Quick Verdict:** ...
- * - ## Quick Verdict
- * - Quick Verdict: ...
- */
-export function extractQuickVerdict(content: string): {
-  verdict: string;
-  blockToStrip: string | null;
-} {
-  if (!content) return { verdict: '', blockToStrip: null };
+      if (!url) {
+        const mdLinkMatch = chunk.match(/\[([^\]]*)\]\((https?:\/\/[^\s)]+)\)/);
+        if (mdLinkMatch) {
+          url = mdLinkMatch[2].trim();
+          if (!title && mdLinkMatch[1]) {
+            title = mdLinkMatch[1].trim();
+          }
+        } else {
+          const rawUrlMatch = chunk.match(/https?:\/\/[^\s)\],]+/);
+          if (rawUrlMatch) {
+            url = rawUrlMatch[0].trim();
+          }
+        }
+      }
 
-  // Pattern A: Inline bold or plain marker "**Quick verdict:** text"
-  const inlineRegex = /(?:^|\n)(?:>\s*)?(?:\*\*(?:Quick\s*[Vv]erdict:?)\*\*|Quick\s*[Vv]erdict:)\s*([^\n]+(?:\n(?![#\n*>\-]|--)[^\n]+)*)/i;
-  const inlineMatch = content.match(inlineRegex);
+      publication = publication.replace(/^[*"'`]+|[*"'`]+$/g, '').trim();
+      title = title.replace(/^[*"'`]+|[*"'`]+$/g, '').trim();
+      if (date) {
+        date = date.replace(/^[*"'`()]+|[*"'`()]+$/g, '').trim();
+      }
 
-  if (inlineMatch) {
-    const fullBlock = inlineMatch[0];
-    const verdict = inlineMatch[1].trim();
-    return { verdict, blockToStrip: fullBlock };
+      if (publication || title || url) {
+        items.push({
+          publication: publication || (url ? new URL(url).hostname.replace(/^www\./, '') : 'Source'),
+          title: title || '',
+          url,
+          date,
+        });
+      }
+    }
   }
 
-  // Pattern B: Section heading "## Quick Verdict\n\nText..."
-  const sectionRegex = /(?:^|\n)#{1,4}\s*(?:\*\*)?Quick\s*[Vv]erdict(?:\*\*)?\s*\n+([\s\S]*?)(?=(?:\n#{1,3}\s+|\n\*\*|$))/i;
-  const sectionMatch = content.match(sectionRegex);
+  // Fallback to line-based parsing if no structured items found (legacy format)
+  if (items.length === 0) {
+    const lines = text
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l.startsWith('*') || l.startsWith('-') || /^\d+\.\s+/.test(l) || l.includes('http://') || l.includes('https://'));
 
-  if (sectionMatch) {
-    const fullBlock = sectionMatch[0];
-    const verdict = sectionMatch[1].trim();
-    return { verdict, blockToStrip: fullBlock };
+    for (const line of lines) {
+      const parsed = parseSourceLine(line);
+      if (parsed.publication || parsed.url) {
+        items.push(parsed);
+      }
+    }
   }
 
-  return { verdict: '', blockToStrip: null };
+  return items;
 }
 
 /**
- * Extracts Sources from markdown.
- * Recognizes:
- * - ## Sources
- * - ## Sources & References
- * - ## References
- * - ## Further Reading
- * - **Sources** (checked on ...)
+ * Parses the body under a ## FAQs heading into structured BlogFAQItem records.
+ * Uses ### Question as explicit boundary for each question.
  */
-export function extractSources(content: string): {
-  sources: BlogSourceItem[];
-  blockToStrip: string | null;
-} {
-  if (!content) return { sources: [], blockToStrip: null };
+export function parseFaqsBlock(rawBlock: string): BlogFAQItem[] {
+  if (!rawBlock || !rawBlock.trim()) return [];
 
-  const sourcesRegex = /(?:^|\n)(?:#{1,4}\s*(?:\*\*)?(?:Sources(?:\s*&\s*References)?|References|Further Reading)(?:\*\*)?|\*\*(?:Sources|References)\*\*(?:\s*\([^)]*\))?)\s*([\s\S]*?)(?=(?:^|\n)#{1,3}\s+|$)/i;
+  const text = rawBlock.trim();
+  const items: BlogFAQItem[] = [];
 
-  const match = content.match(sourcesRegex);
-  if (!match) return { sources: [], blockToStrip: null };
+  // Match H3 questions: ### Question
+  const qRegex = /(?:^|\n)###\s*(?:\*\*)?([^\n*]+?)(?:\*\*)?\s*\n+([\s\S]*?)(?=(?:\n###|$))/g;
+  let qMatch: RegExpExecArray | null;
 
-  const fullBlock = match[0];
-  const body = match[1].trim();
+  while ((qMatch = qRegex.exec(text)) !== null) {
+    const question = qMatch[1].trim().replace(/^[*"'`]+|[*"'`]+$/g, '');
+    const rawAnswer = qMatch[2].trim();
 
-  const lines = body
-    .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => l.startsWith('*') || l.startsWith('-') || /^\d+\.\s+/.test(l) || l.includes('http://') || l.includes('https://'));
+    const answer = rawAnswer
+      .replace(/\r\n/g, '\n')
+      .split(/\n{2,}/)
+      .map((para) => para.replace(/\n+/g, ' ').trim())
+      .filter(Boolean)
+      .join('\n\n');
 
-  const parsedItems = lines.map(parseSourceLine).filter((item) => item.publication.length > 0 || item.url.length > 0);
+    if (question && answer) {
+      items.push({ question, answer });
+    }
+  }
 
-  return {
-    sources: parsedItems,
-    blockToStrip: parsedItems.length > 0 ? fullBlock : null,
-  };
+  // Fallback for legacy format with **Q:** or Q: if no ### H3 headers exist
+  if (items.length === 0) {
+    const qAltRegex = /(?:^|\n)(?:\*\*Q(?:uestion)?:?\*\*|Q:)\s*([^\n*]+)\s*\n+(?:\*\*A(?:nswer)?:?\*\*|A:)?\s*([\s\S]*?)(?=(?:\n(?:\*\*Q|Q:)|$))/gi;
+    let altMatch: RegExpExecArray | null;
+    while ((altMatch = qAltRegex.exec(text)) !== null) {
+      const question = altMatch[1].trim();
+      const answer = altMatch[2].trim().replace(/\n+/g, ' ');
+      if (question && answer) {
+        items.push({ question, answer });
+      }
+    }
+  }
+
+  return items;
 }
 
 /**
- * Extracts Author name and metadata from markdown.
- * Recognizes:
- * - By Meenakshi Koul
- * - **By Meenakshi Koul**
- * - Author: Meenakshi Koul
- * - **Author:** Meenakshi Koul
- * - By [Meenakshi Koul](url)
- * - **About the author** block
+ * Parses bullets from the TL;DR section.
+ */
+export function parseTldrBlock(rawBlock: string): string[] {
+  if (!rawBlock || !rawBlock.trim()) return [];
+
+  const lines = rawBlock.trim().split('\n');
+  const bullets: string[] = [];
+
+  for (const rawLine of lines) {
+    const line = rawLine.replace(/^\s*>\s?/, '').trim();
+    if (!line) continue;
+    const isBullet = /^[\-*•]|\d+\.\s+/.test(line);
+    if (isBullet) {
+      const clean = line.replace(/^[\s*•\-]+/, '').replace(/^\d+\.\s*/, '').trim();
+      if (clean) bullets.push(clean);
+    } else if (bullets.length === 0) {
+      bullets.push(line);
+    }
+  }
+
+  return bullets;
+}
+
+/**
+ * Extracts Author name and metadata from markdown content.
  */
 export function extractAuthor(
   content: string,
@@ -268,37 +308,40 @@ export function extractAuthor(
   authorMatched: Author | null;
   authorLinkedIn?: string;
   blockToStrip: string | null;
+  blocksToStrip?: string[];
 } {
   if (!content) {
-    return { authorName: '', authorMatched: null, blockToStrip: null };
+    return { authorName: '', authorMatched: null, blockToStrip: null, blocksToStrip: [] };
   }
 
   let authorName = '';
   let authorLinkedIn: string | undefined = undefined;
-  let blockToStrip: string | null = null;
+  const blocksToStrip: string[] = [];
 
-  // Pattern 1: Inline "By [Name]" or "**By [Name]**" or "Author: [Name]"
-  const authorLineRegex = /(?:^|\n)(?:>\s*)?(?:\*\*)?(?:By|Author:?)\s+(?:\[([^\n\]]+)\]\(([^\n)]+)\)|([^\n*]+?))(?:\*\*)?(?=\s*\n|$)/i;
-  const lineMatch = content.match(authorLineRegex);
-
-  if (lineMatch) {
-    if (lineMatch[1]) {
-      authorName = lineMatch[1].trim();
-      const link = lineMatch[2]?.trim();
-      if (link && link.includes('linkedin.com')) {
-        authorLinkedIn = link;
-      }
-    } else if (lineMatch[3]) {
-      authorName = lineMatch[3].trim();
+  // Pattern 1: Inline "By [Name](url)" or "**By [Name](url)**, Founder..."
+  const linkByMatch = content.match(/(?:^|\n)(?:>\s*)?(?:\*\*)?(?:By|Author:?)\s+\[([^\]]+)\]\(([^\n)]+)\)[^\n]*/i);
+  if (linkByMatch) {
+    authorName = linkByMatch[1].trim();
+    const linkUrl = linkByMatch[2].trim();
+    if (linkUrl.includes('linkedin.com')) {
+      authorLinkedIn = linkUrl;
+    }
+    blocksToStrip.push(linkByMatch[0]);
+  } else {
+    // Pattern 2: Inline "By Name" or "**By Name**" or "Author: Name"
+    const plainByMatch = content.match(/(?:^|\n)(?:>\s*)?(?:\*\*)?(?:By|Author:?)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)[^\n]*/i);
+    if (plainByMatch) {
+      authorName = plainByMatch[1].trim();
+      blocksToStrip.push(plainByMatch[0]);
     }
   }
 
-  // Pattern 2: "About the author" block (often with ## heading or --- rule)
-  const aboutAuthorRegex = /(?:^|\n)(?:---\s*\n\s*)?(?:#{1,4}\s*)?(?:\*\*)?About the author(?:\*\*)?\s*\n+([\s\S]*?)(?=(?:^|\n)#{1,3}\s+(?!#)|(?:^|\n)\*\*Sources|$)/i;
+  // Pattern 3: "About the author" section (## About the author or **About the author**)
+  const aboutAuthorRegex = /(?:^|\n)(?:---\s*\n\s*)?(?:##\s*|\*\*)About the (?:author|founder)(?:\*\*)?\s*\n+([\s\S]*?)(?=(?:^|\n)(?:##|\*\*(?:Sources|References)|---)|$)/i;
   const aboutMatch = content.match(aboutAuthorRegex);
 
   if (aboutMatch) {
-    blockToStrip = aboutMatch[0];
+    blocksToStrip.push(aboutMatch[0]);
     const aboutText = aboutMatch[1];
     if (!authorName) {
       const boldNameMatch = aboutText.match(/\*\*([A-Z][a-z]+(?:\s+[A-Z][a-z]+)+)\*\*/);
@@ -312,7 +355,6 @@ export function extractAuthor(
     }
   }
 
-  // Normalize author name (handle Khar -> Koul alias if legacy)
   if (authorName.toLowerCase() === 'meenakshi khar') {
     authorName = 'Meenakshi Koul';
   }
@@ -323,45 +365,22 @@ export function extractAuthor(
     authorName,
     authorMatched: matched,
     authorLinkedIn,
-    blockToStrip,
+    blockToStrip: blocksToStrip.join('\n\n') || null,
+    blocksToStrip,
   };
 }
 
-/**
- * Extracts FAQs from markdown content.
- */
-export function extractFaqs(content: string): {
-  faqs: BlogFAQItem[];
-  blockToStrip: string | null;
-} {
-  if (!content) return { faqs: [], blockToStrip: null };
-
-  const faqSectionRegex = /(?:^|\n)(#{1,4}\s*(?:\*\*)?[^\n]*FAQs?(?:\*\*)?[\s\S]*?)(?=(?:^|\n)(?:#{1,3}\s+(?!#)|---\s*\n\s*\*\*About the author|\*\*About the author|\*\*Sources|$))/i;
-  const match = content.match(faqSectionRegex);
-  if (!match) return { faqs: [], blockToStrip: null };
-
-  const faqBlock = match[1];
-  const items: BlogFAQItem[] = [];
-  const qRegex = /###\s*(?:\*\*)?([^\n*]+?)(?:\*\*)?\s*\n+([\s\S]*?)(?=(?:###|$))/g;
-  let qMatch: RegExpExecArray | null;
-
-  while ((qMatch = qRegex.exec(faqBlock)) !== null) {
-    const question = qMatch[1].trim();
-    const answer = qMatch[2].trim().replace(/\n+/g, ' ');
-    if (question && answer) {
-      items.push({ question, answer });
-    }
-  }
-
-  return {
-    faqs: items,
-    blockToStrip: items.length > 0 ? faqBlock : null,
-  };
+interface HeadingEntry {
+  rawHeading: string;
+  cleanTitle: string;
+  type: 'tldr' | 'quick_verdict' | 'article_content' | 'sources' | 'faqs' | 'about_author' | 'article_section';
+  startIndex: number; // index where `## ` begins in text
+  headerEndIndex: number; // index where the heading line ends (\n)
 }
 
 /**
- * Main parse function for the Smart Markdown Import engine.
- * Deterministically parses, structures, and de-duplicates an entire raw Markdown article.
+ * Main parse function for the Standardized Markdown Import engine.
+ * Deterministically parses, structures, and de-duplicates raw Markdown articles.
  */
 export function parseMarkdownArticle(
   rawMarkdown: string,
@@ -381,58 +400,206 @@ export function parseMarkdownArticle(
         sourcesCount: 0,
         faqsCount: 0,
         authorDetected: false,
+        articleContentDetected: false,
       },
     };
   }
 
-  let workingContent = rawMarkdown;
+  let text = rawMarkdown.replace(/\r\n/g, '\n');
 
   // 1. Extract Title if markdown starts with H1 "# Title"
   let detectedTitle: string | undefined;
-  const h1Match = workingContent.match(/^#\s+([^\n]+)/);
+  const h1Match = text.match(/^#\s+([^\n]+)/);
   if (h1Match) {
     detectedTitle = h1Match[1].replace(/^\*+|\*+$/g, '').trim();
-    workingContent = workingContent.replace(h1Match[0], '').trim();
+    text = text.replace(h1Match[0], '').trim();
   }
 
-  // 2. Extract Author
-  const authorRes = extractAuthor(workingContent, knownAuthors);
-  if (authorRes.blockToStrip) {
-    workingContent = workingContent.replace(authorRes.blockToStrip, '\n\n');
+  // 2. Extract Author byline
+  const authorRes = extractAuthor(text, knownAuthors);
+  if (authorRes.blocksToStrip && authorRes.blocksToStrip.length > 0) {
+    for (const b of authorRes.blocksToStrip) {
+      text = text.replace(b, '\n\n');
+    }
+  } else if (authorRes.blockToStrip) {
+    text = text.replace(authorRes.blockToStrip, '\n\n');
   }
 
-  // 3. Extract TL;DR
-  const tldrRes = extractTldr(workingContent);
-  if (tldrRes.blockToStrip) {
-    workingContent = workingContent.replace(tldrRes.blockToStrip, '\n\n');
+  // 3. Fallback for legacy inline Quick Verdict: **Quick verdict:**
+  let legacyQuickVerdict = '';
+  const inlineQvRegex = /(?:^|\n)(?:>\s*)?(?:\*\*(?:Quick\s*[Vv]erdict:?)\*\*|Quick\s*[Vv]erdict:)\s*([^\n]+(?:\n(?![#\n*>\-]|--)[^\n]+)*)/i;
+  const qvInlineMatch = text.match(inlineQvRegex);
+  if (qvInlineMatch) {
+    legacyQuickVerdict = qvInlineMatch[1].trim();
+    text = text.replace(qvInlineMatch[0], '\n\n');
   }
 
-  // 4. Extract Quick Verdict
-  const qvRes = extractQuickVerdict(workingContent);
-  if (qvRes.blockToStrip) {
-    workingContent = workingContent.replace(qvRes.blockToStrip, '\n\n');
+  // 4. Fallback for legacy TL;DR with blockquote/bold marker: > **TL;DR** or **TL;DR**
+  let legacyTldrBullets: string[] = [];
+  const legacyTldrRegex = /(?:^|\n)(?:>\s*\*\*(?:TL;?\s*DR|Key Takeaways|Summary)\*\*|\*\*(?:TL;?\s*DR|Key Takeaways|Summary)\*\*)\s*\n+([\s\S]*?)(?=(?:\n##|\n{3,}|$))/i;
+  const legTldrMatch = text.match(legacyTldrRegex);
+  if (legTldrMatch) {
+    legacyTldrBullets = parseTldrBlock(legTldrMatch[1]);
+    text = text.replace(legTldrMatch[0], '\n\n');
   }
 
-  // 5. Extract FAQs
-  const faqRes = extractFaqs(workingContent);
-  if (faqRes.blockToStrip) {
-    workingContent = workingContent.replace(faqRes.blockToStrip, '\n\n');
+  // 5. Scan all `## ` headings and standalone bold structural headings in text
+  const headings: HeadingEntry[] = [];
+  const headingRegex = /(?:^|\n)(?:(##\s*([^\n]+))|(\*\*(?:Sources(?:\s*&\s*References)?|References|About the (?:author|founder)|TL;?\s*DR|Key Takeaways|Summary|FAQs?|Frequently Asked Questions|Quick\s*[Vv]erdict|Article\s*Content)\*\*(?:[^\S\r\n]*(?:\([^)\n]*\)|:))?[^\S\r\n]*))(?=\n|$)/gi;
+  let hMatch: RegExpExecArray | null;
+
+  while ((hMatch = headingRegex.exec(text)) !== null) {
+    const isH2 = Boolean(hMatch[1]);
+    const rawHeading = (isH2 ? hMatch[1] : hMatch[3]).trim();
+    const rawTitle = isH2 ? hMatch[2] : hMatch[3];
+    const cleanTitle = rawTitle
+      .trim()
+      .replace(/\s*\([^)]*\)$/, '')
+      .replace(/:$/, '')
+      .replace(/^[*_~`]+|[*_~`]+$/g, '')
+      .trim();
+    const startIndex = hMatch.index + (hMatch[0].startsWith('\n') ? 1 : 0);
+    const headerEndIndex = startIndex + rawHeading.length;
+
+    let type: HeadingEntry['type'] = 'article_section';
+
+    if (/^(?:tl;?\s*dr|key takeaways|summary)$/i.test(cleanTitle)) {
+      type = 'tldr';
+    } else if (/^quick\s*verdict$/i.test(cleanTitle)) {
+      type = 'quick_verdict';
+    } else if (/^article\s*content$/i.test(cleanTitle)) {
+      type = 'article_content';
+    } else if (/^(?:sources(?:\s*&\s*references)?|references|further reading)$/i.test(cleanTitle)) {
+      type = 'sources';
+    } else if (/^(?:faqs?|frequently asked questions|questions parents(?: often)? ask)$/i.test(cleanTitle)) {
+      type = 'faqs';
+    } else if (/^about the (?:author|founder)$/i.test(cleanTitle)) {
+      type = 'about_author';
+    }
+
+    headings.push({
+      rawHeading,
+      cleanTitle,
+      type,
+      startIndex,
+      headerEndIndex,
+    });
   }
 
-  // 6. Extract Sources
-  const sourcesRes = extractSources(workingContent);
-  if (sourcesRes.blockToStrip) {
-    workingContent = workingContent.replace(sourcesRes.blockToStrip, '\n\n');
+  headings.sort((a, b) => a.startIndex - b.startIndex);
+
+  let tldrBullets = legacyTldrBullets;
+  let quickVerdict = legacyQuickVerdict;
+  let sourcesList: BlogSourceItem[] = [];
+  let faqsList: BlogFAQItem[] = [];
+  let articleContentDetected = false;
+
+  const tldrEntry = headings.find((h) => h.type === 'tldr');
+  const qvEntry = headings.find((h) => h.type === 'quick_verdict');
+  const acEntry = headings.find((h) => h.type === 'article_content');
+  const sourcesEntry = headings.find((h) => h.type === 'sources');
+  const faqsEntry = headings.find((h) => h.type === 'faqs');
+  const aboutEntry = headings.find((h) => h.type === 'about_author');
+
+  // Parse TL;DR from `## TL;DR` heading
+  // Strict boundary: ends at the very next `## ` heading of any kind
+  if (tldrEntry) {
+    const nextH = headings.find((h) => h.startIndex > tldrEntry.startIndex);
+    const endIdx = nextH ? nextH.startIndex : text.length;
+    const body = text.slice(tldrEntry.headerEndIndex, endIdx);
+    tldrBullets = parseTldrBlock(body);
   }
 
-  // 7. Clean up remaining Main Article Content:
-  // Normalize whitespace (no more than 2 consecutive newlines)
-  const cleanContent = workingContent
+  // Parse Quick Verdict from `## Quick Verdict` heading
+  // Strict boundary: ends at the very next `## ` heading of any kind
+  if (qvEntry) {
+    const nextH = headings.find((h) => h.startIndex > qvEntry.startIndex);
+    const endIdx = nextH ? nextH.startIndex : text.length;
+    const body = text.slice(qvEntry.headerEndIndex, endIdx);
+    quickVerdict = body.trim();
+  }
+
+  // Parse Sources from `## Sources`
+  // Boundary: ends at next terminal heading (faqs or about_author) or end of text
+  if (sourcesEntry) {
+    const nextTerminal = headings.find(
+      (h) => h.startIndex > sourcesEntry.startIndex && (h.type === 'faqs' || h.type === 'about_author')
+    );
+    const endIdx = nextTerminal ? nextTerminal.startIndex : text.length;
+    const body = text.slice(sourcesEntry.headerEndIndex, endIdx);
+    sourcesList = parseSourcesBlock(body);
+  }
+
+  // Parse FAQs from `## FAQs`
+  // Boundary: ends at next terminal heading (sources or about_author) or end of text
+  if (faqsEntry) {
+    const nextTerminal = headings.find(
+      (h) => h.startIndex > faqsEntry.startIndex && (h.type === 'sources' || h.type === 'about_author')
+    );
+    const endIdx = nextTerminal ? nextTerminal.startIndex : text.length;
+    const body = text.slice(faqsEntry.headerEndIndex, endIdx);
+    faqsList = parseFaqsBlock(body);
+  }
+
+  // Determine Main Article Content Boundaries
+  let contentStartIdx = 0;
+  if (acEntry) {
+    articleContentDetected = true;
+    contentStartIdx = acEntry.headerEndIndex;
+  } else {
+    // If no ## Article Content marker:
+    // Content starts at the first heading that is not tldr, quick_verdict, sources, faqs, or about_author
+    const firstArticleHeading = headings.find(
+      (h) =>
+        h.type !== 'tldr' &&
+        h.type !== 'quick_verdict' &&
+        h.type !== 'sources' &&
+        h.type !== 'faqs' &&
+        h.type !== 'about_author'
+    );
+    if (firstArticleHeading) {
+      contentStartIdx = firstArticleHeading.startIndex;
+    } else {
+      // If no headings exist, content starts after intro sections
+      const introH = [tldrEntry, qvEntry].filter(Boolean) as HeadingEntry[];
+      if (introH.length > 0) {
+        const lastIntro = introH.reduce((max, h) => (h.startIndex > max.startIndex ? h : max), introH[0]);
+        const nextH = headings.find((h) => h.startIndex > lastIntro.startIndex);
+        contentStartIdx = nextH ? nextH.startIndex : lastIntro.headerEndIndex;
+      }
+    }
+  }
+
+  // End of article content: earliest terminal heading (Sources, FAQs, About Author)
+  const terminalHeadings = [sourcesEntry, faqsEntry, aboutEntry]
+    .filter(Boolean)
+    .filter((h) => (h as HeadingEntry).startIndex >= contentStartIdx) as HeadingEntry[];
+
+  const contentEndIdx = terminalHeadings.length > 0
+    ? Math.min(...terminalHeadings.map((h) => h.startIndex))
+    : text.length;
+
+  let rawContent = text.slice(contentStartIdx, contentEndIdx);
+
+  // If there was no ## Article Content marker, clean any leftover introductory TLDR or Quick Verdict blocks
+  if (!acEntry) {
+    if (tldrEntry && rawContent.includes(tldrEntry.rawHeading)) {
+      rawContent = rawContent.replace(tldrEntry.rawHeading, '').trim();
+    }
+    if (qvEntry && rawContent.includes(qvEntry.rawHeading)) {
+      rawContent = rawContent.replace(qvEntry.rawHeading, '').trim();
+    }
+  }
+
+  // Clean article content: normalize whitespace while strictly preserving all H2s and H3s
+  const cleanContent = rawContent
     .replace(/\r\n/g, '\n')
+    .replace(/^\s*\n+/, '')
     .replace(/\n{3,}/g, '\n\n')
+    .replace(/(?:\n\s*---\s*)+$/, '')
     .trim();
 
-  // 8. Calculate word count for main article content
+  // Calculate word count
   const words = cleanContent
     .replace(/<[^>]*>/g, ' ')
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
@@ -440,23 +607,32 @@ export function parseMarkdownArticle(
     .split(/\s+/)
     .filter(Boolean).length;
 
+  // Unidentified structured sections reporting
+  const unidentifiedSections: string[] = [];
+  if (tldrBullets.length === 0) unidentifiedSections.push('TL;DR');
+  if (!quickVerdict) unidentifiedSections.push('Quick Verdict');
+  if (sourcesList.length === 0) unidentifiedSections.push('Sources');
+  if (faqsList.length === 0) unidentifiedSections.push('FAQs');
+
   return {
     title: detectedTitle,
-    tldr: tldrRes.bullets,
-    quickVerdict: qvRes.verdict,
-    sources: sourcesRes.sources,
-    faqs: faqRes.faqs,
+    tldr: tldrBullets,
+    quickVerdict,
+    sources: sourcesList,
+    faqs: faqsList,
     authorName: authorRes.authorName,
     authorMatched: authorRes.authorMatched,
     authorLinkedIn: authorRes.authorLinkedIn,
     cleanContent,
+    unidentifiedSections,
     stats: {
       wordCount: words,
-      tldrCount: tldrRes.bullets.length,
-      quickVerdictDetected: Boolean(qvRes.verdict),
-      sourcesCount: sourcesRes.sources.length,
-      faqsCount: faqRes.faqs.length,
+      tldrCount: tldrBullets.length,
+      quickVerdictDetected: Boolean(quickVerdict),
+      sourcesCount: sourcesList.length,
+      faqsCount: faqsList.length,
       authorDetected: Boolean(authorRes.authorName || authorRes.authorMatched),
+      articleContentDetected: articleContentDetected || cleanContent.length > 0,
     },
   };
 }

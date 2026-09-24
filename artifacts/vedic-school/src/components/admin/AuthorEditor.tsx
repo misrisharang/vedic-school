@@ -5,6 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import type { Author } from '@/types/blog';
 import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { saveAuthorToLocalCache } from '@/lib/authors';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -126,6 +127,8 @@ export function AuthorEditor({ author, onSaveSuccess, onCancel }: AuthorEditorPr
     };
 
     try {
+      let dbError: string | null = null;
+
       if (isSupabaseConfigured) {
         if (isEditing) {
           const { error: updateError } = await supabase
@@ -143,7 +146,8 @@ export function AuthorEditor({ author, onSaveSuccess, onCancel }: AuthorEditorPr
             .eq('id', authorPayload.id);
 
           if (updateError) {
-            console.warn('[Author Save] Could not update Supabase authors table (table may not exist yet):', updateError);
+            console.warn('[Author Save] Could not update Supabase authors table:', updateError);
+            dbError = updateError.message;
           }
         } else {
           const { error: insertError } = await supabase
@@ -159,15 +163,24 @@ export function AuthorEditor({ author, onSaveSuccess, onCancel }: AuthorEditorPr
             }]);
 
           if (insertError) {
-            console.warn('[Author Save] Could not insert to Supabase authors table (table may not exist yet):', insertError);
+            console.warn('[Author Save] Could not insert to Supabase authors table:', insertError);
+            dbError = insertError.message;
           }
         }
       }
 
-      setSuccess('Author saved successfully!');
+      // Always save to local author store so local preview & public website update immediately
+      saveAuthorToLocalCache(authorPayload);
+
+      if (dbError && isSupabaseConfigured) {
+        setSuccess('Author saved to local session. (Database sync note: ' + dbError + ')');
+      } else {
+        setSuccess('Author saved successfully!');
+      }
+
       setTimeout(() => {
         onSaveSuccess(authorPayload);
-      }, 500);
+      }, dbError ? 1000 : 500);
     } catch (err: any) {
       setError(err?.message || 'Failed to save author.');
     } finally {

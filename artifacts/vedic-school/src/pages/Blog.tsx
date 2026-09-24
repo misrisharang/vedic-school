@@ -187,12 +187,6 @@ export default function Blog() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             {/* Left: Heading & Intro */}
             <div className="max-w-2xl space-y-3">
-              <div className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-[hsl(var(--primary))]">
-                <span>Insights & Ideas</span>
-                <span>•</span>
-                <span>The Vedic School Blog</span>
-              </div>
-
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-stone-900 tracking-tight leading-tight">
                 Practical ideas for a calmer, more confident Maths journey.
               </h1>
