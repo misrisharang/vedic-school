@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import wordmarkLogo from '@assets/the-vedic-school-logo.png';
 import v25Logo from '@assets/the-vedic-school-logo-v25.png';
 import { useDemoModal } from '@/context/DemoModalContext';
+import { trackCtaClick } from '@/lib/analytics';
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -130,7 +131,10 @@ export function Navbar() {
             <div className="hidden md:block">
               <Button 
                 size="sm" 
-                onClick={openDemoModal}
+                onClick={() => {
+                  trackCtaClick('book_free_demo', 'header', 'vedic_maths');
+                  openDemoModal();
+                }}
                 className="bg-primary hover:bg-primary/90 text-white font-medium px-5 py-2.5 rounded-full text-sm shadow-xs hover:shadow-sm transition-all focus-visible:ring-primary"
                 aria-label="Book a free demo class"
               >
@@ -212,6 +216,7 @@ export function Navbar() {
             <Button 
               className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 rounded-full text-base shadow-xs"
               onClick={() => {
+                trackCtaClick('book_free_demo', 'header', 'vedic_maths');
                 setMobileMenuOpen(false);
                 openDemoModal();
               }}

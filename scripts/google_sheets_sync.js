@@ -413,7 +413,7 @@ function syncDemoRecord(ss, record) {
   if (!id) return "Skipped (no id)";
 
   var rowData = [
-    formatDate(record.registered_at || record.created_at),
+    formatRegistrationDate(record.registered_at || record.created_at),
     cleanStr(record.parent_name),
     cleanStr(record.child_name),
     cleanStr(record.whatsapp_country),
@@ -444,7 +444,7 @@ function syncAssessmentRecord(ss, record) {
   if (!id) return "Skipped (no id)";
 
   var rowData = [
-    formatDate(record.registered_at || record.created_at),
+    formatRegistrationDate(record.registered_at || record.created_at),
     cleanStr(record.parent_name),
     cleanStr(record.child_name),
     cleanStr(record.whatsapp_country),
@@ -526,6 +526,21 @@ function formatDate(val) {
     return Utilities.formatDate(d, "Asia/Kolkata", "yyyy-MM-dd HH:mm:ss");
   } catch (e) {
     return String(val);
+  }
+}
+
+function formatRegistrationDate(val) {
+  if (!val) return "";
+  try {
+    var d = new Date(val);
+    if (isNaN(d.getTime())) {
+      var s = String(val).trim();
+      return s.length >= 10 ? s.slice(0, 10) : s;
+    }
+    return Utilities.formatDate(d, "Asia/Kolkata", "yyyy-MM-dd");
+  } catch (e) {
+    var s = String(val).trim();
+    return s.length >= 10 ? s.slice(0, 10) : s;
   }
 }
 

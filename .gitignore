@@ -60,3 +60,4 @@ Thumbs.db
 # Agent tooling
 .agents/
 skills-lock.json
+supabase/.temp/

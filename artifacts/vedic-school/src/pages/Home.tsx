@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button, buttonVariants } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
+import { trackCtaClick } from '@/lib/analytics';
 import {
   FadeIn,
   FadeInStagger,
@@ -382,8 +383,20 @@ export default function Home() {
                 <p className="text-foreground/80 leading-relaxed mb-8 flex-1">
                   Vedic Maths for kids aged 6–16 — number sense, speed and confidence: tricks understood, never memorised
                 </p>
-                <Button className="w-full sm:w-auto self-start" onClick={openDemoModal}>Join Sunday's free demo</Button>
-                <Link href="/vedic-maths" className="text-[#3D5E3B] font-medium inline-flex items-center gap-2 hover:gap-3 transition-all mt-4 text-sm hover:underline">
+                <Button
+                  className="w-full sm:w-auto self-start"
+                  onClick={() => {
+                    trackCtaClick('book_free_demo', 'two_ways_section', 'vedic_maths');
+                    openDemoModal();
+                  }}
+                >
+                  Join Sunday's free demo
+                </Button>
+                <Link
+                  href="/vedic-maths"
+                  onClick={() => trackCtaClick('explore_vedic_maths', 'two_ways_section', 'vedic_maths')}
+                  className="text-[#3D5E3B] font-medium inline-flex items-center gap-2 hover:gap-3 transition-all mt-4 text-sm hover:underline"
+                >
                   See the Vedic Maths course <span>→</span>
                 </Link>
               </div>
@@ -399,8 +412,20 @@ export default function Home() {
                 <p className="text-foreground/80 leading-relaxed mb-8 flex-1">
                   Work through your child's school curriculum while addressing the gaps getting in the way.
                 </p>
-                <Button className="w-full sm:w-auto self-start" onClick={openAssessmentModal}>Book a personal assessment</Button>
-                <Link href="/curriculum-aligned" className="text-primary font-medium inline-flex items-center gap-2 hover:gap-3 transition-all mt-4 text-sm hover:underline">
+                <Button
+                  className="w-full sm:w-auto self-start"
+                  onClick={() => {
+                    trackCtaClick('book_personal_assessment', 'two_ways_section', 'curriculum_aligned');
+                    openAssessmentModal();
+                  }}
+                >
+                  Book a personal assessment
+                </Button>
+                <Link
+                  href="/curriculum-aligned"
+                  onClick={() => trackCtaClick('explore_curriculum_classes', 'two_ways_section', 'curriculum_aligned')}
+                  className="text-primary font-medium inline-flex items-center gap-2 hover:gap-3 transition-all mt-4 text-sm hover:underline"
+                >
                   Explore curriculum-aligned Maths <span>→</span>
                 </Link>
               </div>
@@ -658,8 +683,24 @@ export default function Home() {
           <TwoPathCTA
             onDark
             paths={[
-              { label: 'Vedic Maths', description: 'Experience Vedic Maths online classes, live.', cta: "Join Sunday's free demo", onClick: openDemoModal },
-              { label: 'Curriculum-Aligned Maths', description: 'Understand what your child needs to move forward.', cta: 'Book a personal assessment', onClick: openAssessmentModal },
+              {
+                label: 'Vedic Maths',
+                description: 'Experience Vedic Maths online classes, live.',
+                cta: "Join Sunday's free demo",
+                onClick: () => {
+                  trackCtaClick('book_free_demo', 'contact_section', 'vedic_maths');
+                  openDemoModal();
+                },
+              },
+              {
+                label: 'Curriculum-Aligned Maths',
+                description: 'Understand what your child needs to move forward.',
+                cta: 'Book a personal assessment',
+                onClick: () => {
+                  trackCtaClick('book_personal_assessment', 'contact_section', 'curriculum_aligned');
+                  openAssessmentModal();
+                },
+              },
             ]}
           />
         </div>

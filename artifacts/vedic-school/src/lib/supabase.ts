@@ -37,6 +37,8 @@ export const supabase = createClient(
   }
 );
 
+import { getUpcomingSundayInIST } from './demoDate';
+
 export interface DemoRegistrationPayload {
   registration_type: 'demo';
   parent_name: string;
@@ -47,6 +49,7 @@ export interface DemoRegistrationPayload {
   grade: string;
   email: string;
   whatsapp_consent: true;
+  demo_date?: string | null;
 }
 
 export interface AssessmentRegistrationPayload {
@@ -76,7 +79,24 @@ export async function submitRegistration(
   }
 
   try {
-    const { error } = await supabase.from('registrations').insert([data]);
+    let assignedDemoDate: string | undefined;
+    let insertData: any;
+
+    if (data.registration_type === 'demo') {
+      // 1. Calculate authoritative upcoming Sunday in Asia/Kolkata
+      const assignedSunday = getUpcomingSundayInIST();
+      assignedDemoDate = assignedSunday.isoDate;
+      insertData = {
+        ...data,
+        demo_date: assignedDemoDate,
+      };
+    } else {
+      // Assessments must NEVER receive a demo_date
+      const { demo_date, ...rest } = data as any;
+      insertData = rest;
+    }
+
+    const { error } = await supabase.from('registrations').insert([insertData]);
 
     if (error) {
       console.error('[Supabase Registration Error]', error);
@@ -86,6 +106,20 @@ export async function submitRegistration(
       };
     }
 
+    // Step 4 & 5: ONLY after Supabase confirms successful registration, trigger confirmation email
+    // passing the exact persisted demo_date from that registration
+    if (data.registration_type === 'demo') {
+      sendDemoConfirmationEmail({
+        parentName: data.parent_name,
+        childName: data.child_name,
+        email: data.email,
+        demoDate: assignedDemoDate,
+      }).catch((emailErr) => {
+        // Technical error recorded safely without impacting registration or exposing credentials
+        console.error('[Demo Confirmation Email] Non-blocking dispatch caught error:', emailErr);
+      });
+    }
+
     return { success: true };
   } catch (err: any) {
     console.error('[Supabase Unexpected Error]', err);
@@ -93,6 +127,43 @@ export async function submitRegistration(
       success: false,
       error: err?.message || 'A network error occurred. Please check your connection and try again.',
     };
+  }
+}
+
+/**
+ * Triggers the Sunday Demo confirmation email via the Supabase Edge Function 'send-demo-confirmation'.
+ * Safe, isolated, and will never expose secret API keys or PII.
+ */
+export async function sendDemoConfirmationEmail(payload: {
+  parentName: string;
+  childName: string;
+  email: string;
+  demoDate?: string;
+}): Promise<{ success: boolean; resend_id?: string; error?: string }> {
+  try {
+    const { data, error } = await supabase.functions.invoke('send-demo-confirmation', {
+      body: {
+        parent_name: payload.parentName,
+        child_name: payload.childName,
+        email: payload.email,
+        demo_date: payload.demoDate,
+      },
+    });
+
+    if (error) {
+      console.error('[Demo Confirmation Email Error] Function invocation failed:', error.message || error);
+      return { success: false, error: error.message || 'Function invocation failed' };
+    }
+
+    if (!data?.success) {
+      console.error('[Demo Confirmation Email Error] Resend dispatch returned error:', data?.error || 'Unknown error');
+      return { success: false, error: data?.error || 'Email dispatch failed' };
+    }
+
+    return { success: true, resend_id: data.resend_id };
+  } catch (err: any) {
+    console.error('[Demo Confirmation Email Error] Unexpected error:', err?.message || err);
+    return { success: false, error: err?.message || 'Unexpected error' };
   }
 }
 

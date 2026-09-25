@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Button } from './Button';
 import { RegistrationModalBase, TrustIndicator } from './modals/RegistrationModalBase';
 import { submitRegistration } from '@/lib/supabase';
+import { trackLeadSubmission } from '@/lib/analytics';
 import { WhatsAppPhoneInput } from './WhatsAppPhoneInput';
 import {
   Country,
@@ -159,6 +160,7 @@ export function SundayDemoModal() {
 
     if (result.success) {
       setIsSubmitted(true);
+      trackLeadSubmission('sunday_demo_modal', 'vedic_maths');
     } else {
       setSubmitError(result.error || 'Failed to reserve spot. Please try again.');
     }

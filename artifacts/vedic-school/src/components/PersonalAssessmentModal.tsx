@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Button } from './Button';
 import { RegistrationModalBase, TrustIndicator } from './modals/RegistrationModalBase';
 import { submitRegistration } from '@/lib/supabase';
+import { trackLeadSubmission } from '@/lib/analytics';
 import { WhatsAppPhoneInput } from './WhatsAppPhoneInput';
 import {
   Country,
@@ -180,6 +181,7 @@ export function PersonalAssessmentModal() {
 
     if (result.success) {
       setIsSubmitted(true);
+      trackLeadSubmission('personal_assessment_modal', 'curriculum_aligned');
     } else {
       setSubmitError(result.error || 'Failed to submit assessment request. Please try again.');
     }

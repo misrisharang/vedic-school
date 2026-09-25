@@ -4,6 +4,7 @@ import { Leaf } from 'lucide-react';
 import { FadeIn, SectionHeader } from '@/components/ui-patterns';
 import { Button } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
+import { trackCtaClick } from '@/lib/analytics';
 import meenakshiPhoto from '@assets/meenakshi-founder-landscape.jpg';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import { Seo } from '@/seo/Seo';
@@ -169,7 +170,10 @@ export default function About() {
                   Build fluency. Build confidence. Join a free Sunday group demo class and experience the method in a real class.
                 </p>
                 <Button
-                  onClick={openDemoModal}
+                  onClick={() => {
+                    trackCtaClick('book_free_demo', 'two_ways_section', 'vedic_maths');
+                    openDemoModal();
+                  }}
                   className="w-full max-w-full whitespace-normal h-auto min-h-[52px] py-3.5 px-6 text-center"
                 >
                   Join Sunday's free demo class
@@ -184,7 +188,10 @@ export default function About() {
                   Bring that confidence into school Maths. Book a Personal Assessment Session to understand where your child is and what they need.
                 </p>
                 <Button
-                  onClick={openAssessmentModal}
+                  onClick={() => {
+                    trackCtaClick('book_personal_assessment', 'two_ways_section', 'curriculum_aligned');
+                    openAssessmentModal();
+                  }}
                   className="w-full max-w-full whitespace-normal h-auto min-h-[52px] py-3.5 px-6 text-center"
                 >
                   Book your child's personal assessment session

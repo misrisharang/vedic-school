@@ -16,6 +16,7 @@ import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import { cn } from '@/lib/utils';
 import { Seo } from '@/seo/Seo';
 import { getContactSchema } from '@/seo/schema';
+import { trackCtaClick, trackLeadSubmission, type OfferingType } from '@/lib/analytics';
 
 const INQUIRY_TYPES = [
   'Vedic Maths',
@@ -149,6 +150,13 @@ export default function Contact() {
 
     if (result.success) {
       setIsSubmitted(true);
+      const offeringType: OfferingType =
+        formData.inquiryType === 'Vedic Maths'
+          ? 'vedic_maths'
+          : formData.inquiryType === 'Curriculum-Aligned Maths' || formData.inquiryType === 'Personal Assessment'
+          ? 'curriculum_aligned'
+          : 'general';
+      trackLeadSubmission('contact_form', offeringType, formData.inquiryType);
     } else {
       setSubmitError(result.error || 'Failed to send inquiry. Please try again.');
     }
@@ -475,13 +483,23 @@ export default function Contact() {
               If you're wondering whether your child would benefit more from Vedic Maths or curriculum-aligned support, we can help you find the right starting point.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" onClick={openDemoModal} className="w-full sm:w-auto">
+              <Button
+                size="lg"
+                onClick={() => {
+                  trackCtaClick('book_free_demo', 'contact_quick_link', 'vedic_maths');
+                  openDemoModal();
+                }}
+                className="w-full sm:w-auto"
+              >
                 Join Sunday's free demo →
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                onClick={openAssessmentModal}
+                onClick={() => {
+                  trackCtaClick('book_personal_assessment', 'contact_quick_link', 'curriculum_aligned');
+                  openAssessmentModal();
+                }}
                 className="w-full sm:w-auto bg-white/80 hover:bg-white"
               >
                 Book a personal assessment →

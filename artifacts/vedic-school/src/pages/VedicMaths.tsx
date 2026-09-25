@@ -2,6 +2,7 @@ import React from 'react';
 import { BookOpen, PenLine, Target, Sparkles } from 'lucide-react';
 import { Button } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
+import { trackCtaClick } from '@/lib/analytics';
 import {
   FadeIn,
   FadeInStagger,
@@ -215,7 +216,10 @@ export default function VedicMaths() {
               </p>
               <Button
                 size="lg"
-                onClick={openDemoModal}
+                onClick={() => {
+                  trackCtaClick('book_free_demo', 'hero', 'vedic_maths');
+                  openDemoModal();
+                }}
                 className="max-w-full whitespace-normal sm:whitespace-nowrap h-auto py-3.5 sm:py-0 sm:h-14 px-6 sm:px-8 text-base sm:text-lg text-center"
               >
                 Join Sunday's free demo class
@@ -399,7 +403,15 @@ export default function VedicMaths() {
             <p className="text-base sm:text-lg text-foreground/80 leading-relaxed mb-6 sm:mb-7">
               Every Sunday, we run a free Vedic Maths group demo where your child can experience the way we teach before you decide what comes next.
             </p>
-            <Button size="lg" onClick={openDemoModal}>Join Sunday's free demo class</Button>
+            <Button
+              size="lg"
+              onClick={() => {
+                trackCtaClick('book_free_demo', 'contact_section', 'vedic_maths');
+                openDemoModal();
+              }}
+            >
+              Join Sunday's free demo class
+            </Button>
           </FadeIn>
         </div>
       </section>
@@ -465,7 +477,15 @@ export default function VedicMaths() {
         <p className="text-base md:text-lg text-white/80 mb-8 sm:mb-10">
           Now teaching Vedic Maths classes near you in Gurugram, live and online.
         </p>
-        <Button variant="white" size="lg" onClick={openDemoModal} className="text-primary font-semibold hover:bg-white/90">
+        <Button
+          variant="white"
+          size="lg"
+          onClick={() => {
+            trackCtaClick('book_free_demo', 'contact_section', 'vedic_maths');
+            openDemoModal();
+          }}
+          className="text-primary font-semibold hover:bg-white/90"
+        >
           Join Sunday's free demo class
         </Button>
       </ClosingCTABand>

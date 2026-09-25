@@ -14,6 +14,7 @@ import { testimonials } from '@/data/testimonials';
 import { CURRICULUM_ALIGNED_FAQS } from '@/data/faqs';
 import { Button } from '@/components/Button';
 import { useAssessmentModal } from '@/context/DemoModalContext';
+import { trackCtaClick } from '@/lib/analytics';
 import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import tutoringPhoto from '@assets/curriculum-aligned-girl-studying.jpg';
 import { Seo } from '@/seo/Seo';
@@ -215,7 +216,10 @@ export default function CurriculumAligned() {
               </p>
               <Button
                 size="lg"
-                onClick={openAssessmentModal}
+                onClick={() => {
+                  trackCtaClick('book_personal_assessment', 'hero', 'curriculum_aligned');
+                  openAssessmentModal();
+                }}
                 className="max-w-full whitespace-normal sm:whitespace-nowrap h-auto py-3.5 sm:py-0 sm:h-14 px-6 sm:px-8 text-base sm:text-lg text-center"
               >
                 Book your child's personal assessment
@@ -360,7 +364,10 @@ export default function CurriculumAligned() {
           <FadeIn delay={0.3} className="text-center mt-6 sm:mt-8">
             <Button
               size="lg"
-              onClick={openAssessmentModal}
+              onClick={() => {
+                trackCtaClick('book_personal_assessment', 'contact_section', 'curriculum_aligned');
+                openAssessmentModal();
+              }}
               className="max-w-full whitespace-normal sm:whitespace-nowrap h-auto py-3.5 sm:py-0 sm:h-14 px-6 sm:px-8 text-base sm:text-lg text-center"
             >
               Book your child's personal assessment session
@@ -427,7 +434,10 @@ export default function CurriculumAligned() {
         <Button
           variant="white"
           size="lg"
-          onClick={openAssessmentModal}
+          onClick={() => {
+            trackCtaClick('book_personal_assessment', 'contact_section', 'curriculum_aligned');
+            openAssessmentModal();
+          }}
           className="text-primary font-semibold hover:bg-white/90 max-w-full whitespace-normal sm:whitespace-nowrap h-auto py-3.5 sm:py-0 sm:h-14 px-6 sm:px-8 text-base sm:text-lg text-center"
         >
           Book your child's personal assessment session
