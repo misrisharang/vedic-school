@@ -18,6 +18,12 @@ const supabasePublishableKey =
 
 export const isSupabaseConfigured = Boolean(supabaseUrl && supabasePublishableKey);
 
+// Client preview builds (VITE_PREVIEW_MODE=true, e.g. GitHub Pages): forms show their
+// success state but nothing is written to the database and no emails are sent.
+export const isPreviewMode = getEnv('VITE_PREVIEW_MODE') === 'true';
+const previewSuccess = () =>
+  new Promise<{ success: true }>((resolve) => setTimeout(() => resolve({ success: true }), 600));
+
 if (!isSupabaseConfigured && typeof import.meta !== 'undefined' && import.meta.env?.DEV) {
   console.warn(
     '[The Vedic School] Supabase credentials not configured in environment variables. ' +
@@ -71,6 +77,8 @@ export type RegistrationPayload = DemoRegistrationPayload | AssessmentRegistrati
 export async function submitRegistration(
   data: RegistrationPayload
 ): Promise<{ success: boolean; error?: string }> {
+  if (isPreviewMode) return previewSuccess();
+
   if (!isSupabaseConfigured) {
     return {
       success: false,
@@ -181,6 +189,8 @@ export interface InquiryPayload {
 export async function submitInquiry(
   data: InquiryPayload
 ): Promise<{ success: boolean; error?: string }> {
+  if (isPreviewMode) return previewSuccess();
+
   if (!isSupabaseConfigured) {
     return {
       success: false,
