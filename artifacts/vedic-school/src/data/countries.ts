@@ -41,6 +41,7 @@ export const COUNTRIES: Country[] = [
   { name: 'Burundi', code: 'BI', dialCode: '+257', flag: '🇧🇮' },
   { name: 'Cambodia', code: 'KH', dialCode: '+855', flag: '🇰🇭' },
   { name: 'Cameroon', code: 'CM', dialCode: '+237', flag: '🇨🇲' },
+  { name: 'Canada', code: 'CA', dialCode: '+1', flag: '🇨🇦' },
   { name: 'Cape Verde', code: 'CV', dialCode: '+238', flag: '🇨🇻' },
   { name: 'Cayman Islands', code: 'KY', dialCode: '+1345', flag: '🇰🇾' },
   { name: 'Central African Republic', code: 'CF', dialCode: '+236', flag: '🇨🇫' },
@@ -383,6 +384,15 @@ export const validatePhoneNumber = (
         return {
           isValid: false,
           error: 'Please enter a valid 8-digit Singapore phone number.',
+        };
+      }
+      break;
+
+    case 'CA': // Canada: 10 digits
+      if (digits.length !== 10) {
+        return {
+          isValid: false,
+          error: 'Please enter a valid 10-digit Canadian phone number.',
         };
       }
       break;

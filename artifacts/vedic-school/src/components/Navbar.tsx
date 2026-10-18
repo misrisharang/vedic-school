@@ -7,6 +7,7 @@ import wordmarkLogo from '@assets/the-vedic-school-logo.png';
 import v25Logo from '@assets/the-vedic-school-logo-v25.png';
 import { useDemoModal } from '@/context/DemoModalContext';
 import { trackCtaClick } from '@/lib/analytics';
+import { AnnouncementBar } from './AnnouncementBar';
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -36,7 +37,12 @@ export function Logo({ className }: { className?: string }) {
   );
 }
 
-export function Navbar() {
+export interface NavbarProps {
+  isBarDismissed?: boolean;
+  onDismissBar?: () => void;
+}
+
+export function Navbar({ isBarDismissed, onDismissBar }: NavbarProps = {}) {
   const { openDemoModal } = useDemoModal();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -87,13 +93,15 @@ export function Navbar() {
 
   return (
     <>
-      <header
-        className={cn(
-          'fixed top-0 left-0 right-0 z-50 bg-white border-b transition-all duration-200',
-          isScrolled ? 'border-stone-200/90 shadow-2xs py-3' : 'border-stone-200/70 py-3.5 sm:py-4'
-        )}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8 flex items-center justify-between">
+      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-200">
+        {!isBarDismissed && <AnnouncementBar onDismiss={onDismissBar} />}
+        <div
+          className={cn(
+            'bg-white border-b transition-all duration-200',
+            isScrolled ? 'border-stone-200/90 shadow-2xs py-3' : 'border-stone-200/70 py-3.5 sm:py-4'
+          )}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8 flex items-center justify-between">
           {/* Left: Brand Area */}
           <div className="flex items-center shrink-0 min-w-0 xl:min-w-[240px]">
             <Logo />
@@ -155,7 +163,8 @@ export function Navbar() {
             </button>
           </div>
         </div>
-      </header>
+      </div>
+    </header>
 
       {/* Mobile & Tablet Drawer */}
       <div 

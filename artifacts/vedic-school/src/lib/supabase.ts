@@ -83,8 +83,8 @@ export async function submitRegistration(
     let insertData: any;
 
     if (data.registration_type === 'demo') {
-      // 1. Calculate authoritative upcoming Sunday in Asia/Kolkata
-      const assignedSunday = getUpcomingSundayInIST();
+      // 1. Use explicit demo_date if provided (e.g. campaign landing page), otherwise calculate upcoming Sunday in IST
+      const assignedSunday = data.demo_date ? { isoDate: data.demo_date } : getUpcomingSundayInIST();
       assignedDemoDate = assignedSunday.isoDate;
       insertData = {
         ...data,

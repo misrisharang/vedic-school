@@ -44,6 +44,7 @@ const STATIC_PUBLIC_ROUTES = [
   '/about',
   '/contact',
   '/blog',
+  '/canada-demo',
   '/blog/vedic-maths-vs-abacus',
   '/blog/is-vedic-maths-useful',
   '/blog/best-vedic-maths-online-classes-for-kids',

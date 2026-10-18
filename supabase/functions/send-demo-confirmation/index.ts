@@ -1,4 +1,9 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import {
+  buildMissedDemoHtml,
+  buildMissedDemoPlainText,
+  MISSED_DEMO_TEMPLATE_METADATA,
+} from "../_templates/missedDemoInvitation.ts";
 
 /**
  * ============================================================================
@@ -15,9 +20,9 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
  */
 
 // Single configurable Google Meet link for the Sunday Demo
-const DEFAULT_DEMO_MEET_LINK = "https://calendar.app.google/cKPMcXRmfu5tVu6MA";
+const DEFAULT_DEMO_MEET_LINK = "https://meet.google.com/cer-swuk-vpx";
 const DEMO_TIME = "11:00 AM IST";
-const DEFAULT_FROM = "The Vedic School <letslearn@thevedicschool.com>";
+const DEFAULT_FROM = "The Vedic School <Amresh@thevedicschool.com>";
 const DEFAULT_REPLY_TO = "meenakshikhar@gmail.com";
 
 export function getDemoMeetLink(): string {
@@ -319,26 +324,48 @@ Deno.serve(async (req: Request) => {
 
     const meetLink = getDemoMeetLink();
 
+    const isMissedDemoTemplate =
+      body.template === "missed-demo" ||
+      body.template === "sunday-learning-notes-missed-demo";
+
     // 4. Construct Subject, Preview Text, and Bodies
-    const subject = `Confirmed: ${childName}'s demo class with The Vedic School, Sunday ${demoDate}`;
-    const previewText = `Vedic Demo @ ${DEMO_TIME} on Google Meet. Here's everything you need.`;
+    const subject = isMissedDemoTemplate
+      ? MISSED_DEMO_TEMPLATE_METADATA.subject
+      : `Confirmed: ${childName}'s demo class with The Vedic School, Sunday ${demoDate}`;
+    const previewText = isMissedDemoTemplate
+      ? MISSED_DEMO_TEMPLATE_METADATA.previewText
+      : `Vedic Demo @ ${DEMO_TIME} on Google Meet. Here's everything you need.`;
 
-    const textBody = buildPlainTextBody({
-      parentName,
-      childName,
-      demoDate,
-      demoTime: DEMO_TIME,
-      meetLink,
-    });
+    const textBody = isMissedDemoTemplate
+      ? buildMissedDemoPlainText({
+          parentName,
+          demoDate: `Sunday, ${demoDate}`,
+          demoTime: "11:00 AM – 12:00 PM IST",
+          meetLink,
+        })
+      : buildPlainTextBody({
+          parentName,
+          childName,
+          demoDate,
+          demoTime: DEMO_TIME,
+          meetLink,
+        });
 
-    const htmlBody = buildHtmlBody({
-      parentName,
-      childName,
-      demoDate,
-      demoTime: DEMO_TIME,
-      meetLink,
-      previewText,
-    });
+    const htmlBody = isMissedDemoTemplate
+      ? buildMissedDemoHtml({
+          parentName,
+          demoDate: `Sunday, ${demoDate}`,
+          demoTime: "11:00 AM – 12:00 PM IST",
+          meetLink,
+        })
+      : buildHtmlBody({
+          parentName,
+          childName,
+          demoDate,
+          demoTime: DEMO_TIME,
+          meetLink,
+          previewText,
+        });
 
     const fromAddress = Deno.env.get("RESEND_FROM_EMAIL") || DEFAULT_FROM;
     const replyToAddress = Deno.env.get("RESEND_REPLY_TO") || DEFAULT_REPLY_TO;

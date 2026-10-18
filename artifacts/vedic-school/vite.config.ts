@@ -35,6 +35,7 @@ const VALID_STATIC_ROUTES = new Set([
   '/curriculum-aligned',
   '/contact',
   '/blog',
+  '/canada-demo',
   '/privacy-policy',
   '/terms-of-service',
   '/cookie-policy',

@@ -18,6 +18,7 @@ import Admin from '@/pages/Admin';
 import Blog from '@/pages/Blog';
 import BlogPostPage from '@/pages/BlogPostPage';
 import AuthorProfile from '@/pages/AuthorProfile';
+import CanadaDemo from '@/pages/CanadaDemo';
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,10 @@ function Router() {
     <Switch>
       <Route path="/admin" component={Admin} />
       <Route path="/admin/:rest*" component={Admin} />
+      <Route path="/canada-demo">
+        <ScrollToTop />
+        <CanadaDemo />
+      </Route>
       <Route>
         <Layout>
           <ScrollToTop />
