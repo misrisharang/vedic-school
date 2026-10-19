@@ -24,7 +24,8 @@ export type CtaLocation =
   | 'blog_body'
   | 'canada_demo_header'
   | 'canada_demo_hero'
-  | 'canada_demo_teacher';
+  | 'canada_demo_teacher'
+  | 'canada_demo_closing_band';
 
 export type OfferingType = 'vedic_maths' | 'curriculum_aligned' | 'general';
 
