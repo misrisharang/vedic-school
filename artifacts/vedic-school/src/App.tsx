@@ -67,6 +67,7 @@ function Router() {
 import { DemoModalProvider } from '@/context/DemoModalContext';
 import { SundayDemoModal } from '@/components/SundayDemoModal';
 import { PersonalAssessmentModal } from '@/components/PersonalAssessmentModal';
+import { CanadaDemoPopup } from '@/components/CanadaDemoPopup';
 
 function App() {
   return (
@@ -75,6 +76,7 @@ function App() {
         <DemoModalProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
             <Router />
+            <CanadaDemoPopup />
           </WouterRouter>
           <SundayDemoModal />
           <PersonalAssessmentModal />

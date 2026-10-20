@@ -25,7 +25,8 @@ export type CtaLocation =
   | 'canada_demo_header'
   | 'canada_demo_hero'
   | 'canada_demo_teacher'
-  | 'canada_demo_closing_band';
+  | 'canada_demo_closing_band'
+  | 'canada_demo_popup';
 
 export type OfferingType = 'vedic_maths' | 'curriculum_aligned' | 'general';
 
@@ -162,3 +163,36 @@ export function trackCampaignFormSubmit(formId: FormId, campaign: string): void 
   }
 }
 
+export type CampaignPopupEvent =
+  | 'canada_demo_popup_impression'
+  | 'canada_demo_popup_dismiss'
+  | 'canada_demo_popup_cta_click';
+
+/**
+ * Tracks a campaign pop-up interaction in GA4 (impression, dismiss, CTA click).
+ * Callers are responsible for firing each event once per interaction.
+ */
+export function trackCampaignPopupEvent(
+  event: CampaignPopupEvent,
+  campaign: string,
+  extra?: Record<string, string>
+): void {
+  if (typeof window === 'undefined') return;
+
+  const params: Record<string, any> = {
+    campaign,
+    page_path: window.location.pathname,
+    ...extra,
+  };
+
+  if (import.meta.env.DEV || window.location.search.includes('debug_mode=true')) {
+    params.debug_mode = true;
+  }
+
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', event, params);
+  } else {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(['event', event, params]);
+  }
+}

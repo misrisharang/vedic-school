@@ -29,6 +29,7 @@ import {
   normalizeWhatsAppNumber,
 } from '@/data/countries';
 import { submitRegistration } from '@/lib/supabase';
+import { CANADA_CAMPAIGN_ID, markCampaignRegistered } from '@/config/canadaCampaign';
 import {
   trackCtaClick,
   trackLeadSubmission,
@@ -48,7 +49,7 @@ import meenakshiPhoto from '@assets/meenakshi-founder-landscape.jpg';
 import meenakshiPortrait from '@assets/meenakshi-founder-portrait.jpg';
 import { cn } from '@/lib/utils';
 
-const CAMPAIGN_ID = 'canada_demo_oct2026';
+const CAMPAIGN_ID = CANADA_CAMPAIGN_ID;
 
 const GRADES = [
   'Grade 1',
@@ -287,6 +288,7 @@ export default function CanadaDemo() {
 
     if (result.success) {
       setIsSubmitted(true);
+      markCampaignRegistered();
       trackLeadSubmission('canada_demo_form', 'vedic_maths', undefined, CAMPAIGN_ID);
     } else {
       setSubmitError(result.error || "We couldn't save your child's place. Please try again.");
@@ -297,7 +299,7 @@ export default function CanadaDemo() {
     <div className="flex flex-col min-h-screen bg-[#FAF6F0] selection:bg-primary/20 selection:text-foreground">
       <Seo
         title="Free Online Vedic Maths Demo Class | The Vedic School"
-        description="Join Meenakshi Koul for a free online Vedic Maths demo class on Sunday, October 25, 2026 at 11:00 AM Eastern Time. Help your child build calculation fluency and confidence."
+        description="Join Meenakshi Koul for a free online Vedic Maths demo class on Sunday, October 25, 2026 at 8:30 PM Eastern Time. Help your child build calculation fluency and confidence."
         path="/canada-demo"
         schema={getCanadaDemoSchema(CANADA_DEMO_FAQS)}
       />
@@ -376,7 +378,7 @@ export default function CanadaDemo() {
                 <dl className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-px bg-[#E8DDD0] border border-[#E8DDD0] rounded-2xl overflow-hidden lg:max-w-xl">
                   {[
                     { Icon: Calendar, label: 'Sunday', value: 'Oct 25, 2026' },
-                    { Icon: Clock, label: 'Starts at', value: '11:00 AM ET' },
+                    { Icon: Clock, label: 'Starts at', value: '8:30 PM ET' },
                     { Icon: Video, label: 'Format', value: 'Live online' },
                     { Icon: Users, label: 'Open to', value: 'Ages 9+' },
                   ].map(({ Icon, label, value }) => (
@@ -390,7 +392,7 @@ export default function CanadaDemo() {
                   ))}
                 </dl>
                 <p className="mt-3 text-xs text-foreground/75 leading-relaxed">
-                  Also 8:00 AM Pacific, 9:00 AM Mountain, 10:00 AM Central and 12:00 PM Atlantic.
+                  Also 5:30 PM Pacific, 6:30 PM Mountain, 7:30 PM Central and 9:30 PM Atlantic.
                 </p>
 
               </div>
@@ -450,7 +452,7 @@ export default function CanadaDemo() {
                         <div className="pt-2 border-t border-[#E6DDCF]/70 text-xs text-foreground/75 space-y-1">
                           <p className="font-semibold text-foreground">Event details:</p>
                           <p className="flex items-center gap-2"><Calendar className="w-3.5 h-3.5 text-[#B04C27]" aria-hidden="true" /> Sunday, October 25, 2026</p>
-                          <p className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-[#B04C27]" aria-hidden="true" /> 11:00 AM ET (8:00 AM PT)</p>
+                          <p className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-[#B04C27]" aria-hidden="true" /> 8:30 PM ET (5:30 PM PT)</p>
                           <p className="flex items-center gap-2"><Video className="w-3.5 h-3.5 text-[#B04C27]" aria-hidden="true" /> Live online session</p>
                         </div>
                       </div>
@@ -932,7 +934,7 @@ export default function CanadaDemo() {
                 Join the free Vedic Maths class
               </h2>
               <p className="text-white/90 text-[15px] sm:text-base">
-                Sunday, October 25 at 11:00 AM ET. Free, live and online.
+                Sunday, October 25 at 8:30 PM ET. Free, live and online.
               </p>
             </div>
             <button
