@@ -4,7 +4,37 @@ import { Instagram, Facebook, Youtube, Linkedin } from 'lucide-react';
 import wordmarkLogo from '@assets/the-vedic-school-logo.png';
 import v25Logo from '@assets/the-vedic-school-logo-v25.png';
 
-export function Footer() {
+export function Footer({ compact = false }: { compact?: boolean } = {}) {
+  if (compact) {
+    return (
+      <footer className="bg-foreground text-background py-6 sm:py-7">
+        <div className="container mx-auto px-4 md:px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-background/60">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#3B424C] rounded-md"
+            aria-label="The Vedic School Homepage"
+          >
+            <img src={v25Logo} alt="" className="h-6 w-auto object-contain shrink-0" width={36} height={35} />
+            <img
+              src={wordmarkLogo}
+              alt="The Vedic School"
+              className="h-9 w-auto object-contain shrink-0"
+              style={{ filter: 'invert(1) brightness(1.2)', mixBlendMode: 'screen' }}
+              width={144}
+              height={48}
+            />
+          </Link>
+          <p className="text-center">© {new Date().getFullYear()} The Vedic School. All rights reserved.</p>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+            <a href="mailto:meenakshikhar@gmail.com" className="hover:text-background transition-colors">Contact</a>
+            <Link href="/privacy-policy" className="hover:text-background transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-background transition-colors">Terms of Service</Link>
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
   return (
     <footer id="contact" className="bg-foreground text-background py-16 border-t border-foreground/10">
       <div className="container mx-auto px-4 md:px-6">

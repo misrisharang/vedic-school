@@ -18,6 +18,7 @@ import Admin from '@/pages/Admin';
 import Blog from '@/pages/Blog';
 import BlogPostPage from '@/pages/BlogPostPage';
 import AuthorProfile from '@/pages/AuthorProfile';
+import CanadaDemo from '@/pages/CanadaDemo';
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,10 @@ function Router() {
     <Switch>
       <Route path="/admin" component={Admin} />
       <Route path="/admin/:rest*" component={Admin} />
+      <Route path="/canada-demo">
+        <ScrollToTop />
+        <CanadaDemo />
+      </Route>
       <Route>
         <Layout>
           <ScrollToTop />
@@ -62,6 +67,7 @@ function Router() {
 import { DemoModalProvider } from '@/context/DemoModalContext';
 import { SundayDemoModal } from '@/components/SundayDemoModal';
 import { PersonalAssessmentModal } from '@/components/PersonalAssessmentModal';
+import { CanadaDemoPopup } from '@/components/CanadaDemoPopup';
 
 function App() {
   return (
@@ -70,6 +76,7 @@ function App() {
         <DemoModalProvider>
           <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
             <Router />
+            <CanadaDemoPopup />
           </WouterRouter>
           <SundayDemoModal />
           <PersonalAssessmentModal />

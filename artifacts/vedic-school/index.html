@@ -15,7 +15,7 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
-      if (window.location.pathname.startsWith('/admin')) {
+      if (window.location.pathname.startsWith('/admin') || window.location.hostname.endsWith('github.io')) {
         window['ga-disable-G-DHQSJ2N5WB'] = true;
       } else {
         gtag('config', 'G-DHQSJ2N5WB');

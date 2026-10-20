@@ -59,6 +59,7 @@
 }
 
 :root {
+  --announcement-bar-height: 0px;
   --button-outline: rgba(0, 0, 0, 0.1);
   --badge-outline: rgba(0, 0, 0, 0.05);
 
@@ -112,7 +113,8 @@
   --block-sage-light-border: 116 24% 80%;
   --block-sage-light-hover: 116 28% 85%;
   
-  --app-font-sans: 'Inter', sans-serif;
+  /* 'Twemoji Country Flags' only covers flag emoji (unicode-range); it loads only where flags don't render natively (e.g. Windows). */
+  --app-font-sans: 'Twemoji Country Flags', 'Inter', sans-serif;
   --app-font-serif: 'Lora', serif;
   --app-font-mono: Menlo, monospace;
   
@@ -239,4 +241,28 @@
 
 .animate-ticker:hover {
   animation-play-state: paused;
+}
+
+/* Floating maths glyphs (FloatingNumbers): slow, transform-only drift */
+@keyframes vs-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(var(--vs-dx, 0), var(--vs-dy, -20px), 0) rotate(var(--vs-rot, 0deg));
+  }
+}
+
+.vs-drift {
+  animation-name: vs-drift;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vs-drift {
+    animation: none;
+  }
 }

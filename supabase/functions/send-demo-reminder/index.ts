@@ -23,9 +23,9 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
  * ============================================================================
  */
 
-const DEFAULT_DEMO_MEET_LINK = "https://calendar.app.google/cKPMcXRmfu5tVu6MA";
+const DEFAULT_DEMO_MEET_LINK = "https://meet.google.com/cer-swuk-vpx";
 const DEMO_TIME = "11:00 AM IST";
-const DEFAULT_FROM = "The Vedic School <letslearn@thevedicschool.com>";
+const DEFAULT_FROM = "The Vedic School <Amresh@thevedicschool.com>";
 const DEFAULT_REPLY_TO = "meenakshikhar@gmail.com";
 
 export function getDemoMeetLink(): string {

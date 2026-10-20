@@ -8,6 +8,12 @@
   PORT = "5173"
   BASE_PATH = "/"
 
+# Country lookup for the Canada campaign pop-up (returns only an ISO country code).
+# Declared first so it answers directly instead of passing through trailing-slash.
+[[edge_functions]]
+  function = "visitor-country"
+  path = "/api/visitor-country"
+
 [[edge_functions]]
   function = "trailing-slash"
   path = "/*"

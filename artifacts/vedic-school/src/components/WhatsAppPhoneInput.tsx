@@ -18,6 +18,8 @@ export interface WhatsAppPhoneInputProps {
   themeColor?: 'terracotta' | 'olive';
   disabled?: boolean;
   required?: boolean;
+  /** Compact: shorter fields and a flag + dial code selector (no country name). */
+  size?: 'default' | 'compact';
 }
 
 export function WhatsAppPhoneInput({
@@ -30,7 +32,9 @@ export function WhatsAppPhoneInput({
   themeColor = 'terracotta',
   disabled = false,
   required = true,
+  size = 'default',
 }: WhatsAppPhoneInputProps) {
+  const compact = size === 'compact';
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -119,8 +123,8 @@ export function WhatsAppPhoneInput({
               disabled={disabled}
               aria-label={`Selected country: ${country.name} (${country.dialCode}). Click to change.`}
               className={cn(
-                'h-[50px] sm:h-[52px] px-2.5 sm:px-3 rounded-xl bg-white/70 border border-[#E5DCD1] text-foreground hover:bg-white flex items-center justify-between gap-1.5 transition-all shadow-2xs cursor-pointer select-none shrink-0',
-                'w-[136px] sm:w-[172px]',
+                'px-2.5 sm:px-3 bg-white/70 border border-[#E5DCD1] text-foreground hover:bg-white flex items-center justify-between gap-1.5 transition-all shadow-2xs cursor-pointer select-none shrink-0',
+                compact ? 'h-[38px] rounded-lg w-[92px]' : 'h-[50px] sm:h-[52px] rounded-xl w-[136px] sm:w-[172px]',
                 activeFocusRing,
                 hasError && 'border-primary/60 bg-primary/5',
                 disabled && 'opacity-60 cursor-not-allowed'
@@ -129,9 +133,11 @@ export function WhatsAppPhoneInput({
               <span className="text-base sm:text-lg leading-none shrink-0 select-none">
                 {country.flag}
               </span>
-              <span className="font-normal text-xs sm:text-sm text-foreground/90 truncate text-left flex-1 min-w-0">
-                {country.name}
-              </span>
+              {!compact && (
+                <span className="font-normal text-xs sm:text-sm text-foreground/90 truncate text-left flex-1 min-w-0">
+                  {country.name}
+                </span>
+              )}
               <span className="text-[11px] sm:text-xs text-foreground/65 font-medium shrink-0 font-mono">
                 ({country.dialCode})
               </span>
@@ -289,7 +295,9 @@ export function WhatsAppPhoneInput({
             placeholder="WhatsApp number"
             disabled={disabled}
             className={cn(
-              'w-full h-[50px] sm:h-[52px] pl-10 pr-4 rounded-xl bg-white/70 border border-[#E5DCD1] text-foreground placeholder:text-foreground/40 text-sm sm:text-base transition-all shadow-2xs',
+              'w-full pl-10 pr-4 bg-white/70 border border-[#E5DCD1] text-foreground transition-all shadow-2xs',
+              compact ? 'placeholder:text-foreground/70' : 'placeholder:text-foreground/40',
+              compact ? 'h-[38px] rounded-lg text-base sm:text-sm' : 'h-[50px] sm:h-[52px] rounded-xl text-sm sm:text-base',
               activeFocusRing,
               hasError && 'border-primary/60 bg-primary/5 focus:border-primary',
               disabled && 'opacity-60 cursor-not-allowed'

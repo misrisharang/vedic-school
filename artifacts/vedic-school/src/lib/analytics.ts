@@ -11,19 +11,30 @@ export type CtaName =
   | 'book_personal_assessment'
   | 'explore_vedic_maths'
   | 'explore_curriculum_classes'
-  | 'contact_us';
+  | 'contact_us'
+  | 'reserve_spot';
 
 export type CtaLocation =
   | 'header'
+  | 'announcement_bar'
   | 'hero'
   | 'two_ways_section'
   | 'contact_section'
   | 'contact_quick_link'
-  | 'blog_body';
+  | 'blog_body'
+  | 'canada_demo_header'
+  | 'canada_demo_hero'
+  | 'canada_demo_teacher'
+  | 'canada_demo_closing_band'
+  | 'canada_demo_popup';
 
 export type OfferingType = 'vedic_maths' | 'curriculum_aligned' | 'general';
 
-export type FormId = 'contact_form' | 'sunday_demo_modal' | 'personal_assessment_modal';
+export type FormId =
+  | 'contact_form'
+  | 'sunday_demo_modal'
+  | 'personal_assessment_modal'
+  | 'canada_demo_form';
 
 declare global {
   interface Window {
@@ -38,7 +49,8 @@ declare global {
 export function trackCtaClick(
   name: CtaName,
   location: CtaLocation,
-  offering: OfferingType
+  offering: OfferingType,
+  campaign?: string
 ): void {
   if (typeof window === 'undefined') return;
 
@@ -47,6 +59,10 @@ export function trackCtaClick(
     cta_location: location,
     offering_type: offering,
   };
+
+  if (campaign) {
+    params.campaign = campaign;
+  }
 
   // Enable debug_mode in development or when ?debug_mode=true is in URL for GA4 DebugView testing
   if (import.meta.env.DEV || window.location.search.includes('debug_mode=true')) {
@@ -69,7 +85,8 @@ export function trackCtaClick(
 export function trackLeadSubmission(
   formId: FormId,
   offering: OfferingType,
-  inquiryType?: string
+  inquiryType?: string,
+  campaign?: string
 ): void {
   if (typeof window === 'undefined') return;
 
@@ -82,6 +99,10 @@ export function trackLeadSubmission(
     params.inquiry_type = inquiryType;
   }
 
+  if (campaign) {
+    params.campaign = campaign;
+  }
+
   // Enable debug_mode in development or when ?debug_mode=true is in URL for GA4 DebugView testing
   if (import.meta.env.DEV || window.location.search.includes('debug_mode=true')) {
     params.debug_mode = true;
@@ -92,5 +113,86 @@ export function trackLeadSubmission(
   } else {
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(['event', 'generate_lead', params]);
+  }
+}
+
+/**
+ * Tracks a campaign landing page view in GA4.
+ */
+export function trackCampaignPageView(campaign: string, pagePath: string): void {
+  if (typeof window === 'undefined') return;
+
+  const params: Record<string, any> = {
+    page_location: window.location.href,
+    page_path: pagePath,
+    campaign,
+  };
+
+  if (import.meta.env.DEV || window.location.search.includes('debug_mode=true')) {
+    params.debug_mode = true;
+  }
+
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'page_view', params);
+  } else {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(['event', 'page_view', params]);
+  }
+}
+
+/**
+ * Tracks a campaign registration form submit attempt.
+ */
+export function trackCampaignFormSubmit(formId: FormId, campaign: string): void {
+  if (typeof window === 'undefined') return;
+
+  const params: Record<string, any> = {
+    form_id: formId,
+    campaign,
+  };
+
+  if (import.meta.env.DEV || window.location.search.includes('debug_mode=true')) {
+    params.debug_mode = true;
+  }
+
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', 'form_submit', params);
+  } else {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(['event', 'form_submit', params]);
+  }
+}
+
+export type CampaignPopupEvent =
+  | 'canada_demo_popup_impression'
+  | 'canada_demo_popup_dismiss'
+  | 'canada_demo_popup_cta_click';
+
+/**
+ * Tracks a campaign pop-up interaction in GA4 (impression, dismiss, CTA click).
+ * Callers are responsible for firing each event once per interaction.
+ */
+export function trackCampaignPopupEvent(
+  event: CampaignPopupEvent,
+  campaign: string,
+  extra?: Record<string, string>
+): void {
+  if (typeof window === 'undefined') return;
+
+  const params: Record<string, any> = {
+    campaign,
+    page_path: window.location.pathname,
+    ...extra,
+  };
+
+  if (import.meta.env.DEV || window.location.search.includes('debug_mode=true')) {
+    params.debug_mode = true;
+  }
+
+  if (typeof window.gtag === 'function') {
+    window.gtag('event', event, params);
+  } else {
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(['event', event, params]);
   }
 }

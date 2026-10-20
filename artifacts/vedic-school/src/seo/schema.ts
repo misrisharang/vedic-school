@@ -237,6 +237,62 @@ export function getVedicMathsSchema(faqs: FAQItem[] = VEDIC_MATHS_FAQS) {
 }
 
 /**
+ * Canada Demo Campaign (/canada-demo) Schema
+ */
+export function getCanadaDemoSchema(faqs: FAQItem[]) {
+  return createSchemaGraph([
+    {
+      '@type': 'WebPage',
+      '@id': abs('/canada-demo#webpage'),
+      url: abs('/canada-demo'),
+      name: 'Free Online Vedic Maths Demo Class | The Vedic School',
+      description:
+        'Join Meenakshi Koul for a free online Vedic Maths demo class on Sunday, October 25, 2026 at 8:30 PM Eastern Time. Help your child build calculation fluency and confidence.',
+      isPartOf: {
+        '@id': abs('/#website'),
+      },
+      about: {
+        '@id': abs('/#organization'),
+      },
+    },
+    {
+      '@type': 'Event',
+      '@id': abs('/canada-demo#event'),
+      name: 'Free Online Vedic Maths Demo Class',
+      description:
+        'A live introductory Vedic Maths demo class for children aged 9 and above, led by Meenakshi Koul.',
+      startDate: '2026-10-25T20:30:00-04:00',
+      eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
+      eventStatus: 'https://schema.org/EventScheduled',
+      location: {
+        '@type': 'VirtualLocation',
+        url: abs('/canada-demo'),
+      },
+      organizer: {
+        '@id': abs('/#organization'),
+      },
+      isAccessibleForFree: true,
+    },
+    {
+      '@type': 'FAQPage',
+      '@id': abs('/canada-demo#faq'),
+      isPartOf: {
+        '@id': abs('/canada-demo#webpage'),
+      },
+      mainEntity: faqs.map((faq) => ({
+        '@type': 'Question',
+        name: faq.question,
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: faq.answer,
+        },
+      })),
+    },
+  ]);
+}
+
+
+/**
  * Curriculum-Aligned Maths (/curriculum-aligned) Schema
  * Contains WebPage + Service + FAQPage (using exact 5 visible Curriculum FAQs).
  * References global #website and #organization without duplicating them.
