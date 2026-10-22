@@ -2,7 +2,8 @@
 // THE VEDIC SCHOOL — NETLIFY EDGE FUNCTION: BLOG SLUG VALIDATOR
 // ==============================================================================
 // Validates /blog/:slug routes dynamically against Supabase.
-// - If published post exists: rewrites to /index.html with HTTP 200.
+// - If published post exists: serves its prerendered /blog/<slug>.html with
+//   HTTP 200 (falls back to the /index.html app shell if not prerendered yet).
 // - If post does not exist: rewrites to /404.html with HTTP 404.
 // ==============================================================================
 
@@ -11,12 +12,23 @@ import type { Context } from "@netlify/edge-functions";
 const slugCache = new Map<string, { valid: boolean; expires: number }>();
 const CACHE_TTL_MS = 60000;
 
+// Serve the article's own prerendered HTML so crawlers get its real title,
+// content and canonical tag. /index.html is the prerendered homepage, so it is
+// only used for posts published after the last build.
+async function serveArticle(context: Context, slug: string) {
+  const prerendered = await context.rewrite(`/blog/${slug}.html`);
+  if (prerendered.status === 200) {
+    return prerendered;
+  }
+  return context.rewrite("/index.html");
+}
+
 export default async function handler(request: Request, context: Context) {
   const url = new URL(request.url);
   const pathname = url.pathname.replace(/\/$/, "");
 
-  // Allow the base /blog list page to pass through
-  if (pathname === "/blog" || pathname === "") {
+  // Allow the base /blog list page and direct prerendered file requests to pass through
+  if (pathname === "/blog" || pathname === "" || pathname.endsWith(".html")) {
     return context.next();
   }
 
@@ -33,7 +45,7 @@ export default async function handler(request: Request, context: Context) {
   const cached = slugCache.get(slug);
   if (cached && now < cached.expires) {
     if (cached.valid) {
-      return context.rewrite("/index.html");
+      return serveArticle(context, slug);
     } else {
       const notFoundRes = await context.rewrite("/404.html");
       return new Response(await notFoundRes.text(), {
@@ -47,7 +59,7 @@ export default async function handler(request: Request, context: Context) {
   const supabaseKey = Netlify.env.get("VITE_SUPABASE_PUBLISHABLE_KEY");
 
   if (!supabaseUrl || !supabaseKey) {
-    return context.rewrite("/index.html");
+    return serveArticle(context, slug);
   }
 
   try {
@@ -67,7 +79,7 @@ export default async function handler(request: Request, context: Context) {
       slugCache.set(slug, { valid: isValid, expires: now + CACHE_TTL_MS });
 
       if (isValid) {
-        return context.rewrite("/index.html");
+        return serveArticle(context, slug);
       }
     }
   } catch (err) {
