@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -114,7 +114,7 @@
   --block-sage-light-hover: 116 28% 85%;
   
   /* 'Twemoji Country Flags' only covers flag emoji (unicode-range); it loads only where flags don't render natively (e.g. Windows). */
-  --app-font-sans: 'Twemoji Country Flags', 'Inter', sans-serif;
+  --app-font-sans: 'Twemoji Country Flags', 'Figtree', sans-serif;
   --app-font-serif: 'Lora', serif;
   --app-font-mono: Menlo, monospace;
   
@@ -262,7 +262,17 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .vs-drift {
+  .vs-drift,
+  .animate-ticker {
     animation: none;
+  }
+}
+
+/* Phones: scroll fade-ins (FadeIn / FadeInStaggerItem, marked data-fade) are switched off so
+   text is readable immediately. !important beats the inline styles the animation library sets. */
+@media (max-width: 767px) {
+  [data-fade] {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

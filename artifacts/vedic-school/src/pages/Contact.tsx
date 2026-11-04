@@ -12,7 +12,6 @@ import {
 } from '@/data/countries';
 import { submitInquiry } from '@/lib/supabase';
 import { CustomSelect } from '@/components/CustomSelect';
-import heroTexture from '@assets/generated_images/hero-texture-math.png';
 import { cn } from '@/lib/utils';
 import { Seo } from '@/seo/Seo';
 import { getContactSchema } from '@/seo/schema';
@@ -185,27 +184,18 @@ export default function Contact() {
         path="/contact"
         schema={getContactSchema()}
       />
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-32 pb-12 lg:pt-40 lg:pb-16 border-b border-border/30 overflow-hidden">
-        <div
-          className="absolute inset-0 z-0 opacity-20 pointer-events-none"
-          style={{ backgroundImage: `url(${heroTexture})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-        />
-        <div className="container mx-auto px-4 md:px-6 max-w-3xl text-center relative z-10">
-          <FadeIn>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[52px] font-serif mb-4 text-foreground leading-[1.2] tracking-tight">
-              Let's talk about your child's Maths.
-            </h1>
-            <p className="text-base sm:text-lg text-foreground/80 leading-relaxed max-w-2xl mx-auto">
-              Have a question about our programmes, your child's learning needs, or where to begin? Send us a message and we'll get back to you.
-            </p>
-          </FadeIn>
-        </div>
-      </section>
-
       {/* 2. MAIN TWO-COLUMN SECTION: INQUIRY FORM (LEFT ~55%) + LOCATION & MAP (RIGHT ~45%) */}
-      <section className="py-12 sm:py-16 md:py-20 bg-[#FAF6F0] relative">
+      <section className="pt-32 pb-12 lg:pt-36 lg:pb-16 relative">
         <div className="container mx-auto px-4 md:px-6 lg:px-8 max-w-7xl">
+          {/* Page heading sits directly above the form, so the form is in the first screen. No fade. */}
+          <div className="max-w-2xl mb-8 lg:mb-10">
+            <h1 className="font-serif text-[2.15rem] sm:text-5xl xl:text-[3.5rem] text-foreground leading-[1.1] tracking-tight">
+              Let's talk about your child's Maths
+            </h1>
+            <p className="mt-5 text-lg sm:text-xl text-foreground/80 leading-relaxed">
+              Have a question about our classes, your child's learning, or where to begin? Send us a message and we'll get back to you.
+            </p>
+          </div>
           <FadeIn>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 xl:gap-12 items-stretch">
               
@@ -240,12 +230,9 @@ export default function Contact() {
                     /* Compact Inquiry Form */
                     <div>
                       <div className="mb-6">
-                        <h2 className="font-serif text-2xl sm:text-3xl lg:text-[32px] text-foreground font-normal leading-tight mb-2">
+                        <h2 className="font-serif text-2xl sm:text-3xl lg:text-[32px] text-foreground font-normal leading-tight">
                           Tell us a little about what you need
                         </h2>
-                        <p className="text-[15px] text-foreground/70 leading-relaxed">
-                          Fill out the details below and we will get back to you personally.
-                        </p>
                       </div>
 
                       <form onSubmit={handleSubmit} noValidate className="space-y-3.5 sm:space-y-4">
@@ -436,17 +423,14 @@ export default function Contact() {
 
                     {/* Location Information Card */}
                     <div className="bg-[#FAF6F0] border border-[#E6DDCF] rounded-2xl p-4 sm:p-5 mb-5">
-                      <span className="text-xs uppercase tracking-wider font-semibold text-foreground/55 block mb-1.5">
-                        The Vedic School is based at:
-                      </span>
                       <div className="flex items-center gap-2 mb-2">
                         <MapPin className="w-5 h-5 text-primary shrink-0" />
                         <h3 className="font-serif text-xl sm:text-2xl text-foreground font-medium">
-                          Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurgaon.
+                          Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurugram
                         </h3>
                       </div>
                       <p className="text-[14px] sm:text-[15px] text-foreground/75 leading-relaxed">
-                        Based in Gurugram, teaching children wherever they are.
+                        Classes in Gurugram, and online for children in India and other countries.
                       </p>
                     </div>
                   </div>
@@ -454,14 +438,14 @@ export default function Contact() {
                   {/* Interactive Map */}
                   <div className="w-full flex-1 min-h-[300px] sm:min-h-[340px] lg:min-h-[360px] rounded-2xl overflow-hidden border border-border/60 shadow-xs relative bg-[#FAF6F0]">
                     <iframe
-                      title="The Vedic School Location Map - Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurgaon."
-                      src="https://maps.google.com/maps?q=Emaar+Emerald+Premier+Floors,+Near+World+Mark,+Sector+65,+Gurgaon.&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                      title="Map showing The Vedic School, Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurugram"
+                      src="https://maps.google.com/maps?q=Emaar+Emerald+Premier+Floors,+Near+World+Mark,+Sector+65,+Gurugram&t=&z=15&ie=UTF8&iwloc=&output=embed"
                       width="100%"
                       height="100%"
                       className="w-full h-full min-h-[300px] sm:min-h-[340px] lg:min-h-[360px] border-0"
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
-                      aria-label="Map showing Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurgaon."
+                      aria-label="Map showing Emaar Emerald Premier Floors, Near World Mark, Sector 65, Gurugram"
                     />
                   </div>
                 </div>
@@ -491,7 +475,7 @@ export default function Contact() {
                 }}
                 className="w-full sm:w-auto"
               >
-                Join Sunday's free demo →
+                Book a free demo class
               </Button>
               <Button
                 size="lg"
@@ -502,7 +486,7 @@ export default function Contact() {
                 }}
                 className="w-full sm:w-auto bg-white/80 hover:bg-white"
               >
-                Book a personal assessment →
+                Book an assessment
               </Button>
             </div>
           </FadeIn>

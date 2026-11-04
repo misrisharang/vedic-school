@@ -9,7 +9,7 @@ export const MEENAKSHI_KOUL_AUTHOR: Author = {
   name: 'Meenakshi Koul',
   slug: 'meenakshi-koul',
   role: 'Founder & Educator, The Vedic School',
-  bio: `I've been teaching Mathematics for 20+ years, first in India, and more recently, to students across different time zones.
+  bio: `I've been teaching Mathematics for 20+ years, beginning in Mumbai. Today I teach in Gurugram, and online for students in India and other countries.
 
 Over the years, I've realised that teaching Maths is rarely just about explaining the question in front of you. I've learnt to look for the pattern behind the problem.
 
