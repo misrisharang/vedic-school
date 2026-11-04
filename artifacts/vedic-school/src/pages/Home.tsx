@@ -7,8 +7,8 @@ import { FadeIn, FadeInStagger, FadeInStaggerItem } from '@/components/ui-patter
 import { testimonials } from '@/data/testimonials';
 import { TestimonialCarousel } from '@/components/TestimonialCarousel';
 import meenakshiPhoto from '@assets/meenakshi-founder-portrait.jpg';
-// Stills from recordings of Meenakshi teaching live online classes (Oct 2026).
-import teachingPortrait from '@assets/meenakshi-teaching-online-portrait.jpg';
+import heroPhoto from '@assets/meenakshi-founder-landscape.jpg';
+// Still from a recording of Meenakshi teaching a live online class (Oct 2026).
 import teachingBoard from '@assets/meenakshi-teaching-online-board.jpg';
 import { Seo } from '@/seo/Seo';
 import { getHomeSchema } from '@/seo/schema';
@@ -109,13 +109,13 @@ export default function Home() {
               <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">{heroActions}</div>
             </div>
             <img
-              src={teachingPortrait}
-              alt="Meenakshi Koul smiling at the start of a live online class, with her laptop and whiteboard"
-              width={1080}
-              height={1350}
+              src={heroPhoto}
+              alt="Meenakshi Koul at a desk with Maths books and a whiteboard"
+              width={1024}
+              height={682}
               fetchPriority="high"
               decoding="async"
-              className="lg:col-span-5 aspect-[4/3] lg:aspect-[4/5] lg:max-h-[520px] w-full rounded-[2rem] object-cover object-[50%_18%]"
+              className="lg:col-span-5 aspect-[4/3] w-full rounded-[2rem] object-cover object-[62%_40%]"
             />
           </div>
         </div>
