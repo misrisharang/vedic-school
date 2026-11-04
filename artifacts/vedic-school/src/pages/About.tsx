@@ -1,204 +1,189 @@
 import React from 'react';
-import { Link } from 'wouter';
-import { Leaf } from 'lucide-react';
-import { FadeIn, SectionHeader } from '@/components/ui-patterns';
+import { ArrowRight } from 'lucide-react';
+import { FadeIn } from '@/components/ui-patterns';
 import { Button } from '@/components/Button';
 import { useDemoModal } from '@/context/DemoModalContext';
-import { trackCtaClick } from '@/lib/analytics';
-import meenakshiPhoto from '@assets/meenakshi-founder-landscape.jpg';
-import heroTexture from '@assets/generated_images/hero-texture-math.png';
+import { trackCtaClick, type CtaLocation } from '@/lib/analytics';
+import meenakshiPortrait from '@assets/meenakshi-founder-portrait.jpg';
+// Still from a recording of Meenakshi teaching a live online class (Oct 2026).
+import teachingAnswer from '@assets/meenakshi-teaching-online-answer.jpg';
 import { Seo } from '@/seo/Seo';
 import { getAboutSchema } from '@/seo/schema';
 
+// Skimmable background points (same pattern as the key points on Curriculum-Aligned).
+const background = [
+  {
+    title: '20+ years teaching Maths',
+    body: 'Began in Mumbai. Today she teaches in Gurugram, and online for children in India, the UAE, Canada, the USA, Australia and Singapore.',
+  },
+  {
+    title: 'UX and Algorithms, IISc Bangalore',
+    body: 'Studying how people solve problems shapes how she breaks a topic down for a child, one step at a time.',
+  },
+  {
+    title: 'A method built to grow',
+    body: 'Every class follows the same approach of diagnose, rebuild and accelerate, so the teaching stays consistent as the school grows.',
+  },
+];
+
 export default function About() {
   const { openDemoModal, openAssessmentModal } = useDemoModal();
+
+  const bookDemo = (location: CtaLocation) => {
+    trackCtaClick('book_free_demo', location, 'vedic_maths');
+    openDemoModal();
+  };
+  const bookAssessment = (location: CtaLocation) => {
+    trackCtaClick('book_personal_assessment', location, 'curriculum_aligned');
+    openAssessmentModal();
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Seo
         title="About Meenakshi Koul | The Vedic School"
-        description="Learn about Meenakshi Koul, founder and educator at The Vedic School, and her approach to teaching mathematics."
+        description="Meenakshi Koul has taught Maths for over 20 years, beginning in Mumbai. Today she teaches in Gurugram and online. She founded The Vedic School."
         path="/about"
         schema={getAboutSchema()}
       />
 
-      {/* 1. HERO — THE VEDIC SCHOOL AS A CONCEPT */}
-      <section className="relative pt-24 pb-12 sm:pt-28 sm:pb-14 lg:pt-36 lg:pb-20 border-b border-border/30 overflow-hidden bg-background">
-        <div
-          className="absolute inset-0 z-0 opacity-20 pointer-events-none"
-          style={{ backgroundImage: `url(${heroTexture})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-        />
-        <div className="container mx-auto px-4 md:px-6 max-w-4xl text-center relative z-10">
-          <FadeIn>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif mb-5 sm:mb-6 text-foreground leading-[1.15]">
-              Maths teaching built around the child, not just the syllabus.
-            </h1>
-            <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed max-w-2xl mx-auto">
-              The Vedic School exists to help children become calmer, more confident and more capable with Maths, through a method that starts with understanding where they are and builds from there.
-            </p>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* 2. THE OBSERVATION */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white border-b border-border/30">
-        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
-          <FadeIn className="text-center mb-8 sm:mb-10">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground leading-tight">
-              It Started With A Simple Observation
-            </h2>
-          </FadeIn>
-          <FadeIn delay={0.1}>
-            <div className="space-y-6 text-base sm:text-lg text-foreground/80 leading-relaxed">
-              <p className="font-serif text-xl sm:text-2xl md:text-[1.65rem] text-foreground italic leading-snug border-l-2 border-primary/40 pl-4 sm:pl-5 py-1">
-                A child struggling with Maths isn't always struggling with the Maths.
+      {/* 1. HERO. No fade, so it is visible before JavaScript loads. */}
+      <section className="pt-32 pb-6 lg:pt-36 lg:pb-8">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center max-w-6xl mx-auto">
+            <div className="lg:col-span-7">
+              <h1 className="font-serif text-[2.15rem] sm:text-5xl xl:text-[3.5rem] text-foreground leading-[1.1] tracking-tight">
+                Meet Meenakshi Koul
+              </h1>
+              <p className="mt-6 text-lg sm:text-xl text-foreground/80 leading-relaxed max-w-xl">
+                Meenakshi has taught Maths for over 20 years, beginning in Mumbai. Today she teaches in Gurugram, and online for children in India and other countries. She founded The Vedic School to bring her way of teaching to more children.
               </p>
-              <p>
-                Sometimes, they are struggling with confidence. Sometimes, there is a gap in the foundation. Sometimes, they simply haven't been taught in a way that makes sense to them.
-              </p>
-              <p className="font-medium text-foreground">
-                The Vedic School was built around understanding that difference.
-              </p>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* 2B. THE METHOD & THE PRINCIPLE */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-[#F0EBE1] border-b border-border/30">
-        <div className="container mx-auto px-4 md:px-6 max-w-3xl">
-          <FadeIn>
-            <div className="space-y-6 text-base sm:text-lg text-foreground/80 leading-relaxed">
-              <p className="font-serif text-lg sm:text-xl md:text-2xl text-foreground leading-relaxed">
-                Vedic Maths is one part of that method. It gives children a different way to work with numbers, building fluency and confidence. Curriculum-aligned Maths takes that foundation into the Maths they encounter at school.
-              </p>
-              <p>
-                As the school grows, the aim is to make this method available to more families through live online classes, while keeping the part that matters most: personal teaching, close observation and teaching that responds to the child in front of us.
-              </p>
-              <div className="pt-2 sm:pt-4">
-                <p className="font-serif text-lg sm:text-xl text-foreground font-medium border-l-2 border-primary/40 pl-4 sm:pl-5 py-1.5">
-                  The method grows. The principle stays the same.
-                </p>
+              <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                <Button size="lg" onClick={() => bookDemo('hero')}>
+                  Book a free demo class
+                </Button>
+                <a
+                  href="#her-story"
+                  className="inline-flex items-center gap-2 px-2 py-3 text-lg font-medium text-foreground hover:text-primary transition-colors"
+                >
+                  Why she started <ArrowRight className="w-5 h-5" />
+                </a>
               </div>
             </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* 3. MEET MEENAKSHI */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-white border-b border-border/30 overflow-hidden">
-        <div className="container mx-auto px-4 md:px-6 max-w-5xl">
-
-          {/* Wide Landscape Founder Image */}
-          <FadeIn className="mb-8 sm:mb-10">
-            <div className="relative w-full aspect-[3/2] rounded-2xl md:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/60 bg-stone-100/50">
+            <div className="lg:col-span-5">
               <img
-                src={meenakshiPhoto}
-                alt="Meenakshi Koul, founder and mentor of The Vedic School, teaching at her desk"
-                className="w-full h-full object-cover object-center"
-                loading="lazy"
+                src={meenakshiPortrait}
+                alt="Meenakshi Koul, founder of The Vedic School"
+                width={768}
+                height={1280}
+                fetchPriority="high"
                 decoding="async"
+                className="w-full max-w-md mx-auto lg:max-w-none aspect-square object-cover object-[50%_12%] rounded-[2rem]"
               />
             </div>
-          </FadeIn>
-
-          {/* Founder Content Beneath */}
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-
-            {/* Left: Section Header & Pull Quote */}
-            <FadeIn delay={0.1} className="lg:col-span-5 lg:sticky lg:top-28">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-3 sm:mb-4 leading-tight">
-                Meet Meenakshi Koul
-              </h2>
-              <p className="text-base sm:text-lg text-foreground/80 leading-relaxed mb-6">
-                Meenakshi Koul founded The Vedic School and teaches every class herself.
-              </p>
-              <div className="pt-5 border-t border-border/60">
-                <div className="flex items-start gap-3">
-                  <Leaf className="w-5 h-5 text-secondary/70 shrink-0 mt-1" strokeWidth={1.5} />
-                  <div>
-                    <blockquote className="font-serif text-lg md:text-xl italic text-foreground/90 leading-snug">
-                      "Maths is not just a subject. It defines how you solve problems in the real world."
-                    </blockquote>
-                    <p className="text-xs font-sans font-semibold uppercase tracking-[0.15em] text-foreground/50 mt-3">
-                      — Meenakshi Koul
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-
-            {/* Right: Bio */}
-            <FadeIn delay={0.2} className="lg:col-span-7">
-              <div className="space-y-4 sm:space-y-5 text-base sm:text-lg text-foreground/80 leading-relaxed">
-                <p>
-                  She has taught Mathematics for <strong className="font-semibold text-foreground">over 20 years</strong>, first in India and more recently to students across different time zones.
-                </p>
-                <p>
-                  Over the years, we've come to realise that teaching Maths is rarely just about explaining the question in front of a child. It's about finding the pattern behind the problem.
-                </p>
-                <p>
-                  A background in <strong className="font-semibold text-foreground">UX and Algorithms from IISc, Bangalore</strong> shapes how we think about problem-solving and learning.
-                </p>
-                <p>
-                  Within the first few minutes with a child, Meenakshi can often tell whether they're genuinely stuck on the Maths, or whether they've started believing they simply aren't good at it. That distinction matters.
-                </p>
-                <p className="font-serif text-lg sm:text-xl text-foreground font-medium">That's how we teach.</p>
-                <p>
-                  We want to change how your child approaches Maths. To make them more willing to attempt a difficult question. More comfortable making mistakes. More capable of finding their own way through a problem. And to replace "I'm not good at Maths" with something much more important:
-                </p>
-                <h3 className="font-serif text-2xl md:text-3xl text-primary italic">"Let me try."</h3>
-              </div>
-            </FadeIn>
-
           </div>
         </div>
       </section>
 
-      {/* 4. FINAL CTA: CHOOSE YOUR PATH */}
-      <section className="py-12 sm:py-16 lg:py-20 bg-[#F0EBE1] border-b border-border/30">
+      {/* 2. WHY SHE STARTED */}
+      <section id="her-story" className="py-10 md:py-12 scroll-mt-24">
         <div className="container mx-auto px-4 md:px-6">
-          <SectionHeader
-            title="Want To Experience The Way We Teach?"
-            subtitle="Choose the path that makes sense for your child."
-          />
-
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <FadeIn delay={0.1}>
-              <div className="bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))] p-6 sm:p-8 md:p-10 rounded-2xl sm:rounded-[2rem] shadow-sm border border-[hsl(var(--block-sage-light-border))] h-full flex flex-col transition-all duration-300">
-                <p className="font-serif text-2xl text-foreground mb-2 font-medium">Vedic Maths</p>
-                <p className="text-foreground/80 leading-relaxed mb-6 sm:mb-8 flex-1">
-                  Build fluency. Build confidence. Join a free Sunday group demo class and experience the method in a real class.
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center max-w-6xl mx-auto">
+            <div className="lg:col-span-5 order-2 lg:order-1 relative">
+              <div aria-hidden="true" className="absolute -left-4 -bottom-4 sm:-left-8 sm:-bottom-8 w-[85%] h-[85%] rounded-[2rem] bg-block-sage-light" />
+              <img
+                src={teachingAnswer}
+                alt="Meenakshi Koul explaining why 436/999 equals 0.436436… during a live online class"
+                width={1200}
+                height={900}
+                loading="lazy"
+                decoding="async"
+                className="relative w-full aspect-[4/3] object-cover rounded-[2rem]"
+              />
+            </div>
+            <FadeIn className="lg:col-span-7 order-1 lg:order-2">
+              <h2 className="font-serif text-3xl lg:text-[2rem] text-foreground leading-tight">Why she started The Vedic School</h2>
+              <div className="mt-5 space-y-4 text-lg text-foreground/80 leading-relaxed max-w-[60ch]">
+                <p>
+                  Over the years, Meenakshi noticed that a child who says they can't do Maths is rarely short of ability. Usually there is a gap further back, or the child has stopped trusting their own working.
                 </p>
-                <Button
-                  onClick={() => {
-                    trackCtaClick('book_free_demo', 'two_ways_section', 'vedic_maths');
-                    openDemoModal();
-                  }}
-                  className="w-full max-w-full whitespace-normal h-auto min-h-[52px] py-3.5 px-6 text-center"
-                >
-                  Join Sunday's free demo class
-                </Button>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.2}>
-              <div className="bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))] p-6 sm:p-8 md:p-10 rounded-2xl sm:rounded-[2rem] shadow-sm border border-[hsl(var(--block-terracotta-light-border))] h-full flex flex-col transition-all duration-300">
-                <p className="font-serif text-2xl text-foreground mb-2 font-medium">Curriculum-Aligned Maths</p>
-                <p className="text-foreground/80 leading-relaxed mb-6 sm:mb-8 flex-1">
-                  Bring that confidence into school Maths. Book a Personal Assessment Session to understand where your child is and what they need.
+                <p>
+                  The Vedic School is built to find which it is, and fix it. Vedic Maths gives children quicker, more flexible ways to calculate. Curriculum-aligned classes take that confidence into school Maths.
                 </p>
-                <Button
-                  onClick={() => {
-                    trackCtaClick('book_personal_assessment', 'two_ways_section', 'curriculum_aligned');
-                    openAssessmentModal();
-                  }}
-                  className="w-full max-w-full whitespace-normal h-auto min-h-[52px] py-3.5 px-6 text-center"
-                >
-                  Book your child's personal assessment session
-                </Button>
+                <p>
+                  The school is built around her method, so that more families can learn this way as it grows.
+                </p>
               </div>
             </FadeIn>
           </div>
+        </div>
+      </section>
+
+      {/* 3. HER BACKGROUND: key points to skim */}
+      <section className="py-10 md:py-12">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 lg:items-center max-w-6xl mx-auto">
+            <FadeIn className="lg:col-span-5">
+              <h2 className="font-serif text-3xl lg:text-[2rem] text-foreground leading-tight">Her background</h2>
+              <p className="mt-5 text-lg text-foreground/80 leading-relaxed">
+                What shapes the way she teaches, and the way the school will grow.
+              </p>
+            </FadeIn>
+            <FadeIn delay={0.1} className="lg:col-span-7">
+              <dl className="space-y-6">
+                {background.map((point) => (
+                  <div key={point.title} className="border-l-2 border-secondary pl-5">
+                    <dt className="font-serif text-xl text-foreground">{point.title}</dt>
+                    <dd className="mt-1 text-foreground/80 leading-relaxed">{point.body}</dd>
+                  </div>
+                ))}
+              </dl>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. IN HER WORDS */}
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4 md:px-6">
+          <FadeIn>
+            <figure className="max-w-3xl mx-auto text-center">
+              <blockquote className="font-serif text-2xl md:text-[2rem] text-foreground leading-snug">
+                “Maths is not just a subject. It defines how you solve problems in the real world.”
+              </blockquote>
+              <figcaption className="mt-5 text-foreground/70">Meenakshi Koul</figcaption>
+            </figure>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* 5. CLOSING */}
+      <section className="py-16 md:py-24 bg-primary">
+        <div className="container mx-auto px-4 md:px-6 text-center max-w-3xl">
+          <FadeIn>
+            <h2 className="font-serif text-3xl md:text-5xl text-white leading-tight">See the method in a real class</h2>
+            <p className="mt-5 text-lg md:text-xl text-white/90">
+              Join a free demo class, or book an assessment for help with school Maths.
+            </p>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+              <Button
+                variant="white"
+                size="lg"
+                className="text-primary font-semibold w-full sm:w-auto"
+                onClick={() => bookDemo('contact_section')}
+              >
+                Book a free demo class
+              </Button>
+              <Button
+                variant="ghost"
+                size="lg"
+                className="text-white border border-white/60 hover:bg-white/10 w-full sm:w-auto"
+                onClick={() => bookAssessment('contact_section')}
+              >
+                Book an assessment
+              </Button>
+            </div>
+          </FadeIn>
         </div>
       </section>
     </div>

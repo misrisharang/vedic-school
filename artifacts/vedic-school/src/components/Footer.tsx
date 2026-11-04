@@ -26,7 +26,7 @@ export function Footer({ compact = false }: { compact?: boolean } = {}) {
           </Link>
           <p className="text-center">© {new Date().getFullYear()} The Vedic School. All rights reserved.</p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            <a href="mailto:meenakshikhar@gmail.com" className="hover:text-background transition-colors">Contact</a>
+            <Link href="/contact" className="hover:text-background transition-colors">Contact</Link>
             <Link href="/privacy-policy" className="hover:text-background transition-colors">Privacy Policy</Link>
             <Link href="/terms-of-service" className="hover:text-background transition-colors">Terms of Service</Link>
           </div>
@@ -140,11 +140,6 @@ export function Footer({ compact = false }: { compact?: boolean } = {}) {
           <div>
             <p className="font-sans font-semibold tracking-wider text-xs uppercase text-background/50 mb-6">Contact</p>
             <ul className="space-y-4">
-              <li>
-                <a href="mailto:meenakshi@thevedicschool.com" className="text-background/80 hover:text-white transition-colors text-sm">
-                  Email me directly
-                </a>
-              </li>
               <li>
                 <Link href="/contact" className="text-background/80 hover:text-white transition-colors text-sm">
                   Contact Us

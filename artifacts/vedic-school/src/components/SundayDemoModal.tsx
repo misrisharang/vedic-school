@@ -33,9 +33,6 @@ interface FormErrors {
 }
 
 const GRADES = [
-  'Grade 1',
-  'Grade 2',
-  'Grade 3',
   'Grade 4',
   'Grade 5',
   'Grade 6',
@@ -281,7 +278,7 @@ export function SundayDemoModal() {
           />
         </div>
 
-        {/* Child's Grade (Grades 1-10 only) */}
+        {/* Child's Grade (Grades 4-10: the Vedic Maths course is for ages 9 to 15) */}
         <div>
           <label htmlFor="demo-child-grade" className="block text-xs sm:text-sm font-medium text-foreground/90 mb-1.5">
             Child's grade <span className="text-primary">*</span>

@@ -1,52 +1,35 @@
 import React from 'react';
-import { Lightbulb, Search, Hammer, PenLine, Target } from 'lucide-react';
-import {
-  FadeIn,
-  FadeInStagger,
-  FadeInStaggerItem,
-  ShiftList,
-  MethodSteps,
-  TestimonialCard,
-  FAQAccordion,
-  ClosingCTABand,
-} from '@/components/ui-patterns';
+import { ArrowRight, Lightbulb, Search, Hammer, PenLine, Target } from 'lucide-react';
+import { FadeIn, FadeInStagger, FadeInStaggerItem, FAQAccordion } from '@/components/ui-patterns';
+import { Roadmap, type RoadmapStep } from '@/components/Roadmap';
 import { testimonials } from '@/data/testimonials';
 import { CURRICULUM_ALIGNED_FAQS } from '@/data/faqs';
 import { Button } from '@/components/Button';
 import { useAssessmentModal } from '@/context/DemoModalContext';
-import { trackCtaClick } from '@/lib/analytics';
-import heroTexture from '@assets/generated_images/hero-texture-math.png';
+import { trackCtaClick, type CtaLocation } from '@/lib/analytics';
 import tutoringPhoto from '@assets/curriculum-aligned-girl-studying.jpg';
 import { Seo } from '@/seo/Seo';
 import { getCurriculumAlignedSchema } from '@/seo/schema';
 
-const shifts = [
+// Key points a parent can skim (mirrors "What is Vedic Maths?" on the Vedic Maths page).
+const keyPoints = [
   {
-    from: '"I know this"',
-    to: '"I can solve this"',
-    description: 'Apply concepts independently, even when the question looks unfamiliar.',
+    title: 'Their own school syllabus',
+    body: "Classes follow your child's own textbook and the topics they are covering in school right now, for CBSE, ICSE, IB and more.",
   },
   {
-    from: 'Copying steps',
-    to: 'Understanding why',
-    description: 'Know what to do, and why the method works.',
+    title: 'Gaps fixed at the root',
+    body: 'If an earlier topic is the reason a chapter feels hard, we go back and fix that first, then return to the chapter.',
   },
   {
-    from: 'Repeated mistakes',
-    to: 'Spotting what went wrong',
-    description: 'Learn to look at their own working and understand where they went off track.',
-  },
-  {
-    from: 'Waiting for help',
-    to: 'Working independently',
-    description: 'Build the confidence to start, think through a problem and keep going.',
+    title: 'Solving on their own',
+    body: 'Practice moves from guided to independent, until your child can handle unfamiliar and exam-style questions alone.',
   },
 ];
 
 const grades = [
   {
-    range: 'Grades 1–2',
-    focus: 'BUILDING THE FOUNDATIONS',
+    range: 'Grades 1 to 2',
     bullets: [
       'Numbers and place value',
       'Addition and subtraction',
@@ -56,11 +39,10 @@ const grades = [
       'Basic data handling',
       'Word problems',
     ],
-    aim: 'Building confidence around numbers with basic operations.',
+    aim: 'Building confidence around numbers with basic operations',
   },
   {
-    range: 'Grades 3–5',
-    focus: 'BUILDING NUMBER FLUENCY',
+    range: 'Grades 3 to 5',
     bullets: [
       'Multiplication and division',
       'Fractions',
@@ -72,11 +54,10 @@ const grades = [
       'Data handling',
       'Multi-step word problems',
     ],
-    aim: 'Making core operations reliable across different problem types.',
+    aim: 'Making core operations reliable across different problem types',
   },
   {
-    range: 'Grades 6–8',
-    focus: 'BUILDING ALGEBRAIC THINKING',
+    range: 'Grades 6 to 8',
     bullets: [
       'Integers and rational numbers',
       'Fractions',
@@ -90,11 +71,10 @@ const grades = [
       'Data handling',
       'Probability',
     ],
-    aim: 'Developing mathematical reasoning as concepts become more abstract.',
+    aim: 'Developing mathematical reasoning as concepts become more abstract',
   },
   {
-    range: 'Grades 9–10',
-    focus: 'BUILDING EXAM-READY SKILLS',
+    range: 'Grades 9 to 10',
     bullets: [
       'Number systems',
       'Polynomials',
@@ -107,88 +87,39 @@ const grades = [
       'Statistics',
       'Probability',
     ],
-    aim: 'Connecting concepts and applying them confidently in exams.',
+    aim: 'Connecting concepts and applying them confidently in exams',
   },
 ];
 
-const methodSteps = [
-  {
-    number: '01',
-    title: 'Diagnose',
-    description: (
-      <>
-        <span className="block text-foreground font-medium mb-1">Find where they are.</span>
-        We look at how your child approaches questions, and whether an earlier gap is making it harder.
-      </>
-    ),
-  },
-  {
-    number: '02',
-    title: 'Rebuild',
-    description: (
-      <>
-        <span className="block text-foreground font-medium mb-1">Strengthen what's missing.</span>
-        If an earlier foundation isn't secure, we go back, rebuild it properly, and only then move ahead with confidence.
-      </>
-    ),
-  },
-  {
-    number: '03',
-    title: 'Accelerate',
-    description: (
-      <>
-        <span className="block text-foreground font-medium mb-1">Build independent problem-solving.</span>
-        We apply the concept to new questions until your child works through it with more confidence and less help.
-      </>
-    ),
-  },
+const journey: RoadmapStep[] = [
+  { icon: Lightbulb, title: 'Understand', body: 'Break the current concept down until it makes sense.' },
+  { icon: Search, title: 'Identify', body: 'Find the specific point where your child is getting stuck.' },
+  { icon: Hammer, title: 'Rebuild', body: "Strengthen the earlier foundation, if that's responsible." },
+  { icon: PenLine, title: 'Practise', body: 'Work through questions with guidance, then independently.' },
+  { icon: Target, title: 'Apply', body: 'Use it in schoolwork, unfamiliar and exam-style problems.' },
 ];
 
-const journey = [
-  { icon: Lightbulb, label: 'Understand', description: 'Break the current concept down until it makes sense.' },
-  { icon: Search, label: 'Identify', description: 'Find the specific point where your child is getting stuck.' },
-  { icon: Hammer, label: 'Rebuild', description: "Strengthen the earlier foundation, if that's responsible." },
-  { icon: PenLine, label: 'Practise', description: 'Work through questions with guidance, then independently.' },
-  { icon: Target, label: 'Apply', description: 'Use it in schoolwork, unfamiliar and exam-style problems.' },
-];
-
+// Alternating colours keep the grade bands clearly apart.
 const gradeThemes = [
-  {
-    // 01: Light Sage
-    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
-    border: 'border-[hsl(var(--block-sage-light-border))]',
-    pill: 'bg-[#446342]/15 text-[#3D5E3B]',
-    dot: 'bg-[#446342]/70',
-    aimLabel: 'text-[#3D5E3B]/70',
-  },
-  {
-    // 02: Light Terracotta
-    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
-    border: 'border-[hsl(var(--block-terracotta-light-border))]',
-    pill: 'bg-primary/15 text-primary',
-    dot: 'bg-primary/70',
-    aimLabel: 'text-primary/70',
-  },
-  {
-    // 03: Light Sage
-    bg: 'bg-[hsl(var(--block-sage-light))] hover:bg-[hsl(var(--block-sage-light-hover))]',
-    border: 'border-[hsl(var(--block-sage-light-border))]',
-    pill: 'bg-[#446342]/15 text-[#3D5E3B]',
-    dot: 'bg-[#446342]/70',
-    aimLabel: 'text-[#3D5E3B]/70',
-  },
-  {
-    // 04: Light Terracotta
-    bg: 'bg-[hsl(var(--block-terracotta-light))] hover:bg-[hsl(var(--block-terracotta-light-hover))]',
-    border: 'border-[hsl(var(--block-terracotta-light-border))]',
-    pill: 'bg-primary/15 text-primary',
-    dot: 'bg-primary/70',
-    aimLabel: 'text-primary/70',
-  },
+  { card: 'bg-block-sage-light border-block-sage-light-border', marker: 'marker:text-[#3D5E3B]' },
+  { card: 'bg-block-terracotta-light border-block-terracotta-light-border', marker: 'marker:text-primary' },
 ];
+
+const GOOGLE_REVIEWS_URL =
+  'https://www.google.com/maps/place/The+Vedic+School/@28.4317134,77.1086168,17z/data=!4m8!3m7!1s0x390d1da42d384595:0x51719d674bb453e1!8m2!3d28.4317134!4d77.1086168!9m1!1b1!16s%2Fg%2F11q2y0y7n6';
+
+// Parents whose reviews are about everyday school Maths.
+const curriculumTestimonials = ['Radhika Jaykar', 'Snehal Sachin Harane', 'Simmi Gupta']
+  .map((name) => testimonials.find((t) => t.name === name))
+  .filter((t): t is NonNullable<typeof t> => Boolean(t));
 
 export default function CurriculumAligned() {
   const { openAssessmentModal } = useAssessmentModal();
+
+  const bookAssessment = (location: CtaLocation) => {
+    trackCtaClick('book_personal_assessment', location, 'curriculum_aligned');
+    openAssessmentModal();
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
@@ -199,250 +130,187 @@ export default function CurriculumAligned() {
         schema={getCurriculumAlignedSchema()}
       />
 
-      {/* 1. HERO */}
-      <section className="relative pt-24 pb-12 sm:pt-28 sm:pb-14 lg:pt-36 lg:pb-20 border-b border-border/30 overflow-hidden">
-        <div
-          className="absolute inset-0 z-0 opacity-20 pointer-events-none"
-          style={{ backgroundImage: `url(${heroTexture})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-        />
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-10 lg:gap-12 items-center">
-            <FadeIn className="max-w-2xl">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-serif text-foreground leading-[1.15] mb-5 sm:mb-6">
-                Knowing it isn't the same as solving it.
+      {/* 1. HERO. No fade, so it is visible before JavaScript loads. */}
+      <section className="pt-32 pb-6 lg:pt-36 lg:pb-8">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center max-w-6xl mx-auto">
+            <div className="lg:col-span-7">
+              <h1 className="font-serif text-[2.15rem] sm:text-5xl xl:text-[3.5rem] text-foreground leading-[1.1] tracking-tight">
+                Knowing it isn't the same as <span className="whitespace-nowrap">solving it</span>
               </h1>
-              <p className="text-base sm:text-lg md:text-xl text-foreground/80 leading-relaxed mb-6 sm:mb-8 max-w-xl">
+              <p className="mt-6 text-lg sm:text-xl text-foreground/80 leading-relaxed max-w-xl">
                 We teach your child through their school curriculum, closing the specific gaps that stop understanding from turning into marks.
               </p>
-              <Button
-                size="lg"
-                onClick={() => {
-                  trackCtaClick('book_personal_assessment', 'hero', 'curriculum_aligned');
-                  openAssessmentModal();
-                }}
-                className="max-w-full whitespace-normal sm:whitespace-nowrap h-auto py-3.5 sm:py-0 sm:h-14 px-6 sm:px-8 text-base sm:text-lg text-center"
-              >
-                Book your child's personal assessment
-              </Button>
-            </FadeIn>
-
-            <FadeIn delay={0.2} className="relative flex items-center justify-center">
-              <div className="w-full max-w-md lg:max-w-lg aspect-square rounded-2xl sm:rounded-3xl overflow-hidden shadow-md shadow-stone-900/5 border border-stone-200/50 bg-[#E5DCCE]/30">
-                <img
-                  src={tutoringPhoto}
-                  alt="Mentor helping a student work through a Maths problem"
-                  className="w-full h-full object-cover object-[50%_35%]"
-                  loading="eager"
-                  decoding="async"
-                />
+              <div className="mt-8 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
+                <Button size="lg" onClick={() => bookAssessment('hero')}>
+                  Book an assessment
+                </Button>
+                <a
+                  href="#grade-by-grade"
+                  className="inline-flex items-center gap-2 px-2 py-3 text-lg font-medium text-foreground hover:text-primary transition-colors"
+                >
+                  What we cover <ArrowRight className="w-5 h-5" />
+                </a>
               </div>
+            </div>
+            <div className="lg:col-span-5">
+              <img
+                src={tutoringPhoto}
+                alt="Mentor helping a student work through a Maths problem"
+                className="w-full max-w-md mx-auto lg:max-w-none aspect-square object-cover object-[50%_35%] rounded-[2rem]"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2. WHAT CLASSES COVER: key points to skim */}
+      <section className="py-10 md:py-12">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-16 lg:items-center max-w-6xl mx-auto">
+            <FadeIn className="lg:col-span-5">
+              <h2 className="font-serif text-3xl lg:text-[2rem] text-foreground leading-tight">Maths help built around school</h2>
+              <p className="mt-5 text-lg text-foreground/80 leading-relaxed">
+                Your child's school decides what they learn. We help them understand it well enough to solve the questions on their own.
+              </p>
+            </FadeIn>
+            <FadeIn delay={0.1} className="lg:col-span-7">
+              <dl className="space-y-6">
+                {keyPoints.map((point) => (
+                  <div key={point.title} className="border-l-2 border-secondary pl-5">
+                    <dt className="font-serif text-xl text-foreground">{point.title}</dt>
+                    <dd className="mt-1 text-foreground/80 leading-relaxed">{point.body}</dd>
+                  </div>
+                ))}
+              </dl>
             </FadeIn>
           </div>
         </div>
       </section>
 
-      {/* 2. THE SHIFT FROM KNOWING TO SOLVING */}
-      <section className="py-12 sm:py-14 md:py-16 bg-white border-b border-border/30">
+      {/* 3. GRADE BY GRADE: closed columns, alternating colours */}
+      <section id="grade-by-grade" className="py-10 md:py-12 scroll-mt-24">
         <div className="container mx-auto px-4 md:px-6">
-          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-2 sm:mb-3 leading-tight">
-              The Shift From Knowing To Solving
-            </h2>
-            <p className="text-base sm:text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">
-              What matters is what your child can do with it.
-            </p>
-          </FadeIn>
-          <ShiftList items={shifts} variant="cards" />
-        </div>
-      </section>
-
-      {/* 3. GRADE-BY-GRADE */}
-      <section className="py-12 sm:py-14 md:py-16 bg-[#F0EBE1] border-b border-border/30">
-        <div className="container mx-auto px-4 md:px-6">
-          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-2 sm:mb-3 leading-tight">
-              <span className="sm:block">Grade-By-Grade,</span>{' '}
-              <span>Built Around Your Child</span>
-            </h2>
-            <p className="text-base sm:text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">
-              Classes follow your child's school curriculum, with teaching adapted to their current level and learning gaps.
-            </p>
-          </FadeIn>
-
-          <FadeInStagger className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 max-w-7xl mx-auto items-stretch">
-            {grades.map((grade, i) => {
-              const theme = gradeThemes[i % gradeThemes.length];
-              return (
-                <FadeInStaggerItem key={i} className="h-full flex flex-col">
-                  <div className={`${theme.bg} ${theme.border} border p-5 sm:p-6 rounded-2xl shadow-sm h-full flex flex-col justify-between card-lift transition-all duration-300`}>
-                    <div>
-                      <h3 className="font-serif text-xl sm:text-2xl text-foreground mb-3 font-medium">{grade.range}</h3>
-                      <span className={`self-start inline-block text-xs font-sans font-semibold tracking-wider uppercase rounded-full px-3 py-1 mb-4 ${theme.pill}`}>
-                        {grade.focus}
-                      </span>
-                      <ul className="space-y-1.5 mb-6">
-                        {grade.bullets.map((bullet, bIdx) => (
-                          <li key={bIdx} className="flex items-start text-xs sm:text-[13px] text-foreground/80 leading-snug">
-                            <span className={`w-1.5 h-1.5 rounded-full mt-1.5 mr-2 shrink-0 ${theme.dot}`} />
-                            <span>{bullet}</span>
-                          </li>
+          <div className="max-w-6xl mx-auto">
+            <FadeIn>
+              <h2 className="font-serif text-3xl lg:text-[2rem] text-foreground leading-tight">Grade by grade, built around your child</h2>
+              <p className="mt-3 text-lg text-foreground/75 max-w-[60ch]">
+                Classes follow your child's school curriculum, with teaching adapted to their current level and learning gaps.
+              </p>
+            </FadeIn>
+            {/* Phones: a swipeable row (four stacked cards ran over 2,000px). Grid from sm up. */}
+            <FadeInStagger className="mt-10 flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 items-stretch overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-pl-4 sm:scroll-pl-0 -mx-4 px-4 sm:mx-0 sm:px-0 pb-2 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {grades.map((grade, i) => {
+                const theme = gradeThemes[i % gradeThemes.length];
+                return (
+                  <FadeInStaggerItem key={grade.range} className="h-full shrink-0 w-[82%] sm:w-auto snap-start">
+                    <div className={`h-full flex flex-col rounded-[2rem] border p-6 lg:p-7 ${theme.card}`}>
+                      <h3 className="font-serif text-2xl text-foreground">{grade.range}</h3>
+                      <ul className={`mt-5 list-disc pl-5 space-y-1.5 text-[15px] text-foreground/85 leading-snug flex-1 ${theme.marker}`}>
+                        {grade.bullets.map((bullet) => (
+                          <li key={bullet}>{bullet}</li>
                         ))}
                       </ul>
+                      <p className="mt-6 pt-5 border-t border-foreground/10 font-serif italic text-lg text-foreground leading-snug">
+                        {grade.aim}
+                      </p>
                     </div>
-                    <div className="border-t border-border/60 pt-4 mt-auto min-h-[4.75rem] sm:min-h-[5rem] flex flex-col justify-start">
-                      <span className={`text-xs font-sans font-semibold tracking-wider uppercase block mb-1 ${theme.aimLabel}`}>Primary Aim</span>
-                      <span className="font-serif text-foreground font-medium text-xs sm:text-sm leading-snug block">{grade.aim}</span>
-                    </div>
-                  </div>
-                </FadeInStaggerItem>
-              );
-            })}
-          </FadeInStagger>
-        </div>
-      </section>
-
-      {/* 4. TEACHING METHOD */}
-      <section className="py-12 sm:py-14 md:py-16 bg-white border-b border-border/30">
-        <div className="container mx-auto px-4 md:px-6">
-          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-2 sm:mb-3 leading-tight">
-              <span className="sm:block">We Teach Your Child First,</span>{' '}
-              <span>The Syllabus Second</span>
-            </h2>
-            <p className="text-base sm:text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">
-              The curriculum tells us what needs to be covered. Our teaching method determines how we get your child there.
-            </p>
-          </FadeIn>
-          <MethodSteps steps={methodSteps} variant="cards" />
-        </div>
-      </section>
-
-      {/* 5. HOW CLASSES WORK — THE JOURNEY & CTA */}
-      <section className="py-12 sm:py-14 md:py-16 bg-[#F0EBE1] border-b border-border/30">
-        <div className="container mx-auto px-4 md:px-6 max-w-5xl">
-          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-2 sm:mb-3 leading-tight">
-              From Understanding To Independent Problem-Solving
-            </h2>
-            <p className="text-base sm:text-lg text-foreground/75 max-w-2xl mx-auto leading-relaxed">
-              We make sure your child can use what they're learning.
-            </p>
-          </FadeIn>
-
-          <div className="relative">
-            <div className="hidden md:block absolute top-8 left-[10%] right-[10%] border-t-2 border-dashed border-border/60" />
-            <FadeInStagger className="grid grid-cols-2 md:grid-cols-5 gap-y-8 md:gap-y-10 gap-x-4 relative">
-              {journey.map((step, i) => {
-                const Icon = step.icon;
-                const isLast = i === journey.length - 1;
-                return (
-                  <FadeInStaggerItem key={step.label} className={`flex flex-col items-center text-center ${i === 4 ? 'col-span-2 md:col-span-1' : ''}`}>
-                    <div
-                      className={`w-16 h-16 rounded-full flex items-center justify-center shadow-md mb-4 relative z-10 ${
-                        isLast ? 'bg-secondary text-white' : 'bg-primary text-white'
-                      }`}
-                    >
-                      <Icon className="w-6 h-6" strokeWidth={1.75} />
-                    </div>
-                    <span className="text-xs font-sans font-bold tracking-wider uppercase text-secondary mb-1">
-                      Step {i + 1}
-                    </span>
-                    <h4 className="font-serif text-xl text-foreground mb-2">{step.label}</h4>
-                    <p className="text-foreground/70 text-sm leading-relaxed max-w-[160px]">{step.description}</p>
                   </FadeInStaggerItem>
                 );
               })}
             </FadeInStagger>
           </div>
-
-          <FadeIn delay={0.2}>
-            <p className="text-center font-serif text-lg sm:text-xl md:text-2xl text-foreground/90 italic mt-8 sm:mt-10 max-w-3xl mx-auto">
-              The goal isn't to finish more chapters. It's to make sure your child can actually work with what they've learned.
-            </p>
-          </FadeIn>
-
-          <FadeIn delay={0.3} className="text-center mt-6 sm:mt-8">
-            <Button
-              size="lg"
-              onClick={() => {
-                trackCtaClick('book_personal_assessment', 'contact_section', 'curriculum_aligned');
-                openAssessmentModal();
-              }}
-              className="max-w-full whitespace-normal sm:whitespace-nowrap h-auto py-3.5 sm:py-0 sm:h-14 px-6 sm:px-8 text-base sm:text-lg text-center"
-            >
-              Book your child's personal assessment session
-            </Button>
-          </FadeIn>
         </div>
       </section>
 
-      {/* 6. TESTIMONIALS & REVIEWS */}
-      <section className="py-12 sm:py-14 md:py-16 bg-white border-b border-border/30">
+      {/* 5. HOW CLASSES WORK: roadmap */}
+      <section className="py-10 md:py-12">
         <div className="container mx-auto px-4 md:px-6">
-          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-3 sm:mb-4 leading-tight">
-              Where The Change Actually Shows Up
-            </h2>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mt-4">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FAF6F0] border border-stone-200/80 text-xs sm:text-sm font-medium text-foreground shadow-2xs">
-                <span>5.0 ⭐ rating on Google</span>
-              </div>
-              <a
-                href="https://www.google.com/maps/place/The+Vedic+School/@28.4317134,77.1086168,17z/data=!4m8!3m7!1s0x390d1da42d384595:0x51719d674bb453e1!8m2!3d28.4317134!4d77.1086168!9m1!1b1!16s%2Fg%2F11q2y0y7n6?entry=ttu&g_ep=EgoyMDI2MDkxMy4wIKXMDSoASAFQAw%3D%3D"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs sm:text-sm font-medium border border-stone-300 bg-white text-foreground hover:border-stone-400 hover:bg-stone-50 shadow-2xs transition-all group"
-              >
-                <span>Read our Google reviews</span>
-                <span className="transition-transform group-hover:translate-x-0.5">→</span>
-              </a>
-            </div>
-          </FadeIn>
+          <div className="max-w-6xl mx-auto">
+            <FadeIn>
+              <h2 className="font-serif text-3xl lg:text-[2rem] text-foreground leading-tight">How a class works</h2>
+              <p className="mt-3 text-lg text-foreground/75 max-w-[65ch]">
+                The curriculum tells us what to cover. Our method decides how we get your child there, and we move on when they can solve the questions on their own.
+              </p>
+            </FadeIn>
+            <Roadmap steps={journey} />
+          </div>
+        </div>
+      </section>
 
-          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto items-stretch">
-            {testimonials.map((item, index) => (
-              <TestimonialCard
-                key={item.name}
-                delay={0.1 * (index + 1)}
-                quote={item.quote}
-                author={item.name}
-                relation={item.relation}
-                location={item.location}
-              />
-            ))}
+      {/* 6. WHAT PARENTS SAY */}
+      <section className="py-10 md:py-12">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-6xl mx-auto">
+            <FadeIn>
+              <h2 className="font-serif text-3xl lg:text-[2rem] text-foreground leading-tight">Where the change shows up</h2>
+            </FadeIn>
+            <div className="mt-10 grid md:grid-cols-3 gap-10">
+              {curriculumTestimonials.map((item) => (
+                <figure key={item.name} className="flex flex-col border-l-2 border-primary/40 pl-6">
+                  <blockquote className="font-serif text-lg md:text-xl text-foreground/90 leading-relaxed flex-1">
+                    “{item.excerpt ?? item.quote}”
+                  </blockquote>
+                  <figcaption className="mt-6">
+                    <span className="block font-medium text-foreground">{item.name}</span>
+                    {(item.relation || item.location) && (
+                      <span className="block mt-0.5 text-sm text-foreground/60">
+                        {[item.relation, item.location].filter(Boolean).join(', ')}
+                      </span>
+                    )}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+            <a
+              href={GOOGLE_REVIEWS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-10 inline-flex items-center gap-2 font-medium text-primary hover:underline"
+            >
+              Read more reviews on Google <ArrowRight className="w-4 h-4" />
+            </a>
           </div>
         </div>
       </section>
 
       {/* 7. FAQ */}
-      <section className="py-12 sm:py-14 md:py-16 bg-[#F0EBE1] border-b border-border/30">
+      <section className="py-10 md:py-12">
         <div className="container mx-auto px-4 md:px-6">
-          <FadeIn className="text-center mb-8 sm:mb-10 max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif text-foreground mb-3 sm:mb-4 leading-tight">
-              A Few Things Parents Want To Know
-            </h2>
-          </FadeIn>
-          <FAQAccordion items={CURRICULUM_ALIGNED_FAQS} />
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 max-w-6xl mx-auto">
+            <FadeIn className="lg:col-span-4">
+              <h2 className="font-serif text-3xl lg:text-[2rem] text-foreground leading-tight lg:pt-[18px]">Questions parents ask</h2>
+            </FadeIn>
+            <div className="lg:col-span-8">
+              <FAQAccordion items={CURRICULUM_ALIGNED_FAQS} />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* 8. CLOSING CTA BAND */}
-      <ClosingCTABand
-        title="Help Your Child Understand The Maths Behind The Marks"
-        subtitle="When the foundation is stronger, schoolwork becomes easier to approach, and your child becomes more confident working through it."
-      >
-        <Button
-          variant="white"
-          size="lg"
-          onClick={() => {
-            trackCtaClick('book_personal_assessment', 'contact_section', 'curriculum_aligned');
-            openAssessmentModal();
-          }}
-          className="text-primary font-semibold hover:bg-white/90 max-w-full whitespace-normal sm:whitespace-nowrap h-auto py-3.5 sm:py-0 sm:h-14 px-6 sm:px-8 text-base sm:text-lg text-center"
-        >
-          Book your child's personal assessment session
-        </Button>
-      </ClosingCTABand>
+      {/* 8. CLOSING */}
+      <section className="py-16 md:py-24 bg-primary">
+        <div className="container mx-auto px-4 md:px-6 text-center max-w-5xl">
+          <FadeIn>
+            <h2 className="font-serif text-3xl md:text-4xl text-white leading-tight">
+              Help your child understand the Maths behind the marks
+            </h2>
+            <p className="mt-5 text-lg md:text-xl text-white/90 max-w-3xl mx-auto">
+              Book an assessment and we'll show you where your child is getting stuck.
+            </p>
+            <Button
+              variant="white"
+              size="lg"
+              className="mt-8 text-primary font-semibold w-full sm:w-auto"
+              onClick={() => bookAssessment('contact_section')}
+            >
+              Book an assessment
+            </Button>
+          </FadeIn>
+        </div>
+      </section>
     </div>
   );
 }

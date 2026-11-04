@@ -23,6 +23,7 @@ export function FadeIn({ children, delay = 0, className = "" }: FadeInProps) {
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98], delay }}
       className={className}
+      data-fade=""
     >
       {children}
     </motion.div>
@@ -70,6 +71,7 @@ export function FadeInStaggerItem({ children, className = "" }: { children: Reac
         visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.21, 0.47, 0.32, 0.98] } },
       }}
       className={className}
+      data-fade=""
     >
       {children}
     </motion.div>
@@ -477,7 +479,7 @@ export function TestimonialCard({
         {quote}
       </p>
       <div className="border-t border-border/50 pt-4 mt-auto min-h-[4.25rem] sm:min-h-[4.5rem] flex flex-col justify-start">
-        <span className="font-sans font-medium text-sm sm:text-base text-foreground block leading-snug">— {author}</span>
+        <span className="font-sans font-medium text-sm sm:text-base text-foreground block leading-snug">{author}</span>
         {(relation || location) && (
           <span className="font-sans text-xs sm:text-sm text-foreground/60 block mt-0.5 leading-snug">
             {[relation, location].filter(Boolean).join(" · ")}

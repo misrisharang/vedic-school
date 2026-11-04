@@ -33,7 +33,10 @@ function Reveal({
   );
 }
 
-export function VedicTrickDemo({ className }: { className?: string }) {
+const LOOP_PAUSE_MS = 3200;
+
+/** `loop` replays the working continuously, like an animated GIF. */
+export function VedicTrickDemo({ className, loop = false }: { className?: string; loop?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.5 });
   const reduce = useReducedMotion();
@@ -48,8 +51,13 @@ export function VedicTrickDemo({ className }: { className?: string }) {
     }
     setStep(0);
     const timers = [1, 2, 3].map((n) => window.setTimeout(() => setStep(n), n * STEP_MS));
+    if (loop) {
+      timers.push(window.setTimeout(() => setRun((r) => r + 1), LAST_STEP * STEP_MS + LOOP_PAUSE_MS));
+    }
     return () => timers.forEach(window.clearTimeout);
-  }, [inView, reduce, run]);
+  }, [inView, reduce, run, loop]);
+
+  const showReplay = step === LAST_STEP && !reduce && !loop;
 
   return (
     <div
@@ -68,9 +76,9 @@ export function VedicTrickDemo({ className }: { className?: string }) {
           onClick={() => setRun((r) => r + 1)}
           className={cn(
             'shrink-0 whitespace-nowrap inline-flex items-center gap-1.5 text-xs font-medium text-[#A84824] hover:text-[#7F361B] rounded-full px-2.5 py-1 transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-            step === LAST_STEP && !reduce ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            showReplay ? 'opacity-100' : 'opacity-0 pointer-events-none'
           )}
-          tabIndex={step === LAST_STEP && !reduce ? 0 : -1}
+          tabIndex={showReplay ? 0 : -1}
         >
           <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
           Play again

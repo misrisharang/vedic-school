@@ -20,7 +20,7 @@ export const VEDIC_MATHS_FAQS: FAQItem[] = [
   {
     question: 'Who is Vedic Maths for?',
     answer:
-      'Vedic Maths is for children at different starting points. Whether your child is still building their number foundations, understands the basics but calculates slowly, or already enjoys Maths and wants more challenge, we start with where their thinking is today.',
+      'Children aged 9 to 15, at different starting points. Whether your child is still building their number foundations, understands the basics but calculates slowly, or already enjoys Maths and wants more challenge, we start with where their thinking is today.',
   },
   {
     question: 'Where does my child start?',
@@ -35,7 +35,7 @@ export const VEDIC_MATHS_FAQS: FAQItem[] = [
   {
     question: 'Is Vedic Maths just a collection of shortcuts?',
     answer:
-      'No. We teach techniques as tools for working with numbers more efficiently, but they are built on understanding rather than replacing it. Understanding comes first. Speed follows.',
+      'No. We teach techniques as tools for working with numbers more efficiently, but they are built on understanding rather than replacing it. Each method is explained before it is practised.',
   },
   {
     question: 'Will Vedic Maths replace school Maths?',
@@ -56,17 +56,17 @@ export const CURRICULUM_ALIGNED_FAQS: FAQItem[] = [
   {
     question: 'Where does my child start?',
     answer:
-      'We start with where your child actually is. We look at their current schoolwork and identify whether a gap in an earlier concept is making the current topic difficult. If it is, we work on that foundation before moving forward. The starting point is always their actual level, not simply their grade.',
+      'We start with where your child is. We look at their current schoolwork and identify whether a gap in an earlier concept is making the current topic difficult. If it is, we work on that foundation before moving forward. The starting point is their level, not simply their grade.',
   },
   {
     question: "Does my child's class follow their school textbook and syllabus?",
     answer:
-      'Yes. Classes are built around what your child is actually learning at school, using their current topics and textbook where relevant. The exact content depends on their school and board.',
+      'Yes. Classes are built around what your child is learning at school, using their current topics and textbook where relevant. The exact content depends on their school and board.',
   },
   {
     question: 'Which boards do you support?',
     answer:
-      "We currently work with students following CBSE, ICSE and IB curricula. The exact topics covered depend on the child's school curriculum and learning needs.",
+      "We work with students following CBSE, ICSE, IB and other curricula. The exact topics covered depend on the child's school curriculum and learning needs.",
   },
   {
     question: 'Is this a replacement for school Maths?',

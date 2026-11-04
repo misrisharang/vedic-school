@@ -31,7 +31,7 @@ export function getEducationalOrganizationEntity() {
     },
     description:
       'Teacher-led mathematics education offering Vedic Maths and curriculum-aligned learning, focused on building genuine understanding, fluency, and lasting confidence.',
-    email: 'meenakshi@thevedicschool.com',
+    email: 'meenakshikhar@gmail.com',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Emaar Emerald Estate, Maidawas Road, Sector 65',
@@ -260,7 +260,7 @@ export function getCanadaDemoSchema(faqs: FAQItem[]) {
       '@id': abs('/canada-demo#event'),
       name: 'Free Online Vedic Maths Demo Class',
       description:
-        'A live introductory Vedic Maths demo class for children aged 9 and above, led by Meenakshi Koul.',
+        'A live introductory Vedic Maths demo class for children aged 9 to 15, led by Meenakshi Koul.',
       startDate: '2026-10-25T20:30:00-04:00',
       eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
       eventStatus: 'https://schema.org/EventScheduled',

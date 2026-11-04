@@ -63,10 +63,13 @@ export function AnnouncementBar({ onDismiss, className }: AnnouncementBarProps) 
     };
 
     updateHeight();
-    window.addEventListener('resize', updateHeight);
+    // Observe the bar itself: its height also changes when web fonts finish
+    // loading and the text rewraps, which a window resize listener misses.
+    const observer = new ResizeObserver(updateHeight);
+    if (barRef.current) observer.observe(barRef.current);
 
     return () => {
-      window.removeEventListener('resize', updateHeight);
+      observer.disconnect();
     };
   }, []);
 

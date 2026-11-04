@@ -11,11 +11,17 @@ type CarouselApi = UseEmblaCarouselType[1];
 interface TestimonialCarouselProps {
   testimonials: Testimonial[];
   className?: string;
+  /** Show each parent's short excerpt (when present) instead of the full quote. */
+  preferExcerpt?: boolean;
+  /** 'plain' drops the card box: quote, rule and name sit directly on the page. */
+  variant?: 'card' | 'plain';
 }
 
 export function TestimonialCarousel({
   testimonials,
   className,
+  preferExcerpt = false,
+  variant = 'card',
 }: TestimonialCarouselProps) {
   const shouldReduceMotion = useReducedMotion();
   const [emblaRef, api] = useEmblaCarousel({
@@ -136,13 +142,29 @@ export function TestimonialCarousel({
               aria-roledescription="slide"
               aria-label={`${index + 1} of ${testimonials.length}`}
             >
-              <TestimonialCard
-                quote={item.quote}
-                author={item.name}
-                relation={item.relation}
-                location={item.location}
-                animate={false}
-              />
+              {variant === 'plain' ? (
+                <figure className="h-full flex flex-col border-l-2 border-primary/40 pl-6 pr-2">
+                  <blockquote className="font-serif text-lg md:text-xl text-foreground/90 leading-relaxed flex-1">
+                    “{preferExcerpt ? item.excerpt ?? item.quote : item.quote}”
+                  </blockquote>
+                  <figcaption className="mt-6">
+                    <span className="block font-medium text-foreground">{item.name}</span>
+                    {(item.relation || item.location) && (
+                      <span className="block mt-0.5 text-sm text-foreground/60">
+                        {[item.relation, item.location].filter(Boolean).join(', ')}
+                      </span>
+                    )}
+                  </figcaption>
+                </figure>
+              ) : (
+                <TestimonialCard
+                  quote={preferExcerpt ? item.excerpt ?? item.quote : item.quote}
+                  author={item.name}
+                  relation={item.relation}
+                  location={item.location}
+                  animate={false}
+                />
+              )}
             </div>
           ))}
         </div>

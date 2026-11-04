@@ -188,7 +188,7 @@ export default function Blog() {
             {/* Left: Heading & Intro */}
             <div className="max-w-2xl space-y-3">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-bold text-stone-900 tracking-tight leading-tight">
-                Practical ideas for a calmer, more confident Maths journey.
+                Practical ideas for a calmer, more confident Maths journey
               </h1>
 
               <p className="text-base sm:text-lg text-stone-600 font-sans leading-relaxed">

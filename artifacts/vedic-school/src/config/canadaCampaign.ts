@@ -29,7 +29,7 @@ export const CANADA_EVENT_DETAILS = {
   date: 'Sunday, October 25, 2026',
   time: '8:30 PM Eastern Time',
   format: 'Live online session',
-  audience: 'For children aged 9 and above',
+  audience: 'For children aged 9 to 15',
 } as const;
 
 /** Paths where the automatic pop-up must never appear. */

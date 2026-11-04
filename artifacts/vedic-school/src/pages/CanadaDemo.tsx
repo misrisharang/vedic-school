@@ -1,3 +1,4 @@
+import { Link } from 'wouter';
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Calendar,
@@ -52,9 +53,6 @@ import { cn } from '@/lib/utils';
 const CAMPAIGN_ID = CANADA_CAMPAIGN_ID;
 
 const GRADES = [
-  'Grade 1',
-  'Grade 2',
-  'Grade 3',
   'Grade 4',
   'Grade 5',
   'Grade 6',
@@ -67,7 +65,7 @@ const GRADES = [
 const CANADA_DEMO_FAQS: FAQItem[] = [
   {
     question: 'Who can attend?',
-    answer: 'The demo is intended for children aged 9 and above.',
+    answer: 'The demo is for children aged 9 to 15.',
   },
   {
     question: 'Does my child need prior knowledge of Vedic Maths?',
@@ -380,7 +378,7 @@ export default function CanadaDemo() {
                     { Icon: Calendar, label: 'Sunday', value: 'Oct 25, 2026' },
                     { Icon: Clock, label: 'Starts at', value: '8:30 PM ET' },
                     { Icon: Video, label: 'Format', value: 'Live online' },
-                    { Icon: Users, label: 'Open to', value: 'Ages 9+' },
+                    { Icon: Users, label: 'Open to', value: 'Ages 9 to 15' },
                   ].map(({ Icon, label, value }) => (
                     <div key={label} className="flex items-center gap-2.5 sm:gap-3 bg-[#FCF9F5] px-3 sm:px-4 py-3">
                       <Icon className="w-5 h-5 text-[#B04C27] shrink-0" strokeWidth={1.8} aria-hidden="true" />
@@ -458,7 +456,7 @@ export default function CanadaDemo() {
                       </div>
 
                       <div className="text-xs text-foreground/60 text-center">
-                        Need to make changes? Email <a href="mailto:meenakshikhar@gmail.com" className="underline underline-offset-2 hover:text-foreground">meenakshikhar@gmail.com</a>
+                        Need to make changes? <Link href="/contact" className="underline underline-offset-2 hover:text-foreground">Contact us</Link>
                       </div>
                     </div>
                   ) : (
@@ -724,7 +722,7 @@ export default function CanadaDemo() {
             <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center mb-10 sm:mb-12">
               <div className="lg:col-span-7">
                 <h2 className="font-serif text-3xl sm:text-4xl lg:text-[44px] text-[#1E2B3C] font-semibold leading-tight mb-4">
-                  What your child will try in the class.
+                  What your child will try in the class
                 </h2>
                 <p className="text-base sm:text-[17px] text-foreground/80 leading-relaxed max-w-2xl">
                   Vedic Maths introduces structured ways to work with numbers. The demo gives your child an opportunity to see how these methods work and experience them in practice.
