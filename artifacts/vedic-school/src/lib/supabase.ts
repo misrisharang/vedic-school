@@ -56,6 +56,7 @@ export interface DemoRegistrationPayload {
   email: string;
   whatsapp_consent: true;
   demo_date?: string | null;
+  support_needed?: string | null;
 }
 
 export interface AssessmentRegistrationPayload {
@@ -75,7 +76,8 @@ export interface AssessmentRegistrationPayload {
 export type RegistrationPayload = DemoRegistrationPayload | AssessmentRegistrationPayload;
 
 export async function submitRegistration(
-  data: RegistrationPayload
+  data: RegistrationPayload,
+  options: { sendConfirmation?: boolean } = {}
 ): Promise<{ success: boolean; error?: string }> {
   if (isPreviewMode) return previewSuccess();
 
@@ -116,7 +118,8 @@ export async function submitRegistration(
 
     // Step 4 & 5: ONLY after Supabase confirms successful registration, trigger confirmation email
     // passing the exact persisted demo_date from that registration
-    if (data.registration_type === 'demo') {
+    // Campaign classes outside the regular Sunday slot opt out, since the email states 11:00 AM IST.
+    if (data.registration_type === 'demo' && options.sendConfirmation !== false) {
       sendDemoConfirmationEmail({
         parentName: data.parent_name,
         childName: data.child_name,

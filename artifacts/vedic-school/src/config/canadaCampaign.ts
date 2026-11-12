@@ -3,22 +3,23 @@
  * the automatic pop-up's display rules.
  *
  * All times carry an explicit Eastern offset, so the window is the same instant for
- * every visitor regardless of their own time zone. On 25 Oct 2026 Eastern Time is on
- * daylight time (EDT, UTC-4); the class is 8:30 PM Eastern Time (EDT) = 2026-10-25T20:30:00-04:00 (2026-10-26T00:30:00.000Z UTC).
+ * every visitor regardless of their own time zone. On 15 Nov 2026 Eastern Time is on
+ * standard time (EST, UTC-5); the class is 11:00 AM Eastern Time (EST) = 2026-11-15T11:00:00-05:00 (2026-11-15T16:00:00.000Z UTC).
+ * (The class was first set for 25 Oct 2026 and moved to 15 Nov; the campaign id changed with it.)
  */
 
-export const CANADA_CAMPAIGN_ID = 'canada_demo_oct2026';
+export const CANADA_CAMPAIGN_ID = 'canada_demo_nov2026';
 export const CANADA_CAMPAIGN_COUNTRY = 'CA';
 export const CANADA_CAMPAIGN_PATH = '/canada-demo';
 
 /** When the automatic pop-up may start appearing. */
 export const CANADA_POPUP_START = new Date('2026-10-19T00:00:00-04:00');
 /**
- * Class start: Sunday, October 25, 2026 at 8:30 PM Eastern Time (EDT, UTC-4).
- * UTC conversion: 2026-10-26T00:30:00.000Z (timestamp: 1792974600000 ms).
+ * Class start: Sunday, November 15, 2026 at 11:00 AM Eastern Time (EST, UTC-5).
+ * UTC conversion: 2026-11-15T16:00:00.000Z (timestamp: 1794758400000 ms).
  * The pop-up remains available until this instant and never appears after the start time.
  */
-export const CANADA_EVENT_START = new Date('2026-10-25T20:30:00-04:00');
+export const CANADA_EVENT_START = new Date('2026-11-15T11:00:00-05:00');
 export const CANADA_POPUP_END = CANADA_EVENT_START;
 
 /** Delay after page load before the pop-up may appear (spec: 5-8 s). */
@@ -26,8 +27,8 @@ export const CANADA_POPUP_DELAY_MS = 6000;
 
 /** Event details shown in the pop-up (keep in sync with the /canada-demo page). */
 export const CANADA_EVENT_DETAILS = {
-  date: 'Sunday, October 25, 2026',
-  time: '8:30 PM Eastern Time',
+  date: 'Sunday, November 15, 2026',
+  time: '11:00 AM Eastern Time',
   format: 'Live online session',
   audience: 'For children aged 9 to 15',
 } as const;

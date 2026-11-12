@@ -4,6 +4,7 @@ import { useLocation } from 'wouter';
 import { useDemoModal } from '@/context/DemoModalContext';
 import { trackCtaClick } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
+import { CANADA_CAMPAIGN_PATH, CANADA_EVENT_START } from '@/config/canadaCampaign';
 
 /**
  * ==============================================================================
@@ -13,8 +14,16 @@ import { cn } from '@/lib/utils';
  * Configurable destination for the campaign CTA:
  * - When null or empty: Opens the existing Sunday Demo registration modal.
  * - When set to a URL string (e.g. "/canada-demo"): Navigates to that destination.
+ * The Canada destination (and its flag) switches off by itself once the class has started.
  */
-export const ANNOUNCEMENT_CAMPAIGN_URL: string | null = '/canada-demo';
+export const ANNOUNCEMENT_CAMPAIGN_URL: string | null = CANADA_CAMPAIGN_PATH;
+
+function getActiveCampaignUrl(): string | null {
+  if (ANNOUNCEMENT_CAMPAIGN_URL === CANADA_CAMPAIGN_PATH && Date.now() >= CANADA_EVENT_START.getTime()) {
+    return null;
+  }
+  return ANNOUNCEMENT_CAMPAIGN_URL;
+}
 
 export interface AnnouncementBarProps {
   onDismiss?: () => void;
@@ -51,6 +60,7 @@ export function AnnouncementBar({ onDismiss, className }: AnnouncementBarProps) 
   const barRef = useRef<HTMLDivElement>(null);
   const { openDemoModal } = useDemoModal();
   const [, setLocation] = useLocation();
+  const campaignUrl = getActiveCampaignUrl();
 
   // Measure and synchronize the announcement bar height into a CSS variable
   // so the layout/hero section can push down seamlessly without any overlap.
@@ -76,16 +86,16 @@ export function AnnouncementBar({ onDismiss, className }: AnnouncementBarProps) 
   const handleCtaClick = useCallback(() => {
     trackCtaClick('book_free_demo', 'announcement_bar', 'vedic_maths');
 
-    if (ANNOUNCEMENT_CAMPAIGN_URL) {
-      if (ANNOUNCEMENT_CAMPAIGN_URL.startsWith('http://') || ANNOUNCEMENT_CAMPAIGN_URL.startsWith('https://')) {
-        window.location.href = ANNOUNCEMENT_CAMPAIGN_URL;
+    if (campaignUrl) {
+      if (campaignUrl.startsWith('http://') || campaignUrl.startsWith('https://')) {
+        window.location.href = campaignUrl;
       } else {
-        setLocation(ANNOUNCEMENT_CAMPAIGN_URL);
+        setLocation(campaignUrl);
       }
     } else {
       openDemoModal();
     }
-  }, [openDemoModal, setLocation]);
+  }, [campaignUrl, openDemoModal, setLocation]);
 
   const handleDismiss = useCallback(() => {
     document.documentElement.style.setProperty('--announcement-bar-height', '0px');
@@ -107,7 +117,7 @@ export function AnnouncementBar({ onDismiss, className }: AnnouncementBarProps) 
         <div className="flex-1 flex flex-wrap items-center justify-center text-center gap-x-2.5 sm:gap-x-3 gap-y-1.5 pr-8 sm:pr-10 lg:pr-0 pl-1 sm:pl-0">
           {/* Flag + Combined Copy (Single spacebar gap) */}
           <div className="inline-flex items-center gap-1.5 sm:gap-2 flex-wrap justify-center text-center">
-            <CanadaFlag />
+            {campaignUrl === CANADA_CAMPAIGN_PATH && <CanadaFlag />}
             <span className="tracking-tight text-center">
               <span className="font-semibold text-white">What if Maths felt easier for your child?</span>{' '}
               <span className="text-white/95 font-normal">Book your spot for a free Vedic Maths demo class.</span>

@@ -20,8 +20,8 @@ console.log('--- 1. Testing Campaign Dates and Time-Zone Accuracy ---');
 console.log('CANADA_EVENT_START ISO:', CANADA_EVENT_START.toISOString());
 assert.equal(
   CANADA_EVENT_START.toISOString(),
-  '2026-10-26T00:30:00.000Z',
-  'Event start must equal 2026-10-26T00:30:00.000Z in UTC'
+  '2026-11-15T16:00:00.000Z',
+  'Event start must equal 2026-11-15T16:00:00.000Z in UTC'
 );
 
 // Verify Eastern Time format
@@ -39,12 +39,12 @@ const easternFormat = new Intl.DateTimeFormat('en-CA', {
 console.log('Rendered in America/Toronto:', easternFormat);
 assert.match(
   easternFormat,
-  /October 25, 2026.*8:30.*p\.m\..*EDT/i,
-  'Must format to October 25, 2026 at 8:30 PM EDT'
+  /November 15, 2026.*11:00.*a\.m\..*EST/i,
+  'Must format to November 15, 2026 at 11:00 AM EST'
 );
 
 assert.equal(CANADA_POPUP_END.getTime(), CANADA_EVENT_START.getTime(), 'POPUP_END must match EVENT_START');
-assert.equal(CANADA_EVENT_DETAILS.time, '8:30 PM Eastern Time', 'EVENT_DETAILS.time must be 8:30 PM Eastern Time');
+assert.equal(CANADA_EVENT_DETAILS.time, '11:00 AM Eastern Time', 'EVENT_DETAILS.time must be 11:00 AM Eastern Time');
 
 console.log('✓ Campaign start & cutoff timestamps verified.');
 
