@@ -247,7 +247,7 @@ export function getCanadaDemoSchema(faqs: FAQItem[]) {
       url: abs('/canada-demo'),
       name: 'Free Online Vedic Maths Demo Class | The Vedic School',
       description:
-        'Join Meenakshi Koul for a free online Vedic Maths demo class on Sunday, November 15, 2026 at 11:00 AM Eastern Time. Help your child build calculation fluency and confidence.',
+        'Join Meenakshi Koul for a free online Vedic Maths demo class on Sunday, November 22, 2026 at 11:00 AM Eastern Time. Help your child build calculation fluency and confidence.',
       isPartOf: {
         '@id': abs('/#website'),
       },
@@ -261,8 +261,8 @@ export function getCanadaDemoSchema(faqs: FAQItem[]) {
       name: 'Free Online Vedic Maths Demo Class',
       description:
         'A live introductory Vedic Maths demo class for children aged 9 to 15, led by Meenakshi Koul.',
-      startDate: '2026-11-15T11:00:00-05:00',
-      previousStartDate: '2026-10-25T20:30:00-04:00',
+      startDate: '2026-11-22T11:00:00-05:00',
+      previousStartDate: '2026-11-15T11:00:00-05:00',
       eventAttendanceMode: 'https://schema.org/OnlineEventAttendanceMode',
       eventStatus: 'https://schema.org/EventRescheduled',
       location: {

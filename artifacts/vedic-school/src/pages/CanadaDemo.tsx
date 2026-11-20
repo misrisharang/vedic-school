@@ -279,9 +279,9 @@ export default function CanadaDemo() {
       grade: formData.grade,
       email: formData.email.trim(),
       whatsapp_consent: true,
-      demo_date: '2026-11-15',
+      demo_date: '2026-11-22',
       // Marks Canada sign-ups in the sheet: the class is not the regular 11:00 AM IST Sunday demo.
-      support_needed: 'Canada demo: Sunday 15 Nov 2026, 11:00 AM ET',
+      support_needed: 'Canada demo: Sunday 22 Nov 2026, 11:00 AM ET',
     }, { sendConfirmation: false }); // The automatic confirmation states 11:00 AM IST; Canada confirmations are sent by hand.
 
     setIsSubmitting(false);
@@ -299,7 +299,7 @@ export default function CanadaDemo() {
     <div className="flex flex-col min-h-screen bg-[#FAF6F0] selection:bg-primary/20 selection:text-foreground">
       <Seo
         title="Free Online Vedic Maths Demo Class | The Vedic School"
-        description="Join Meenakshi Koul for a free online Vedic Maths demo class on Sunday, November 15, 2026 at 11:00 AM Eastern Time. Help your child build calculation fluency and confidence."
+        description="Join Meenakshi Koul for a free online Vedic Maths demo class on Sunday, November 22, 2026 at 11:00 AM Eastern Time. Help your child build calculation fluency and confidence."
         path="/canada-demo"
         schema={getCanadaDemoSchema(CANADA_DEMO_FAQS)}
       />
@@ -377,7 +377,7 @@ export default function CanadaDemo() {
                 {/* Event Details: four equal blocks (2x2, single row on tablet); gap-px over a tinted background draws the dividers */}
                 <dl className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 gap-px bg-[#E8DDD0] border border-[#E8DDD0] rounded-2xl overflow-hidden lg:max-w-xl">
                   {[
-                    { Icon: Calendar, label: 'Sunday', value: 'Nov 15, 2026' },
+                    { Icon: Calendar, label: 'Sunday', value: 'Nov 22, 2026' },
                     { Icon: Clock, label: 'Starts at', value: '11:00 AM ET' },
                     { Icon: Video, label: 'Format', value: 'Live online' },
                     { Icon: Users, label: 'Open to', value: 'Ages 9 to 15' },
@@ -451,7 +451,7 @@ export default function CanadaDemo() {
                         </p>
                         <div className="pt-2 border-t border-[#E6DDCF]/70 text-xs text-foreground/75 space-y-1">
                           <p className="font-semibold text-foreground">Event details:</p>
-                          <p className="flex items-center gap-2"><Calendar className="w-3.5 h-3.5 text-[#B04C27]" aria-hidden="true" /> Sunday, November 15, 2026</p>
+                          <p className="flex items-center gap-2"><Calendar className="w-3.5 h-3.5 text-[#B04C27]" aria-hidden="true" /> Sunday, November 22, 2026</p>
                           <p className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-[#B04C27]" aria-hidden="true" /> 11:00 AM ET (8:00 AM PT)</p>
                           <p className="flex items-center gap-2"><Video className="w-3.5 h-3.5 text-[#B04C27]" aria-hidden="true" /> Live online session</p>
                         </div>
@@ -934,7 +934,7 @@ export default function CanadaDemo() {
                 Join the free Vedic Maths class
               </h2>
               <p className="text-white/90 text-[15px] sm:text-base">
-                Sunday, November 15 at 11:00 AM ET. Free, live and online.
+                Sunday, November 22 at 11:00 AM ET. Free, live and online.
               </p>
             </div>
             <button
